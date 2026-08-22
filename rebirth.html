@@ -1,4 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>KaiokenMS — Rebirth</title><style>
 :root{
   --space:#050914;--deep:#0b1630;--panel:#111d35;--panel2:#172746;
@@ -79,17 +81,112 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
   .card-grid,.visual,.visual.reverse,.page-nav{grid-template-columns:1fr}
   .page-nav a:last-child{text-align:left}
 }
-</style></head><body>
-<nav class="site-nav">
-  <div class="brand">🐉 KaiokenMS Guides</div>
-  <div class="nav-links">
-    <a href="./">🏠 Home</a>
-    <a class="active" href="guide.html">📘 Main Guide</a>
-    <a href="quests.html">📜 Quest Guide</a>
-  </div>
-</nav>
 
-<header class="hero"><div class="kicker">♻️ Guide Section</div><h1>Rebirth</h1></header>
+.author-stamp{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:14px;
+  padding:6px 11px;
+  border:1px solid rgba(255,213,74,.55);
+  border-radius:999px;
+  background:rgba(3,7,17,.68);
+  color:#ffd54a;
+  font-size:.82rem;
+  font-weight:1000;
+  letter-spacing:.04em;
+  box-shadow:0 0 14px rgba(255,138,0,.10);
+}
+.footer-credit{
+  margin-top:8px;
+  color:#ffd54a;
+  font-weight:900;
+  font-size:.88rem;
+}
+.footer-rights{
+  margin-top:4px;
+  color:#b9c7da;
+  font-size:.78rem;
+}
+
+
+
+/* ===== Global Centered Navigation + Refresh ===== */
+.site-nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:grid!important;
+  grid-template-columns:minmax(180px,1fr) auto minmax(180px,1fr)!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:10px 18px!important;
+}
+.site-nav .brand{
+  justify-self:start!important;
+}
+.site-nav .nav-links{
+  justify-self:center!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+.site-nav .nav-refresh-btn{
+  justify-self:end;
+  appearance:none;
+  border:1px solid #43658e;
+  border-radius:999px;
+  padding:8px 13px;
+  background:linear-gradient(145deg,#203a5b,#16263d);
+  color:#eaf2ff;
+  font:inherit;
+  font-size:.78rem;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease,background .12s ease;
+}
+.site-nav .nav-refresh-btn:hover,
+.site-nav .nav-refresh-btn:focus{
+  transform:translateY(-1px);
+  border-color:#7ed9ff;
+  background:linear-gradient(145deg,#27486f,#1b304d);
+  box-shadow:0 0 0 3px rgba(126,217,255,.09);
+  outline:none;
+}
+.site-nav .nav-refresh-btn:active{
+  transform:translateY(0);
+}
+@media(max-width:820px){
+  .site-nav{
+    grid-template-columns:1fr auto!important;
+    grid-template-areas:
+      "brand refresh"
+      "links links";
+  }
+  .site-nav .brand{
+    grid-area:brand;
+  }
+  .site-nav .nav-links{
+    grid-area:links;
+    width:100%;
+  }
+  .site-nav .nav-refresh-btn{
+    grid-area:refresh;
+  }
+}
+</style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head><body>
+<nav class="site-nav">
+<div class="brand">🐉 KaiokenMS Guides</div>
+<div class="nav-links">
+<a href="./">🏠 Home</a>
+<a class="active" href="guide.html">📘 Main Guide</a>
+<a href="quests.html">📜 Quest Guide</a>
+</div>
+<button aria-label="Refresh this guide" class="nav-refresh-btn" id="nav-refresh-btn" title="Refresh this guide" type="button">🔄 Refresh</button></nav>
+<header class="hero"><div class="kicker">♻️ Guide Section</div><h1>Rebirth</h1><div class="author-stamp">⚡ Original Guide • Created &amp; Maintained by -Yakir-H</div></header>
 <main class="wrap">
 <section><h2>Rebirth: Endgame Goal</h2>
 <p>Reach <b>Level 200</b> and obtain the required Shenron Rebirth wish.</p>
@@ -104,5 +201,11 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 <div class="warning"><b>Use the newest patch notes as final authority</b> for exact skill-retention behavior.</div>
 </section>
 <div class="page-nav"><a href="fishing.html">← Fishing</a><a href="economy.html">Economy &amp; Shops →</a></div></main>
-<footer><a href="guide.html" style="color:#ffd54a;font-weight:900;text-decoration:none">📘 Back to Guide Sections</a></footer>
-</body></html>
+<footer><a href="guide.html" style="color:#ffd54a;font-weight:900;text-decoration:none">📘 Back to Guide Sections</a><div class="footer-credit">Created &amp; Maintained by -Yakir-H</div><div class="footer-rights">© 2026 -Yakir-H. All rights reserved. Please credit the original author when sharing or adapting this guide.</div></footer>
+<script>
+/* GLOBAL_NAV_REFRESH_START */
+document.getElementById('nav-refresh-btn')?.addEventListener('click',()=>{
+  window.location.reload();
+});
+/* GLOBAL_NAV_REFRESH_END */
+</script></body></html>

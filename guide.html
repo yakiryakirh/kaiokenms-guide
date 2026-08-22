@@ -393,6 +393,75 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
   color:#b9c7da;
   font-size:.78rem;
 }
+
+
+
+/* ===== Global Centered Navigation + Refresh ===== */
+.site-nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:grid!important;
+  grid-template-columns:minmax(180px,1fr) auto minmax(180px,1fr)!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:10px 18px!important;
+}
+.site-nav .brand{
+  justify-self:start!important;
+}
+.site-nav .nav-links{
+  justify-self:center!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+.site-nav .nav-refresh-btn{
+  justify-self:end;
+  appearance:none;
+  border:1px solid #43658e;
+  border-radius:999px;
+  padding:8px 13px;
+  background:linear-gradient(145deg,#203a5b,#16263d);
+  color:#eaf2ff;
+  font:inherit;
+  font-size:.78rem;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease,background .12s ease;
+}
+.site-nav .nav-refresh-btn:hover,
+.site-nav .nav-refresh-btn:focus{
+  transform:translateY(-1px);
+  border-color:#7ed9ff;
+  background:linear-gradient(145deg,#27486f,#1b304d);
+  box-shadow:0 0 0 3px rgba(126,217,255,.09);
+  outline:none;
+}
+.site-nav .nav-refresh-btn:active{
+  transform:translateY(0);
+}
+@media(max-width:820px){
+  .site-nav{
+    grid-template-columns:1fr auto!important;
+    grid-template-areas:
+      "brand refresh"
+      "links links";
+  }
+  .site-nav .brand{
+    grid-area:brand;
+  }
+  .site-nav .nav-links{
+    grid-area:links;
+    width:100%;
+  }
+  .site-nav .nav-refresh-btn{
+    grid-area:refresh;
+  }
+}
 </style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body>
 <nav class="site-nav">
@@ -402,7 +471,7 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 <a class="active" href="guide.html">📘 Main Guide</a>
 <a href="quests.html">📜 Quest Guide</a>
 </div>
-</nav>
+<button aria-label="Refresh this guide" class="nav-refresh-btn" id="nav-refresh-btn" title="Refresh this guide" type="button">🔄 Refresh</button></nav>
 <header class="hero"><div class="kicker">Complete Progression Guide</div><h1>KaiokenMS Guide Sections</h1>
 <p class="subtitle">Each section now has its own page. Quick Start is on the left, Monster Book is highlighted on the right, and the rest follow in the same progression order.</p><div class="author-stamp">⚡ Original Guide • Created &amp; Maintained by -Yakir-H</div></header>
 <main class="wrap">
@@ -510,4 +579,10 @@ buttons.forEach(btn=>btn.addEventListener('click',()=>setView(btn.dataset.view))
 const saved=localStorage.getItem(storageKey);
 if(['tiny','medium','list'].includes(saved)) setView(saved);
 else setView('tiny');
+</script><script>
+/* GLOBAL_NAV_REFRESH_START */
+document.getElementById('nav-refresh-btn')?.addEventListener('click',()=>{
+  window.location.reload();
+});
+/* GLOBAL_NAV_REFRESH_END */
 </script></body></html>

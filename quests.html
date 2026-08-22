@@ -1430,6 +1430,107 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
     grid-template-columns:1fr;
   }
 }
+
+
+
+/* ===== Kerning Route Order Alert ===== */
+.kerning-order-alert{
+  display:grid;
+  grid-template-columns:54px 1fr;
+  gap:13px;
+  margin:14px 0 4px;
+  padding:14px 16px;
+  border:2px solid #ffd54a;
+  border-radius:12px;
+  background:
+    linear-gradient(135deg,rgba(84,59,10,.44),rgba(26,30,42,.94)),
+    rgba(13,20,34,.95);
+  box-shadow:
+    0 0 0 4px rgba(255,213,74,.07),
+    0 12px 28px rgba(0,0,0,.20);
+}
+.kerning-order-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:46px;
+  height:46px;
+  border:1px solid rgba(255,213,74,.55);
+  border-radius:12px;
+  background:rgba(255,213,74,.10);
+  font-size:1.45rem;
+}
+.kerning-order-label{
+  margin-bottom:8px;
+  color:#ffd54a;
+  font-size:.78rem;
+  font-weight:1000;
+  letter-spacing:.08em;
+}
+.kerning-order-flow{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+}
+.order-step{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 9px;
+  border:1px solid #49678b;
+  border-radius:9px;
+  background:rgba(12,25,43,.78);
+  color:#eaf2ff;
+  font-size:.77rem;
+  font-weight:850;
+}
+.order-step b{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:22px;
+  border-radius:999px;
+  background:#ffd54a;
+  color:#141b25;
+  font-size:.7rem;
+  font-weight:1000;
+}
+.order-step strong{
+  color:#fff;
+}
+.order-arrow{
+  color:#ffd54a;
+  font-weight:1000;
+  font-size:1rem;
+}
+.kerning-order-note{
+  margin-top:9px;
+  color:#c7d3e1;
+  font-size:.76rem;
+  line-height:1.45;
+}
+.kerning-guide-head p strong{
+  color:#ffd54a;
+}
+@media(max-width:720px){
+  .kerning-order-alert{
+    grid-template-columns:1fr;
+  }
+  .kerning-order-icon{
+    width:40px;
+    height:40px;
+  }
+  .kerning-order-flow{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .order-arrow{
+    transform:rotate(90deg);
+    align-self:center;
+  }
+}
 </style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body><div id="page-top" style="position:absolute;top:0;left:0"></div>
 <nav class="site-nav">
@@ -2457,10 +2558,23 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <div>
 <div class="route-eyebrow">STAGE 2 • FULL WALKTHROUGH</div>
 <h2>🏙 Kerning Square Questline</h2>
-<p>
-      Do this after finishing Mushroom Kingdom Empire. The route is mostly linear, so the fastest approach is to stay inside
-      Kerning Square, stack nearby objectives and avoid leaving until the chain is complete.
-    </p>
+<p>Kerning Square is <strong>Stage 2 of the recommended leveling route</strong>. Start it only after finishing Mushroom Kingdom Empire. The route is mostly linear, so stay inside Kerning Square, stack nearby objectives and avoid leaving until the chain is complete.</p><div class="kerning-order-alert">
+<div class="kerning-order-icon">⚠️</div>
+<div class="kerning-order-content">
+<div class="kerning-order-label">IMPORTANT — FOLLOW THIS ORDER</div>
+<div class="kerning-order-flow">
+<span class="order-step"><b>1</b> Finish <strong>Mushroom Kingdom Empire</strong></span>
+<span class="order-arrow">→</span>
+<span class="order-step"><b>2</b> Start <strong>Kerning Square</strong></span>
+<span class="order-arrow">→</span>
+<span class="order-step"><b>3</b> Stay inside and finish the full chain</span>
+</div>
+<div class="kerning-order-note">
+      Do not leave Kerning Square between small objectives unless the quest specifically sends you out.
+      Stack nearby quests and collection tasks together for the fastest EXP route.
+    </div>
+</div>
+</div>
 </div>
 <div class="kerning-exp-box">
 <span>Reference quest EXP</span>

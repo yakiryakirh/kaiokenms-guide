@@ -632,6 +632,186 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 @media(max-width:520px){
   .backup-actions{grid-template-columns:1fr}
 }
+
+
+/* ===== Quest reading size modes ===== */
+.quest-size-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:245px;
+  padding:8px 10px;
+  border:1px solid #355784;
+  border-radius:14px;
+  background:rgba(9,20,36,.75);
+}
+.quest-size-control label{
+  color:#7ed9ff;
+  font-size:.82rem;
+  font-weight:1000;
+  white-space:nowrap;
+}
+.quest-size-control select{
+  flex:1;
+  min-width:0;
+  padding:8px 10px;
+  border:1px solid #355784;
+  border-radius:9px;
+  background:#0d1828;
+  color:#fff;
+  font:inherit;
+  font-size:.82rem;
+  font-weight:800;
+  outline:none;
+}
+.quest-size-control select:focus{
+  border-color:#7ed9ff;
+  box-shadow:0 0 0 2px rgba(126,217,255,.12);
+}
+
+/* Medium is the familiar/default layout */
+#all-quests.quest-view-medium .quest{
+  margin:13px 0;
+}
+#all-quests.quest-view-medium .qhead{
+  padding:11px 14px;
+}
+#all-quests.quest-view-medium .qtitle{
+  font-size:1.04rem;
+}
+#all-quests.quest-view-medium .qbody{
+  padding:13px 14px;
+}
+
+/* Compact List: same information, much less vertical space */
+#all-quests.quest-view-compact .level{
+  padding-top:13px;
+  padding-bottom:13px;
+}
+#all-quests.quest-view-compact .quest{
+  margin:6px 0;
+  border-radius:7px;
+}
+#all-quests.quest-view-compact .qhead{
+  padding:7px 10px;
+  gap:8px;
+}
+#all-quests.quest-view-compact .qtitle{
+  font-size:.88rem;
+  line-height:1.22;
+}
+#all-quests.quest-view-compact .lvl{
+  padding:2px 7px;
+  font-size:.68rem;
+}
+#all-quests.quest-view-compact .quest-check{
+  width:16px;
+  height:16px;
+}
+#all-quests.quest-view-compact .qbody{
+  padding:7px 10px 8px;
+  font-size:.78rem;
+  line-height:1.28;
+}
+#all-quests.quest-view-compact .row{
+  grid-template-columns:78px 1fr;
+  gap:7px;
+  margin:2px 0;
+}
+#all-quests.quest-view-compact .label{
+  font-size:.72rem;
+}
+#all-quests.quest-view-compact .tip,
+#all-quests.quest-view-compact .warning{
+  margin-top:5px;
+  padding:5px 8px;
+  border-left-width:3px;
+}
+#all-quests.quest-view-compact .refbuttons{
+  margin-top:6px;
+  gap:5px;
+}
+#all-quests.quest-view-compact .refbtn{
+  padding:4px 7px;
+  font-size:.68rem;
+}
+#all-quests.quest-view-compact .unique-ref-note{
+  font-size:.65rem;
+  line-height:1.2;
+}
+
+/* Large Reading: bigger text and breathing room */
+#all-quests.quest-view-large .level{
+  padding-top:25px;
+  padding-bottom:25px;
+}
+#all-quests.quest-view-large .quest{
+  margin:19px 0;
+  border-radius:12px;
+  border-width:2px;
+}
+#all-quests.quest-view-large .qhead{
+  padding:16px 19px;
+  gap:16px;
+}
+#all-quests.quest-view-large .qtitle{
+  font-size:1.26rem;
+  line-height:1.35;
+}
+#all-quests.quest-view-large .lvl{
+  padding:6px 12px;
+  font-size:.9rem;
+}
+#all-quests.quest-view-large .quest-check{
+  width:23px;
+  height:23px;
+}
+#all-quests.quest-view-large .qbody{
+  padding:18px 20px 20px;
+  font-size:1.03rem;
+  line-height:1.62;
+}
+#all-quests.quest-view-large .row{
+  grid-template-columns:125px 1fr;
+  gap:14px;
+  margin:9px 0;
+}
+#all-quests.quest-view-large .label{
+  font-size:.96rem;
+}
+#all-quests.quest-view-large .tip,
+#all-quests.quest-view-large .warning{
+  margin-top:12px;
+  padding:12px 14px;
+}
+#all-quests.quest-view-large .refbuttons{
+  margin-top:15px;
+  gap:10px;
+}
+#all-quests.quest-view-large .refbtn{
+  padding:9px 12px;
+  font-size:.88rem;
+}
+#all-quests.quest-view-large .unique-ref-note{
+  font-size:.83rem;
+  line-height:1.4;
+}
+
+@media(max-width:1050px){
+  .quest-size-control{
+    width:100%;
+    min-width:0;
+  }
+}
+@media(max-width:650px){
+  #all-quests.quest-view-compact .row,
+  #all-quests.quest-view-large .row{
+    grid-template-columns:1fr;
+  }
+  #all-quests.quest-view-large .qhead{
+    align-items:flex-start;
+  }
+}
 </style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body><div id="page-top" style="position:absolute;top:0;left:0"></div>
 <nav class="site-nav">
@@ -653,6 +833,13 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <main class="wrap"><div class="guide-tabs"><button class="guide-tab active" data-tab="all-quests" type="button">📚 All Quests</button><button class="guide-tab" data-tab="top-quests" type="button">🔥 Top EXP &amp; Key Quests</button><button class="guide-tab fame-tab" data-tab="fame-quests" type="button">⭐ Fame Quests</button><button class="guide-tab" data-tab="precollect" type="button">📦 Pre-Collect Checklist</button><button class="guide-tab" data-tab="chains" type="button">🔗 Quest Chains</button><div class="top-sort-control" id="top-sort-control">
 <label for="top-quest-sort">↕️ Sort By</label>
 <select aria-label="Sort current quest tab" id="top-quest-sort"></select>
+</div><div class="quest-size-control" id="quest-size-control">
+<label for="quest-view-size">🔎 Quest Size</label>
+<select aria-label="Change quest reading size" id="quest-view-size">
+<option value="compact">Compact List</option>
+<option value="medium">Medium List</option>
+<option value="large">Large Reading</option>
+</select>
 </div></div><div class="tab-page active" id="all-quests">
 <div class="notice"><b>KaiokenMS note:</b> The quest names, objectives and base rewards in this draft are organized from classic v83 quest-guide material. KaiokenMS removes many old level caps and may change EXP, availability, bugs or rewards. Use the in-game quest text as the final authority. The goal here is to identify the quests most worth checking, not to assume another server's custom behavior.</div><div class="notice">
 <b>Source method:</b> every quest card now has its own unique reference URL.
@@ -1970,6 +2157,57 @@ document.getElementById('quest-search')?.addEventListener('input',()=>{
 });
 
 
+
+/* QUEST_VIEW_SIZE_START */
+const questViewSizeStorageKey='kaioken_quest_view_size_v1';
+const questViewSizeSelect=document.getElementById('quest-view-size');
+const allQuestsPage=document.getElementById('all-quests');
+const validQuestViewSizes=['compact','medium','large'];
+let currentQuestViewSize='medium';
+
+function applyQuestViewSize(size,save=true){
+  if(!validQuestViewSizes.includes(size)) size='medium';
+  currentQuestViewSize=size;
+
+  if(allQuestsPage){
+    allQuestsPage.classList.remove(
+      'quest-view-compact',
+      'quest-view-medium',
+      'quest-view-large'
+    );
+    allQuestsPage.classList.add(`quest-view-${size}`);
+  }
+
+  if(questViewSizeSelect) questViewSizeSelect.value=size;
+  if(save){
+    try{localStorage.setItem(questViewSizeStorageKey,size)}catch(e){}
+  }
+}
+
+try{
+  const savedQuestViewSize=localStorage.getItem(questViewSizeStorageKey);
+  if(validQuestViewSizes.includes(savedQuestViewSize)){
+    currentQuestViewSize=savedQuestViewSize;
+  }
+}catch(e){}
+
+applyQuestViewSize(currentQuestViewSize,false);
+
+questViewSizeSelect?.addEventListener('change',e=>{
+  applyQuestViewSize(e.target.value,true);
+
+  const labels={
+    compact:'Compact List: all quest information is shown with minimal spacing.',
+    medium:'Medium List: balanced size for normal browsing.',
+    large:'Large Reading: larger text and spacing for easier reading.'
+  };
+  if(typeof setBackupFeedback==='function'){
+    setBackupFeedback(labels[e.target.value]||'',true);
+  }
+});
+/* QUEST_VIEW_SIZE_END */
+
+
 /* PROGRESS_BACKUP_FEATURES_START */
 const questBackupVersion=1;
 const questBackupFormat='KaiokenMS Quest Progress Backup';
@@ -2116,7 +2354,8 @@ function buildProgressBackup(){
     preferences:{
       questSort:safeLocalGet(questSortStorageKey)||'level',
       topSorts,
-      hideCompleted:hideCompletedEnabled
+      hideCompleted:hideCompletedEnabled,
+      viewSize:currentQuestViewSize
     }
   };
 }
@@ -2207,7 +2446,10 @@ function normalizeImportedBackup(data){
     preferences:{
       questSort:questSortValue,
       topSorts,
-      hideCompleted:data.preferences?.hideCompleted===true
+      hideCompleted:data.preferences?.hideCompleted===true,
+      viewSize:validQuestViewSizes.includes(data.preferences?.viewSize)
+        ? data.preferences.viewSize
+        : 'medium'
     }
   };
 }
@@ -2224,6 +2466,7 @@ function applyImportedBackup(clean){
     safeLocalSet(topSortStoragePrefix+tabId,value);
   });
   safeLocalSet(hideCompletedStorageKey,String(clean.preferences.hideCompleted));
+  safeLocalSet(questViewSizeStorageKey,clean.preferences.viewSize||'medium');
 
   currentCharacter=clean.characters.active;
   hideCompletedEnabled=clean.preferences.hideCompleted;
@@ -2233,6 +2476,11 @@ function applyImportedBackup(clean){
 
   currentQuestSort=clean.preferences.questSort;
   applyQuestSort(currentQuestSort);
+
+  currentQuestViewSize=validQuestViewSizes.includes(clean.preferences.viewSize)
+    ? clean.preferences.viewSize
+    : 'medium';
+  applyQuestViewSize(currentQuestViewSize,false);
 
   if(typeof populateTopSort==='function'){
     populateTopSort(activeQuestTabId());

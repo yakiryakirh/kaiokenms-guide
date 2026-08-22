@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KaiokenMS Complete Progression Guide</title>
+<style>
+:root{
+  --space:#050914;--deep:#0b1630;--panel:#111d35;--panel2:#172746;
+  --orange:#ff8a00;--gold:#ffd54a;--red:#e83b28;--blue:#32a8ff;
+  --cyan:#86dcff;--text:#f8fbff;--muted:#b9c7da;--line:#314d76;--green:#59d884
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--text);font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;line-height:1.65;
+  background:
+    radial-gradient(circle at 15% 12%,rgba(50,168,255,.13),transparent 18%),
+    radial-gradient(circle at 86% 8%,rgba(255,138,0,.12),transparent 20%),
+    linear-gradient(180deg,#030711,#081226 42%,#050914);
+  background-attachment:fixed
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.30;
+  background-image:radial-gradient(circle,#fff 0 1px,transparent 1.4px),radial-gradient(circle,#86dcff 0 1px,transparent 1.3px);
+  background-size:92px 92px,137px 137px;background-position:7px 11px,51px 29px;z-index:-1
+}
+.site-nav{
+  position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:10px 18px;background:rgba(3,7,17,.96);border-bottom:2px solid var(--orange);
+  box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(10px)
+}
+.site-nav .brand{color:var(--gold);font-weight:1000;letter-spacing:.04em;text-transform:uppercase}
+.site-nav .nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.site-nav a{color:#fff;text-decoration:none;font-weight:900;padding:8px 12px;border-radius:999px;border:1px solid #355784;background:linear-gradient(145deg,#172a4a,#0d182d)}
+.site-nav a:hover,.site-nav a.active{border-color:var(--orange);color:var(--gold)}
+.hero{
+  position:relative;overflow:hidden;padding:74px 24px 56px;text-align:center;border-bottom:4px solid var(--orange);
+  background:radial-gradient(circle at 50% 48%,rgba(255,213,74,.28) 0 7%,rgba(255,138,0,.18) 8% 18%,transparent 38%),linear-gradient(135deg,#102c5a,#09152d 48%,#301006);
+  box-shadow:0 8px 40px rgba(0,0,0,.6)
+}
+.hero .kicker{display:inline-block;padding:6px 14px;border:1px solid var(--gold);border-radius:999px;background:rgba(0,0,0,.35);color:var(--gold);font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+h1{max-width:1050px;margin:.24em auto .18em;font-size:clamp(2.45rem,6.3vw,5rem);line-height:.98;font-weight:1000;text-transform:uppercase;letter-spacing:-.04em;color:#fff;text-shadow:0 3px 0 #b53b13,0 6px 0 #6d1e0a,0 0 22px rgba(255,176,0,.65)}
+.subtitle{max-width:850px;margin:auto;color:#e4edf8;font-size:1.08rem}
+.wrap{max-width:1120px;margin:auto;padding:30px 20px 80px}
+.notice,.tip,.warning{padding:16px 18px;border-radius:10px;margin:18px 0;background:linear-gradient(135deg,rgba(20,35,62,.96),rgba(10,20,39,.96));border:1px solid var(--line)}
+.notice{border-left:5px solid var(--blue)}.tip{border-left:5px solid var(--green)}.warning{border-left:5px solid var(--red)}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:22px 0 38px}
+.toc a{color:var(--text);text-decoration:none;font-weight:800;background:linear-gradient(145deg,#172a4a,#0d182d);border:1px solid #355784;padding:11px 14px;border-radius:7px}
+.toc a:before{content:"★";color:var(--gold);margin-right:8px}.toc a:hover{border-color:var(--orange);color:var(--gold)}
+section{scroll-margin-top:90px;position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(19,34,61,.97),rgba(8,17,34,.97));border:1px solid #2e4d78;border-radius:14px;padding:27px;margin:20px 0;box-shadow:0 12px 34px rgba(0,0,0,.32)}
+h2{margin-top:0;padding-bottom:9px;border-bottom:2px solid rgba(255,138,0,.5);color:var(--gold);font-size:1.72rem;text-transform:uppercase;letter-spacing:.02em}
+h3{color:var(--cyan);margin-bottom:.25rem} b{color:#fff}
+code{background:#050a13;border:1px solid #365b8b;border-radius:5px;padding:2px 7px;color:var(--gold)}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(4,10,20,.38)}
+th,td{border:1px solid #35547c;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:linear-gradient(180deg,#263f67,#192d4d);color:var(--gold);text-transform:uppercase;font-size:.92rem}
+tr:nth-child(even) td{background:rgba(50,168,255,.035)}
+ul,ol{padding-left:25px}li{margin:7px 0}li::marker{color:var(--orange);font-weight:900}
+.visual{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;align-items:center}
+.visual.reverse{grid-template-columns:.65fr 1.35fr}
+.visual img{max-width:100%;height:auto;display:block;margin:auto}
+.npc{max-height:330px;object-fit:contain;filter:drop-shadow(0 12px 24px rgba(0,0,0,.55))}
+.icon{width:58px;height:58px;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.icon-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.feature-card{display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:center;padding:13px;border:1px solid #35547c;border-radius:10px;background:rgba(4,10,20,.38);margin:10px 0}
+.feature-card img{width:64px;height:64px;object-fit:contain}
+.book-stage{position:relative;min-height:420px;display:flex;align-items:center;justify-content:center}
+.book-stage .book{width:min(100%,650px);opacity:.96}
+.book-stage .scholar{position:absolute;right:1%;bottom:0;max-height:360px;max-width:38%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.5))}
+.shenron-stage{position:relative;text-align:center;padding:20px 0}
+.shenron-stage .shenron{max-width:520px;width:86%;filter:drop-shadow(0 0 28px rgba(80,255,120,.25))}
+.ball{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(255,170,0,.4))}
+.chamber{background-image:linear-gradient(rgba(3,7,17,.36),rgba(3,7,17,.74)),url('images/time-chamber-background.png');background-size:cover;background-position:center;border-color:#86dcff;min-height:420px;display:flex;align-items:flex-end}
+.chamber .overlay{background:rgba(5,10,22,.82);border:1px solid rgba(134,220,255,.3);padding:18px;border-radius:12px;width:min(720px,100%)}
+.economy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.econ{padding:15px;border:1px solid #35547c;border-radius:10px;background:rgba(4,10,20,.38);text-align:center}
+.econ img{height:150px;max-width:100%;object-fit:contain;margin:auto}
+.badge-note{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid rgba(255,213,74,.45);color:var(--gold);font-weight:900;font-size:.78rem}
+.back-top{position:fixed;right:18px;bottom:18px;z-index:60;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--gold);background:linear-gradient(145deg,var(--orange),#c94c00);color:white;text-decoration:none;font-size:1.25rem;font-weight:1000;box-shadow:0 7px 22px rgba(0,0,0,.5),0 0 18px rgba(255,138,0,.35)}
+footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid var(--orange);background:#030711}
+.small{font-size:.9rem;color:var(--muted)}
+@media(max-width:760px){.visual,.visual.reverse{grid-template-columns:1fr}.site-nav{align-items:flex-start;flex-direction:column}.book-stage{min-height:320px}.book-stage .scholar{max-height:260px;max-width:44%}.chamber{min-height:520px}section{padding:19px}table{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div id="page-top" style="position:absolute;top:0;left:0"></div>
+
+<nav class="site-nav">
+  <div class="brand">🐉 KaiokenMS Guides</div>
+  <div class="nav-links">
+    <a href="./">🏠 Home</a>
+    <a class="active" href="guide.html">📘 Main Guide</a>
+    <a href="quests.html">📜 Quest Guide</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="kicker">Community Progression Guide</div>
+  <h1>KaiokenMS Complete Progression Guide</h1>
+  <p class="subtitle">A practical guide to leveling, permanent progression, Scouter cards, account growth, farming, bossing, Dragon Balls, Fishing, Super Saiyan and Rebirth — built around KaiokenMS's custom systems.</p>
+</header>
+
+<main class="wrap">
+  <div class="notice"><b>Guide status:</b> Built around KaiokenMS feature information and beta-era patch changes available through August 2026. Because the server is actively developed, newer patch notes should always take priority.</div>
+
+  <h2>Contents</h2>
+  <nav class="toc">
+    <a href="#quickstart">Quick Start</a>
+    <a href="#leveling">Leveling</a>
+    <a href="#achievements">Achievements</a>
+    <a href="#scouter">Scouter & Cards</a>
+    <a href="#alts">Alts & Mules</a>
+    <a href="#mesos">Mesos & Farming</a>
+    <a href="#pqboss">PQ & Bossing</a>
+    <a href="#dragonballs">Dragon Balls</a>
+    <a href="#fishing">Fishing</a>
+    <a href="#rebirth">Rebirth</a>
+    <a href="#economy">Economy & Shops</a>
+    <a href="#commands">Useful Commands</a>
+  </nav>
+
+  <section id="quickstart">
+    <div class="visual">
+      <div>
+        <h2>Quick Start: What New Players Should Do First</h2>
+        <ol>
+          <li>Complete the early tutorial and quest content instead of immediately grinding random mobs.</li>
+          <li>Learn the custom NPCs in the Free Market, especially Master Roshi and the progression shops.</li>
+          <li>Start the account-wide Achievement Medal system early.</li>
+          <li>Get and use a Scouter. Monster Card completion becomes a permanent progression path.</li>
+          <li>Do not ignore Party Quests, bossing, Dojo, Maple Leaves and custom shops.</li>
+          <li>Begin thinking about the seven Dragon Balls early. Rebirth and Super Saiyan are long-term goals.</li>
+        </ol>
+      </div>
+      <img class="npc" src="images/master-roshi-transparent.png" alt="Master Roshi">
+    </div>
+  </section>
+
+  <section id="leveling" class="chamber">
+    <div class="overlay">
+      <h2>Leveling Efficiently</h2>
+      <p><b>Master Roshi</b> provides a custom leveling helper that can warp players to training maps based on level and progression. Use his suggestions as a baseline, then compare actual kill speed and EXP.</p>
+      <p><b>Hyperbolic Time Chamber:</b> this is a custom training system with level-scaled monsters and bonus EXP. It was rebalanced so less powerful characters have a more reasonable chance of clearing it.</p>
+      <div class="tip"><b>Efficiency rule:</b> a lower-level map you clear instantly can beat a stronger map that takes several attacks per monster.</div>
+    </div>
+  </section>
+
+  <section id="achievements">
+    <div class="visual reverse">
+      <img class="npc" style="max-height:230px" src="images/achievement-medal-1142090-icon.png" alt="Achievement Medal">
+      <div>
+        <h2>Account Progression & Achievements</h2>
+        <p>The <b>Achievement Medal System</b> is account-wide. Completing achievements and milestones improves your long-term account progression rather than only one character.</p>
+        <ul>
+          <li>Check easy achievements early instead of waiting for endgame.</li>
+          <li>Complete milestones naturally while leveling and bossing.</li>
+          <li>Daily Quest progression can be replaced/rerolled when supported by the current system.</li>
+          <li>Character creation and development can be worthwhile when it contributes to milestones or gives the account a useful farmer/support character.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="scouter">
+    <div class="visual">
+      <div>
+        <h2>Scouter & Monster Card Progression</h2>
+        <div class="icon-row">
+          <img class="icon" src="images/scouter-1022042-icon.png" alt="Scouter icon">
+          <span class="badge-note">Permanent Progression</span>
+        </div>
+        <table>
+          <tr><th>Completion</th><th>Permanent Reward</th></tr>
+          <tr><td>All 5 Monster Cards for a regular monster</td><td><b>+1 All Stats</b></td></tr>
+          <tr><td>Complete the card set for a Boss</td><td><b>+1 Weapon Attack +1 Magic Attack</b></td></tr>
+        </table>
+        <p>The Scouter also supports useful drop-information tools such as <code>@whodrops</code> and <code>@whatdropsfrom</code> under the current access rules.</p>
+        <div class="tip"><b>Alt strategy:</b> Monster Book progress is tracked separately per character in actual play. The player-tested behavior discussed in our research indicates repeated completed sets on separate characters can contribute repeated account stats; because this interaction is not stated explicitly in the official patch wording, treat current in-game behavior as the final authority.</div>
+      </div>
+      <img class="npc" src="images/vegeta-base-scouter-transparent.png" alt="Vegeta with Scouter">
+    </div>
+  </section>
+
+  <section>
+    <div class="book-stage">
+      <img class="book" src="images/monster-book-window-background.png" alt="Monster Book">
+      <img class="scholar" src="images/scholar-gohan-transparent.png" alt="Scholar Gohan">
+    </div>
+    <div class="tip"><b>Monster Book mindset:</b> do not measure a farming session only by EXP. A good map can simultaneously give levels, Monster Cards, ETC items, equipment, mesos and quest progress.</div>
+  </section>
+
+  <section id="alts">
+    <h2>Why Build Alts and Mules?</h2>
+    <p>Extra characters are strongest when they have a purpose:</p>
+    <ul>
+      <li><b>Farming mule:</b> fast map clearing for ETC items, cards, equipment and Maple Leaves.</li>
+      <li><b>Bishop/support:</b> Holy Symbol plus strong map-clearing potential makes Priest/Bishop a natural utility farmer.</li>
+      <li><b>Achievement progression:</b> some character development contributes to the account-wide system.</li>
+      <li><b>Different class coverage:</b> some maps, bosses and farming tasks are easier on specific jobs.</li>
+    </ul>
+    <div class="warning"><b>Do not level every mule blindly.</b> First collect easy permanent progression and complete useful milestones; invest further only when the character has a clear job.</div>
+  </section>
+
+  <section id="mesos">
+    <h2>Mesos & Money Making</h2>
+    <div class="economy-grid">
+      <div class="econ">
+        <img src="images/item-vac-website.png" alt="Item Vac">
+        <h3>Active Farming</h3>
+        <p>Use a strong AoE/map-clearing character on dense maps. A player-tested example is <b>Mysterious Path 3</b>: clear continuously, pick up equipment and other drops, then NPC unwanted items for mesos.</p>
+      </div>
+      <div class="econ">
+        <img src="images/white-scroll-2340000.png" alt="White Scroll">
+        <h3>Player Market</h3>
+        <p>Early on, valuable items such as <b>White Scrolls</b> and <b>Chaos Scrolls</b> can be sold to players to build an initial meso reserve. Check the current market before selling progression items.</p>
+      </div>
+      <div class="econ">
+        <img src="images/android-18-gachapon-npc.png" alt="Android 18 Gachapon">
+        <h3>Gachapon Value</h3>
+        <p>Gachapon can produce items with player-market value. Income is RNG-based, so treat it as a value source rather than guaranteed meso-per-hour farming.</p>
+      </div>
+      <div class="econ">
+        <img src="images/dr-gero-clean-transparent.png" alt="Dr. Gero">
+        <h3>Trading / Stock Market</h3>
+        <p>Dr. Gero's Stock Market adds a higher-risk trading route around Maple Leaves. This is speculation, not guaranteed profit.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pqboss">
+    <h2>Party Quests, Bossing & Points</h2>
+    <div class="visual">
+      <div>
+        <p>Bossing and Party Quests are progression tracks rather than optional nostalgia content.</p>
+        <ul>
+          <li><b>Boss Points:</b> defeating bosses awards Boss Points for custom rewards.</li>
+          <li><b>PQ Points:</b> Party Quest rewards were significantly increased in a later beta balance update.</li>
+          <li>Old maximum-level restrictions were removed from all Party Quests and many questlines.</li>
+          <li>Boss prequests normally matter; convenience skip systems may exist through server shops.</li>
+        </ul>
+      </div>
+      <div class="economy-grid" style="grid-template-columns:1fr 1fr">
+        <div class="econ"><img src="images/boss-points-shop-npc.png" alt="Boss Points Shop"><b>Boss Points Shop</b></div>
+        <div class="econ"><img src="images/hercule-pq-shop-npc.png" alt="Hercule PQ Shop"><b>PQ Shop</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dragonballs">
+    <h2>Dragon Balls, Shenron & Super Saiyan</h2>
+    <div class="shenron-stage">
+      <div class="icon-row" style="justify-content:center">
+        <img class="ball" src="images/dragon-ball-1-item.png" alt="Dragon Ball 1">
+        <img class="ball" src="images/dragon-ball-7-item.png" alt="Dragon Ball 7">
+      </div>
+      <img class="shenron" src="images/shenron-feature.png" alt="Shenron">
+    </div>
+    <p>Collecting all seven Dragon Balls allows you to summon <b>Shenron</b> and choose special wishes. Super Saiyan is unlocked through a Shenron wish.</p>
+    <div class="feature-card">
+      <img src="images/super-saiyan-skill-icon.png" alt="Super Saiyan skill">
+      <div><b>Super Saiyan:</b> a later update increased its duration from 60 to 90 seconds and added +50 Weapon Attack and +50 Magic Attack.</div>
+    </div>
+    <h3>Known late Dragon Ball boss rates</h3>
+    <table>
+      <tr><th>Dragon Ball</th><th>Boss</th><th>Rate</th></tr>
+      <tr><td>#6</td><td>Zakum</td><td>1/5</td></tr>
+      <tr><td>#6</td><td>Von Leon</td><td>1/5</td></tr>
+      <tr><td>#7</td><td>Horntail</td><td>1/10</td></tr>
+      <tr><td>#7</td><td>Chaos Zakum</td><td>1/5</td></tr>
+      <tr><td>#7</td><td>Pink Bean</td><td>1/2</td></tr>
+    </table>
+  </section>
+
+  <section id="fishing">
+    <div class="visual reverse">
+      <img class="npc" src="images/fishing-chair-3011000-full-effect.png" alt="Fishing Chair">
+      <div>
+        <h2>Fishing: AFK Progression</h2>
+        <div class="icon-row"><img class="icon" src="images/fishing-bait-4001449-icon.png" alt="Fishing Bait"><span class="badge-note">AFK Value</span></div>
+        <ul>
+          <li>Fishing Chair and bait are available through the relevant server shop.</li>
+          <li>Use <code>@fishinglist</code> to inspect the current reward pool.</li>
+          <li>Unique KaiokenMS items can be obtained through Fishing.</li>
+          <li><b>All seven Dragon Balls can be obtained through Fishing, including Dragon Ball #7.</b></li>
+        </ul>
+        <p>If you are going AFK anyway, Fishing turns idle time into possible progression.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="rebirth">
+    <h2>Rebirth: The Endgame Restart</h2>
+    <p>KaiokenMS is not designed as a traditional easy-Rebirth server. Rebirth is an <b>endgame goal</b>.</p>
+    <h3>Core requirement</h3>
+    <p>Reach <b>Level 200</b> and obtain the required Shenron Rebirth wish after collecting all seven Dragon Balls.</p>
+    <h3>Class restriction</h3>
+    <p>Rebirth does not provide a free switch into an unrelated class family. You remain within your current family and can choose an appropriate branch again as progression resumes.</p>
+    <h3>Recent fixes</h3>
+    <ul>
+      <li>Saving AP after Rebirth was fixed.</li>
+      <li>A post-Rebirth skill-upgrade issue incorrectly claiming missing 1st/2nd/3rd Job skills was fixed.</li>
+      <li>A bug that incorrectly granted Super Saiyan after Rebirth was fixed.</li>
+    </ul>
+    <div class="warning"><b>Do not plan around undocumented behavior.</b> Exact skill retention and branch interactions should always be checked against the newest patch notes.</div>
+  </section>
+
+  <section id="economy">
+    <h2>Gear, Shops & Economy</h2>
+    <div class="economy-grid">
+      <div class="econ"><img src="images/dr-gero-clean-transparent.png" alt="Dr. Gero"><h3>Dr. Gero</h3><p>Stock Market / economy system.</p></div>
+      <div class="econ"><img src="images/android-18-gachapon-npc.png" alt="Android 18"><h3>Gachapon</h3><p>Custom Gachapon exchanges and item value.</p></div>
+      <div class="econ"><img src="images/boss-points-shop-npc.png" alt="Boss Points Shop"><h3>Boss Points</h3><p>Bossing converts into a separate progression currency.</p></div>
+      <div class="econ"><img src="images/hercule-pq-shop-npc.png" alt="Hercule"><h3>PQ Points</h3><p>Party Quests feed a separate reward track.</p></div>
+    </div>
+    <ul>
+      <li><b>Maple Leaves:</b> central custom progression/economy resource.</li>
+      <li><b>AEE / equipment enhancement:</b> keeps stronger equipment relevant.</li>
+      <li><b>Skill Book Shop:</b> Free Market access reduces dependence on random drops.</li>
+      <li><b>Ore Bank / Scroll Bank:</b> dedicated storage reduces inventory pressure.</li>
+      <li><b>Tradable custom items:</b> many NX/Kaioken items can be sold through Player Shops.</li>
+    </ul>
+  </section>
+
+  <section id="commands">
+    <h2>Useful Commands & Quality of Life</h2>
+    <table>
+      <tr><th>Command / Feature</th><th>Purpose</th></tr>
+      <tr><td><code>@gachalist</code></td><td>View available Gachapon rewards.</td></tr>
+      <tr><td><code>@dps</code></td><td>Enter the dedicated DPS testing area.</td></tr>
+      <tr><td><code>@whodrops</code></td><td>Drop lookup under current Scouter/access rules.</td></tr>
+      <tr><td><code>@whatdropsfrom</code></td><td>Inspect monster drops.</td></tr>
+      <tr><td><code>@fishinglist</code></td><td>View Fishing rewards.</td></tr>
+      <tr><td><code>@roll</code></td><td>Quick random roll.</td></tr>
+      <tr><td>Expandable Inventory</td><td>Resize the inventory window by dragging its bottom-right corner.</td></tr>
+      <tr><td>Item Vac</td><td>Vacuum map drops without requiring a pet under the server's current acquisition rules.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Recommended Session Routine</h2>
+    <ol>
+      <li>Check Achievement/Daily progression.</li>
+      <li>Use available Hyperbolic Time Chamber training.</li>
+      <li>Run useful Party Quests and collect PQ Points.</li>
+      <li>Kill bosses that advance Boss Points, Dragon Balls, prequests, achievements or boss-card sets.</li>
+      <li>Use Master Roshi to choose an efficient training map.</li>
+      <li>While grinding, target unfinished 5/5 Monster Card sets instead of farming EXP alone.</li>
+      <li>Use your farming/support character when its map coverage is better than your main.</li>
+      <li>When AFK, consider Fishing.</li>
+    </ol>
+    <div class="tip"><b>Main efficiency principle:</b> stack several goals at once. The best KaiokenMS session can advance EXP, cards, achievements, mesos, drops, Boss/PQ Points and Dragon Ball progress together.</div>
+  </section>
+</main>
+
+<a class="back-top" href="#page-top" title="Back to top">↑</a>
+<footer>
+  <div><a href="./" style="color:#ffd54a;font-weight:900;text-decoration:none">🏠 Back to Home</a></div>
+  <div style="margin-top:8px">KaiokenMS Complete Progression Guide</div>
+</footer>
+</body>
+</html>

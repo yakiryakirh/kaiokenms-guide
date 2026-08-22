@@ -812,6 +812,310 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
     align-items:flex-start;
   }
 }
+
+
+
+/* ===== Monster ETC Pre-Collect Planner ===== */
+.efficiency-clickable{
+  cursor:pointer;
+  transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease;
+}
+.efficiency-clickable:hover,
+.efficiency-clickable:focus{
+  transform:translateY(-1px);
+  border-color:#ffd54a!important;
+  box-shadow:0 0 0 3px rgba(255,213,74,.10),0 12px 28px rgba(0,0,0,.18);
+  outline:none;
+}
+.efficiency-cta{
+  margin-top:10px;
+  color:#ffd54a;
+  font-size:.82rem;
+  font-weight:1000;
+  letter-spacing:.01em;
+}
+
+.etc-intro{
+  margin-bottom:14px;
+}
+.etc-stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0;
+}
+.etc-stat{
+  padding:13px 12px;
+  border:1px solid #355784;
+  border-radius:12px;
+  background:rgba(12,27,47,.76);
+  text-align:center;
+  color:#aebdd0;
+  font-size:.75rem;
+  font-weight:800;
+}
+.etc-stat-num{
+  display:block;
+  margin-bottom:3px;
+  color:#fff;
+  font-size:1.35rem;
+  font-weight:1000;
+}
+.etc-stat.ready .etc-stat-num{color:#8ff0b0}
+.etc-stat.missing .etc-stat-num{color:#ffd978}
+#etc-active-character{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:1rem;
+}
+
+.etc-toolbar{
+  display:grid;
+  grid-template-columns:minmax(260px,1fr) 190px auto;
+  gap:10px;
+  align-items:end;
+  margin:14px 0 8px;
+  padding:12px;
+  border:1px solid #355784;
+  border-radius:12px;
+  background:rgba(7,17,31,.70);
+}
+.etc-search-wrap,
+.etc-filter-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.etc-toolbar label{
+  color:#d8e5f4;
+  font-size:.76rem;
+  font-weight:1000;
+}
+.etc-toolbar input,
+.etc-toolbar select{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px 11px;
+  border:1px solid #355784;
+  border-radius:8px;
+  background:#0d1828;
+  color:#fff;
+  font:inherit;
+  font-size:.82rem;
+  outline:none;
+}
+.etc-toolbar input:focus,
+.etc-toolbar select:focus{
+  border-color:#7ed9ff;
+  box-shadow:0 0 0 2px rgba(126,217,255,.10);
+}
+.etc-clear-btn{
+  padding:10px 12px;
+  border:1px solid #78474c;
+  border-radius:8px;
+  background:#2c171c;
+  color:#ffb4b4;
+  font:inherit;
+  font-size:.78rem;
+  font-weight:900;
+  cursor:pointer;
+}
+.etc-clear-btn:hover{
+  border-color:#c76b74;
+  background:#3a1b22;
+}
+.etc-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 16px;
+  margin:8px 0 14px;
+  color:#9fb1c8;
+  font-size:.75rem;
+}
+.etc-legend b{color:#eaf2ff}
+
+.etc-table-wrap{
+  width:100%;
+  overflow:auto;
+  border:1px solid #355784;
+  border-radius:13px;
+  background:rgba(6,15,27,.62);
+}
+.etc-table{
+  width:100%;
+  min-width:1120px;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:.81rem;
+}
+.etc-table thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:11px 10px;
+  border-bottom:1px solid #355784;
+  background:#13243a;
+  color:#dfeeff;
+  text-align:left;
+  font-size:.74rem;
+  font-weight:1000;
+  white-space:nowrap;
+}
+.etc-table tbody td{
+  padding:10px;
+  border-bottom:1px solid rgba(80,111,147,.18);
+  vertical-align:top;
+  line-height:1.35;
+}
+.etc-table tbody tr:last-child td{
+  border-bottom:0;
+}
+.etc-row{
+  transition:background .12s ease,opacity .12s ease;
+}
+.etc-row:hover{
+  background:rgba(47,90,135,.10);
+}
+.etc-row.is-ready{
+  background:rgba(43,132,77,.10);
+}
+.etc-row.is-ready .etc-item-cell strong{
+  color:#8ff0b0;
+}
+.etc-row.is-ready .etc-note{
+  opacity:.72;
+}
+.etc-row.hidden-by-etc-filter{
+  display:none!important;
+}
+.etc-ready-cell{
+  width:52px;
+  text-align:center;
+}
+.etc-ready-check{
+  width:19px;
+  height:19px;
+  cursor:pointer;
+  accent-color:#68d58d;
+}
+.etc-item-cell{
+  min-width:170px;
+}
+.etc-item-cell strong{
+  display:inline-block;
+  color:#fff;
+  font-size:.87rem;
+}
+.etc-combined{
+  display:inline-block;
+  margin-left:7px;
+  padding:2px 6px;
+  border:1px solid #a578d0;
+  border-radius:999px;
+  background:rgba(151,100,199,.12);
+  color:#ddb8ff;
+  font-size:.58rem;
+  font-weight:1000;
+  vertical-align:2px;
+}
+.etc-qty{
+  min-width:95px;
+  color:#ffd978;
+  font-weight:1000;
+}
+.etc-level-badge{
+  display:inline-block;
+  min-width:58px;
+  padding:4px 7px;
+  border-radius:999px;
+  text-align:center;
+  font-size:.67rem;
+  font-weight:1000;
+  white-space:nowrap;
+}
+.tier-early{border:1px solid #5fa5d7;background:rgba(56,126,176,.12);color:#9bdcff}
+.tier-mid{border:1px solid #8f85d7;background:rgba(110,93,190,.12);color:#c7c0ff}
+.tier-advanced{border:1px solid #d19954;background:rgba(188,120,53,.12);color:#ffd091}
+.tier-late{border:1px solid #bf69a4;background:rgba(177,76,142,.12);color:#ffc0e8}
+.etc-quest-cell{
+  min-width:230px;
+}
+.etc-quest-link{
+  display:block;
+  width:100%;
+  margin:0 0 5px;
+  padding:5px 8px;
+  border:1px solid #355784;
+  border-radius:7px;
+  background:#112238;
+  color:#8edbff;
+  text-align:left;
+  font:inherit;
+  font-size:.72rem;
+  font-weight:900;
+  cursor:pointer;
+}
+.etc-quest-link:hover{
+  border-color:#6ec9ff;
+  background:#15304d;
+  color:#d8f4ff;
+}
+.etc-note{
+  min-width:230px;
+  color:#aebdd0;
+}
+
+.quest-active-box{
+  margin-top:18px;
+  padding:15px;
+  border:1px solid #7a6340;
+  border-radius:13px;
+  background:rgba(76,50,21,.14);
+}
+.quest-active-box h3{
+  margin:0 0 6px;
+  color:#ffd978;
+}
+.quest-active-box p{
+  margin:0 0 12px;
+  color:#cbbda9;
+  font-size:.82rem;
+}
+.quest-active-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.quest-active-card{
+  padding:11px;
+  border:1px solid rgba(162,128,75,.38);
+  border-radius:9px;
+  background:rgba(28,22,14,.58);
+  color:#bcae9a;
+  font-size:.78rem;
+  line-height:1.4;
+}
+.quest-active-card strong{
+  display:block;
+  margin-bottom:4px;
+  color:#fff0c9;
+}
+.quest-active-card .quest-active-link{
+  margin-top:8px;
+}
+
+@media(max-width:980px){
+  .etc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .etc-toolbar{grid-template-columns:1fr 1fr}
+  .etc-clear-btn{grid-column:1/-1}
+}
+@media(max-width:650px){
+  .etc-stats{grid-template-columns:1fr 1fr}
+  .etc-toolbar{grid-template-columns:1fr}
+  .etc-clear-btn{grid-column:auto}
+  .quest-active-grid{grid-template-columns:1fr}
+}
 </style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body><div id="page-top" style="position:absolute;top:0;left:0"></div>
 <nav class="site-nav">
@@ -911,7 +1215,7 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 </div>
 </div>
 <h2 id="quest-level-toc-title">Quick Navigation</h2><nav class="toc" id="quest-level-toc"><a href="#s1">Levels 1–10</a><a href="#s2">Levels 11–20</a><a href="#s3">Levels 21–30</a><a href="#s4">Levels 31–40</a><a href="#s5">Levels 41–50</a><a href="#s6">Levels 51–60</a><a href="#s7">Levels 61–69</a><a href="#s8">Levels 70+</a></nav>
-<div class="notice"><b>Efficiency rules:</b> Pre-collect ETC items whenever possible; combine quests that use the same monsters; avoid making a full trip for one small dialogue quest; keep prerequisite chains active; and treat area-boss quests as high-value targets because they often give much more EXP than ordinary turn-ins.</div>
+<div aria-label="Open the Monster ETC Pre-Collect Planner" class="notice efficiency-clickable" id="efficiency-precollect-link" role="button" tabindex="0"><b>Efficiency rules:</b> Pre-collect ETC items whenever possible; combine quests that use the same monsters; avoid making a full trip for one small dialogue quest; keep prerequisite chains active; and treat area-boss quests as high-value targets because they often give much more EXP than ordinary turn-ins.<div class="efficiency-cta">📦 Open Monster ETC Pre-Collect Planner →</div></div>
 <div class="sorted-quest-list" hidden="" id="sorted-quest-list"><div class="sorted-view-title">Sorted Quest Results</div></div><section class="level" id="s1"><h2>Levels 1–10</h2>
 <article class="quest" data-original-order="0" data-sort-exp="0" data-sort-fame="0" data-sort-level="1" data-sort-name="maple island / job training quests">
 <div class="qhead"><div class="qtitlewrap"><input class="quest-check" data-key="q1" type="checkbox"/><div class="qtitle"><a href="https://global.hidden-street.net/search/node/Maple%20Island%20%2F%20Job%20Training%20Quests?kaioken_quest=maple-island-job-training-quests" rel="noopener" target="_blank">Maple Island / Job Training Quests</a></div></div><div class="lvl">Lv. 1–10</div></div>
@@ -1752,7 +2056,39 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 </div><div class="fame-summary"><div class="fame-stat"><span class="big">45</span><span class="small">Individual Fame quests listed</span></div><div class="fame-stat"><span class="big">306</span><span class="small">Total listed Fame</span></div><div class="fame-stat"><span class="big">36</span><span class="small">Rows with verified reference pages</span></div><div class="fame-stat"><span class="big">9</span><span class="small">Rows without a direct verified page</span></div></div><h2>Fame Quests for Achievement Progress</h2><table class="summary-table"><thead><tr><th>Level</th><th>Quest</th><th>Fame</th><th>Priority</th><th>Notes</th><th>Reference</th></tr></thead><tbody><tr data-original-order="0" data-sort-exp="0" data-sort-fame="30" data-sort-level="85" data-sort-name="for phyllia"><td>85</td><td>For Phyllia</td><td><span class="fame-value">+30 Fame</span></td><td>🔥 VERY HIGH</td><td>High-value Magatia Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/mu-lung-nihal-desert/for-phyllia" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="1" data-sort-exp="0" data-sort-fame="30" data-sort-level="120" data-sort-name="papulatus"><td>120</td><td>Papulatus</td><td><span class="fame-value">+30 Fame</span></td><td>🔥 VERY HIGH</td><td>Large Fame reward at the end of the Papulatus progression.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/ludus-lake/papulatus" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="2" data-sort-exp="0" data-sort-fame="20" data-sort-level="55" data-sort-name="eliza's eternal sleep"><td>55</td><td>Eliza's Eternal Sleep</td><td><span class="fame-value">+20 Fame</span></td><td>🔥 VERY HIGH</td><td>Final Fame payoff in the Eliza chain.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/el-nath-mt-aquaroad/eliza%E2%80%99s-eternal-sleep" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="3" data-sort-exp="0" data-sort-fame="20" data-sort-level="120" data-sort-name="restoring the spirit of the snow sculpture"><td>120</td><td>Restoring the Spirit of the Snow Sculpture</td><td><span class="fame-value">+20 Fame</span></td><td>🔥 VERY HIGH</td><td>High Fame reward in the Snowfield Giant progression.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/el-nath-mt-aquaroad/restoring-the-spirit-of-the-snow-sculpture" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="4" data-sort-exp="0" data-sort-fame="17" data-sort-level="90" data-sort-name="eliminating king sage cat"><td>90</td><td>Eliminating King Sage Cat</td><td><span class="fame-value">+17 Fame</span></td><td>⭐ HIGH</td><td>Strong Fame reward from Mu Lung progression.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/mu-lung-nihal-desert/eliminating-king-sage-cat" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="5" data-sort-exp="0" data-sort-fame="15" data-sort-level="85" data-sort-name="tae soo's reward"><td>85</td><td>Tae Soo's Reward</td><td><span class="fame-value">+15 Fame</span></td><td>⭐ HIGH</td><td>The verified chain page contains Tae Soo's Reward and its Fame payout.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/mu-lung-nihal-desert/the-forgotten-master" rel="noopener" target="_blank">Open Verified Chain ↗</a></td></tr><tr data-original-order="6" data-sort-exp="0" data-sort-fame="15" data-sort-level="9999" data-sort-name="retrieve a soul"><td>—</td><td>Retrieve a Soul</td><td><span class="fame-value">+15 Fame</span></td><td>⭐ HIGH</td><td>The Legends of Hometown page contains this exact quest step and +15 Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/ludus-lake/legends-of-hometown" rel="noopener" target="_blank">Open Verified Chain ↗</a></td></tr><tr data-original-order="7" data-sort-exp="0" data-sort-fame="12" data-sort-level="23" data-sort-name="conclusion"><td>23</td><td>Conclusion</td><td><span class="fame-value">+12 Fame</span></td><td>⭐ HIGH</td><td>Fame value is listed in the Fame database, but no verified direct quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="8" data-sort-exp="0" data-sort-fame="12" data-sort-level="65" data-sort-name="the battle against zeno"><td>65</td><td>The Battle Against Zeno</td><td><span class="fame-value">+12 Fame</span></td><td>⭐ HIGH</td><td>The actual Fame-granting step in the Zeno chain.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/ludus-lake/the-battle-against-zeno" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="9" data-sort-exp="0" data-sort-fame="11" data-sort-level="65" data-sort-name="operation strategy 3: a cute baby bird"><td>65</td><td>Operation Strategy 3: A Cute Baby Bird</td><td><span class="fame-value">+11 Fame</span></td><td>⭐ HIGH</td><td>Direct page verified. No search-page redirect.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/ludus-lake/operation-strategy-3-a-cute-baby-bird" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="10" data-sort-exp="0" data-sort-fame="10" data-sort-level="25" data-sort-name="for the peace of victoria island..."><td>25</td><td>For the Peace of Victoria Island...</td><td><span class="fame-value">+10 Fame</span></td><td>⭐ HIGH</td><td>Large Fame reward for a relatively low-level quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/victoria-island/for-the-peace-of-victoria-island" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="11" data-sort-exp="0" data-sort-fame="10" data-sort-level="40" data-sort-name="a brave warrior to defeat king clang appears"><td>40</td><td>A Brave Warrior to Defeat King Clang Appears</td><td><span class="fame-value">+10 Fame</span></td><td>⭐ HIGH</td><td>Area-boss quest with a strong Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/victoria-island/a-brave-warrior-to-defeat-king-clang-appears" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="12" data-sort-exp="0" data-sort-fame="10" data-sort-level="50" data-sort-name="all taken away!"><td>50+</td><td>All Taken Away!</td><td><span class="fame-value">+10 Fame</span></td><td>⭐ HIGH</td><td>Final high-Fame step of Malek's Joy of Music.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/malaysia/all-taken-away" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="13" data-sort-exp="0" data-sort-fame="8" data-sort-level="50" data-sort-name="i am bored!"><td>50+</td><td>I Am Bored!</td><td><span class="fame-value">+8 Fame</span></td><td>GOOD</td><td>Part of Malek's Joy of Music.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/malaysia/i-am-bored" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="14" data-sort-exp="0" data-sort-fame="6" data-sort-level="75" data-sort-name="defeat deo"><td>75</td><td>Defeat Deo</td><td><span class="fame-value">+6 Fame</span></td><td>GOOD</td><td>The Desert Bounty page contains the Defeat Deo step and reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/mu-lung-nihal-desert/the-desert-bounty" rel="noopener" target="_blank">Open Verified Chain ↗</a></td></tr><tr data-original-order="15" data-sort-exp="0" data-sort-fame="5" data-sort-level="18" data-sort-name="monstrous tree stumpy"><td>18</td><td>Monstrous Tree Stumpy</td><td><span class="fame-value">+5 Fame</span></td><td>GOOD</td><td>Stumpy area-boss Fame quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/victoria-island/monstrous-tree-stumpy" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="16" data-sort-exp="0" data-sort-fame="5" data-sort-level="30" data-sort-name="lisa's special medicine iii"><td>30</td><td>Lisa's Special Medicine III</td><td><span class="fame-value">+5 Fame</span></td><td>GOOD</td><td>Orbis / El Nath Fame quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/el-nath-mt-aquaroad/lisas-special-medicine-iii" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="17" data-sort-exp="0" data-sort-fame="5" data-sort-level="40" data-sort-name="reversal"><td>40</td><td>ReVersal</td><td><span class="fame-value">+5 Fame</span></td><td>GOOD</td><td>Masteria Fame quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/masteria/reversal" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="18" data-sort-exp="0" data-sort-fame="5" data-sort-level="44" data-sort-name="subani's legacy - deliverance"><td>44</td><td>Subani's Legacy - Deliverance</td><td><span class="fame-value">+5 Fame</span></td><td>GOOD</td><td>Final stage of the Subani's Legacy Fame chain.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/masteria/subanis-legacy-deliverance" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="19" data-sort-exp="0" data-sort-fame="5" data-sort-level="50" data-sort-name="too hot!"><td>50+</td><td>Too Hot!</td><td><span class="fame-value">+5 Fame</span></td><td>GOOD</td><td>The Malek chain page contains this exact quest and +5 Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/malaysia/maleks-joy-of-music" rel="noopener" target="_blank">Open Verified Chain ↗</a></td></tr><tr data-original-order="20" data-sort-exp="0" data-sort-fame="5" data-sort-level="80" data-sort-name="urban jungle"><td>80</td><td>Urban Jungle</td><td><span class="fame-value">+5 Fame</span></td><td>GOOD</td><td>Useful Fame while doing Masteria.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/masteria/urban-jungle" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="21" data-sort-exp="0" data-sort-fame="5" data-sort-level="9999" data-sort-name="the ghost whereabouts"><td>—</td><td>The Ghost Whereabouts</td><td><span class="fame-value">+5 Fame</span></td><td>GOOD</td><td>Fame value is listed in the Fame database, but no verified direct Global quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="22" data-sort-exp="0" data-sort-fame="3" data-sort-level="10" data-sort-name="entering the floating market protection squad"><td>10</td><td>Entering the Floating Market Protection Squad</td><td><span class="fame-value">+3 Fame</span></td><td>EXTRA</td><td>A Fame reward is documented for this chain, but no verified direct Global quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="23" data-sort-exp="0" data-sort-fame="3" data-sort-level="20" data-sort-name="a rainbow snail shell that makes wishes come true!?"><td>20</td><td>A Rainbow Snail Shell That Makes Wishes Come True!?</td><td><span class="fame-value">+3 Fame</span></td><td>EXTRA</td><td>Legacy Fame reward in the Legend of the Snail chain; no verified direct Global page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="24" data-sort-exp="0" data-sort-fame="3" data-sort-level="38" data-sort-name="subani's legacy - transgression"><td>38</td><td>Subani's Legacy - Transgression</td><td><span class="fame-value">+3 Fame</span></td><td>EXTRA</td><td>Second stage of the Subani's Legacy Fame chain.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/masteria/subanis-legacy-transgression" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="25" data-sort-exp="0" data-sort-fame="3" data-sort-level="40" data-sort-name="movie star"><td>40</td><td>Movie Star</td><td><span class="fame-value">+3 Fame</span></td><td>EXTRA</td><td>The Fame database lists +3 Fame, but no verified direct quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="26" data-sort-exp="0" data-sort-fame="3" data-sort-level="50" data-sort-name="a bright and sunny day"><td>50+</td><td>A Bright and Sunny Day</td><td><span class="fame-value">+3 Fame</span></td><td>EXTRA</td><td>The Malek chain page contains this exact quest and +3 Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/malaysia/maleks-joy-of-music" rel="noopener" target="_blank">Open Verified Chain ↗</a></td></tr><tr data-original-order="27" data-sort-exp="0" data-sort-fame="3" data-sort-level="70" data-sort-name="hughes's new experiment"><td>70</td><td>Hughes's New Experiment</td><td><span class="fame-value">+3 Fame</span></td><td>EXTRA</td><td>Direct page confirms the +3 Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/el-nath-mt-aquaroad/hughess-new-experiment" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="28" data-sort-exp="0" data-sort-fame="3" data-sort-level="9999" data-sort-name="angie's beloved costume 3"><td>—</td><td>Angie's Beloved Costume 3</td><td><span class="fame-value">+3 Fame</span></td><td>EXTRA</td><td>The Fame database lists +3 Fame, but no verified direct quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="29" data-sort-exp="0" data-sort-fame="2" data-sort-level="20" data-sort-name="building a new house for blackbull"><td>20</td><td>Building a New House For Blackbull</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>Direct page confirms +2 Fame.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/victoria-island/building-a-new-house-for-blackbull" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="30" data-sort-exp="0" data-sort-fame="2" data-sort-level="36" data-sort-name="subani's legacy - discovery"><td>36</td><td>Subani's Legacy - Discovery</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>First stage of the Subani's Legacy Fame chain.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/masteria/subanis-legacy-discovery" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="31" data-sort-exp="0" data-sort-fame="2" data-sort-level="40" data-sort-name="lost!"><td>40</td><td>Lost!</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>Global's Masteria page contains the complete Lost! quest and +2 Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/category/quest-area/masteria?page=2" rel="noopener" target="_blank">Open Verified Page ↗</a></td></tr><tr data-original-order="32" data-sort-exp="0" data-sort-fame="2" data-sort-level="50" data-sort-name="robinson's id"><td>50</td><td>Robinson's ID</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>The Lost in the Ocean page contains Robinson's ID and +2 Fame.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/el-nath-mt-aquaroad/lost-in-the-ocean" rel="noopener" target="_blank">Open Verified Chain ↗</a></td></tr><tr data-original-order="33" data-sort-exp="0" data-sort-fame="2" data-sort-level="50" data-sort-name="sabitrama's anti-aging medicine"><td>50</td><td>Sabitrama's Anti-Aging Medicine</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>The Fame database lists +2 Fame, but no verified direct Global quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="34" data-sort-exp="0" data-sort-fame="2" data-sort-level="60" data-sort-name="acquiring materials for the fur coat"><td>60</td><td>Acquiring Materials for the Fur Coat</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>Direct page verified.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/el-nath-mt-aquaroad/acquiring-materials-for-the-fur-coat" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="35" data-sort-exp="0" data-sort-fame="2" data-sort-level="65" data-sort-name="dr. kim's comments: a meeting with gunny"><td>65</td><td>Dr. Kim's Comments: A Meeting With Gunny</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>Global's area data confirms +2 Fame, but no verified direct quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="36" data-sort-exp="0" data-sort-fame="2" data-sort-level="80" data-sort-name="urban jungle - continued"><td>80</td><td>Urban Jungle - Continued</td><td><span class="fame-value">+2 Fame</span></td><td>EXTRA</td><td>Global's Masteria page contains the complete repeatable quest and +2 Fame.</td><td><a class="summary-link" href="https://global.hidden-street.net/category/quest-area/masteria" rel="noopener" target="_blank">Open Verified Page ↗</a></td></tr><tr data-original-order="37" data-sort-exp="0" data-sort-fame="1" data-sort-level="10" data-sort-name="disciples of the black magician"><td>10</td><td>Disciples of the Black Magician</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>Global's Fame and Victoria Island data confirm +1 Fame, but no verified direct quest page was found.</td><td><span class="no-verified-source">No verified direct quest page found</span></td></tr><tr data-original-order="38" data-sort-exp="0" data-sort-fame="1" data-sort-level="20" data-sort-name="shumi's lost coin"><td>20</td><td>Shumi's Lost Coin</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>Classic Kerning Subway Fame quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/victoria-island/shumis-lost-coin" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="39" data-sort-exp="0" data-sort-fame="1" data-sort-level="25" data-sort-name="sabitrama and the diet medicine"><td>25</td><td>Sabitrama and the Diet Medicine</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>Direct page confirms +1 Fame.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/victoria-island/sabitrama-and-the-diet-medicine" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="40" data-sort-exp="0" data-sort-fame="1" data-sort-level="30" data-sort-name="delivering food to spiruna"><td>30</td><td>Delivering Food to Spiruna</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>Orbis Fame quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/el-nath-mt-aquaroad/delivering-food-to-spiruna" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="41" data-sort-exp="0" data-sort-fame="1" data-sort-level="30" data-sort-name="shumi's lost bundle of money"><td>30</td><td>Shumi's Lost Bundle of Money</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>Second Shumi Subway Fame quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/victoria-island/shumis-lost-bundle-of-money" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="42" data-sort-exp="0" data-sort-fame="1" data-sort-level="35" data-sort-name="the rememberer's passion part 2"><td>35</td><td>The Rememberer's Passion Part 2</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>Only the positive-Fame step is listed here.</td><td><a class="summary-link" href="https://global.hidden-street.net/sub_quest/victoria-island/the-rememberers-passion-part-2" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="43" data-sort-exp="0" data-sort-fame="1" data-sort-level="40" data-sort-name="shumi's lost sack of money"><td>40</td><td>Shumi's Lost Sack of Money</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>Third Shumi Subway Fame quest.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/victoria-island/shumis-lost-sack-of-money" rel="noopener" target="_blank">Open Quest ↗</a></td></tr><tr data-original-order="44" data-sort-exp="0" data-sort-fame="1" data-sort-level="9999" data-sort-name="returning to master sergeant fox"><td>—</td><td>Returning To Master Sergeant Fox</td><td><span class="fame-value">+1 Fame</span></td><td>EXTRA</td><td>The Alpha Platoon chain page contains this exact final step and +1 Fame reward.</td><td><a class="summary-link" href="https://global.hidden-street.net/quest/el-nath-mt-aquaroad/alpha-platoons-network-of-communication" rel="noopener" target="_blank">Open Verified Chain ↗</a></td></tr></tbody></table><div class="notice">
 <b>KaiokenMS note:</b> the server can customize quest availability, required levels and rewards.
   Use this table as a Fame-priority checklist and confirm long quest chains in-game before committing to them.
-</div></div><div class="tab-page" id="precollect"><section class="extra-tab-section"><h2>Pre-Collect Checklist</h2><div class="summary-intro"><b>Purpose:</b> These are items already referenced in the full guide that are worth keeping before the related quest appears. This is a convenience checklist only; it does not replace the quest cards.</div><div class="collect-grid"><div class="collect-card" data-original-order="0" data-sort-level="0" data-sort-name="pig's ribbons"><b>Pig's Ribbons</b><div>Keep extras while doing Nautilus / Ribbon Pig quests.</div><div class="small">Early game</div></div><div class="collect-card" data-original-order="1" data-sort-level="20" data-sort-name="seedlings"><b>Seedlings</b><div>54 needed for Planting Trees.</div><div class="small">Lv. 20</div></div><div class="collect-card" data-original-order="2" data-sort-level="22" data-sort-name="zombie charms"><b>Zombie Charms</b><div>Save them for Mystery of Niora Hospital.</div><div class="small">Lv. 22–25</div></div><div class="collect-card" data-original-order="3" data-sort-level="25" data-sort-name="evil eye tails"><b>Evil Eye Tails</b><div>Farm extra; Lazy Little Calico and Strange Dish 1 overlap.</div><div class="small">Lv. 25</div></div><div class="collect-card" data-original-order="4" data-sort-level="30" data-sort-name="curse eye tails"><b>Curse Eye Tails</b><div>Useful for Mr. Wetbottom's Secret Book and Strange Dish 2.</div><div class="small">Lv. 30–35</div></div><div class="collect-card" data-original-order="5" data-sort-level="25" data-sort-name="wooden boards + slates"><b>Wooden Boards + Slates</b><div>5 of each for Shawn the Excavator's Request.</div><div class="small">Lv. 25</div></div><div class="collect-card" data-original-order="6" data-sort-level="25" data-sort-name="rat traps"><b>Rat Traps</b><div>50 for Request of Mrs. Reade.</div><div class="small">Lv. 25</div></div><div class="collect-card" data-original-order="7" data-sort-level="27" data-sort-name="cactus stems + cactus thorns"><b>Cactus Stems + Cactus Thorns</b><div>30 Stems + 50 Thorns for the Sand Bandit chain.</div><div class="small">Lv. 27</div></div><div class="collect-card" data-original-order="8" data-sort-level="30" data-sort-name="apples / eggs / oranges"><b>Apples / Eggs / Oranges</b><div>Needed for Delivering Food to Spiruna.</div><div class="small">Lv. 30</div></div><div class="collect-card" data-original-order="9" data-sort-level="38" data-sort-name="table clocks"><b>Table Clocks</b><div>Keep 30 total for the Alarm Clock quests.</div><div class="small">Lv. 38</div></div><div class="collect-card" data-original-order="10" data-sort-level="35" data-sort-name="cogs"><b>Cogs</b><div>Needed for Today's Schedule and Alarm Clock assembly.</div><div class="small">Lv. 35–38</div></div><div class="collect-card" data-original-order="11" data-sort-level="40" data-sort-name="mateon tentacles"><b>Mateon Tentacles</b><div>Large total amount required across The Antidote stages.</div><div class="small">Lv. 40+</div></div><div class="collect-card" data-original-order="12" data-sort-level="40" data-sort-name="yellow toy blocks"><b>Yellow Toy Blocks</b><div>20 for the Defensive Walls quest.</div><div class="small">Lv. 40</div></div><div class="collect-card" data-original-order="13" data-sort-level="43" data-sort-name="seal meat"><b>Seal Meat</b><div>15 for Her Secret Craving for Seal Meat.</div><div class="small">Lv. 43</div></div><div class="collect-card" data-original-order="14" data-sort-level="56" data-sort-name="100-year-old bellflowers"><b>100-Year-Old Bellflowers</b><div>100 for Gathering Up the Missing Ingredients.</div><div class="small">Lv. 56</div></div><div class="collect-card" data-original-order="15" data-sort-level="60" data-sort-name="peach seeds"><b>Peach Seeds</b><div>100 for Protecting the Peach Farm; also useful later.</div><div class="small">Lv. 60+</div></div><div class="collect-card" data-original-order="16" data-sort-level="84" data-sort-name="binding bridles"><b>Binding Bridles</b><div>20 for The Binding and 100 for An Unknown Love.</div><div class="small">Lv. 84–85</div></div><div class="collect-card" data-original-order="17" data-sort-level="85" data-sort-name="kentaurus etcs"><b>Kentaurus ETCs</b><div>5 from each Kentaurus type for The Sacred Barrier of the Forest.</div><div class="small">Lv. 85</div></div><div class="collect-card" data-original-order="18" data-sort-level="0" data-sort-name="firewood + tree branches"><b>Firewood + Tree Branches</b><div>50 of each for Thawee Fixing the Roof.</div><div class="small">Early game</div></div></div></section></div><div class="tab-page" id="chains"><section class="extra-tab-section"><h2>Important Quest Chains</h2><div class="summary-intro"><b>Why this exists:</b> Some quests are valuable mainly because they unlock later quests. This tab keeps those chains separate from the raw EXP ranking so players do not confuse prerequisite value with immediate EXP.</div><div class="chain-grid"><div class="chain-card" data-original-order="0" data-sort-name="mr. wetbottom → rowen's cursed dolls"><b>Mr. Wetbottom → Rowen's Cursed Dolls</b><div>Mr. Wetbottom's Secret Book unlocks the later Rowen chain. Save Curse Eye Tails/Lupin Bananas and avoid selling prerequisite materials.</div></div><div class="chain-card" data-original-order="1" data-sort-name="sand bandits → deo"><b>Sand Bandits → Deo</b><div>Complete Ariant's Sand Bandit progression, including The True Identity of Sand Bandits, to reach The Bounty Hunt / Deo payoff.</div></div><div class="chain-card" data-original-order="2" data-sort-name="mrs. reade → ludibrium utility quests"><b>Mrs. Reade → Ludibrium utility quests</b><div>Request of Mrs. Reade 2 &amp; 3 combines well with other Ludibrium/Eos Tower objectives.</div></div><div class="chain-card" data-original-order="3" data-sort-name="alarm clock chain"><b>Alarm Clock Chain</b><div>The Alarm Clock → Assembling the Alarm Clock → Delivering the Alarm Clock. Keep Table Clocks and Cogs.</div></div><div class="chain-card" data-original-order="4" data-sort-name="omega sector elimination chain"><b>Omega Sector Elimination Chain</b><div>Eliminating Grays → Mateon → Plateon → Mecateon → Chief Gray and related Omega quests. Batch these into one visit.</div></div><div class="chain-card" data-original-order="5" data-sort-name="muirhat / golem chain"><b>Muirhat / Golem Chain</b><div>START HERE: click the trash can next to Muirhat to begin the hidden letter prequest (called The Lost Letter / Half-written Letter in different forum posts). Then progress through Stone Golems → Dark Stone Golems → Mixed Stone Golems → Skeletons → Drakes → Tauromacis.</div></div><div class="chain-card" data-original-order="6" data-sort-name="alcaster / book of ancient"><b>Alcaster / Book of Ancient</b><div>A long multi-area chain, but strategically important because of its classic unlock value.</div></div><div class="chain-card" data-original-order="7" data-sort-name="horntail access path"><b>Horntail Access Path</b><div>Wars of the Dragons is part of the classic Horntail-related progression path. Treat it as an unlock quest, not just EXP.</div></div></div></section></div></main><a class="back-top" href="#page-top" title="Back to top">↑</a>
+</div></div><div class="tab-page" id="precollect"><section class="extra-tab-section" id="monster-etc-precollect"><h2>📦 Monster ETC Pre-Collect Planner</h2><div class="summary-intro etc-intro">
+<b>Goal:</b> keep monster ETC drops before the related quest appears, so you can turn quests in immediately instead of returning to old maps.
+  Quantities marked <b>total</b> already combine multiple quests that use the same ETC.
+  The checklist is saved separately for each of your 3 characters.
+</div>
+<div class="etc-stats">
+<div class="etc-stat"><span class="etc-stat-num" id="etc-total-count">54</span><span>ETC stacks tracked</span></div>
+<div class="etc-stat ready"><span class="etc-stat-num" id="etc-ready-count">0</span><span>Ready</span></div>
+<div class="etc-stat missing"><span class="etc-stat-num" id="etc-missing-count">54</span><span>Still missing</span></div>
+<div class="etc-stat"><span class="etc-stat-num" id="etc-active-character">Character 1</span><span>Active character</span></div>
+</div>
+
+<div class="etc-toolbar">
+<div class="etc-search-wrap">
+<label for="etc-search">🔎 Find ETC / Quest</label>
+<input id="etc-search" placeholder="Example: Cogs, Peach Seeds, Alarm Clock..." type="search"/>
+</div>
+<div class="etc-filter-wrap">
+<label for="etc-ready-filter">Checklist</label>
+<select id="etc-ready-filter">
+<option value="all">Show All</option>
+<option value="missing">Missing Only</option>
+<option value="ready">Ready Only</option>
+</select>
+</div>
+<button class="etc-clear-btn" id="etc-clear-character" type="button">Clear ETC Checklist</button>
+</div>
+<div class="etc-legend">
+<span><b>Combined:</b> one stack is used by more than one quest.</span>
+<span><b>Ready:</b> mark it only when you have the full listed amount.</span>
+<span><b>Go to Quest:</b> jumps directly back to that quest card.</span>
+</div>
+<div class="etc-table-wrap"><table class="etc-table" id="etc-precollect-table"><thead><tr><th>Ready</th><th>Level</th><th>ETC Item</th><th>Keep</th><th>Monster / Source</th><th>Used For</th><th>Notes</th></tr></thead><tbody id="etc-precollect-body"><tr class="etc-row" data-etc-key="etc1" data-original-order="0" data-sort-level="20" data-sort-name="seedlings" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Seedlings ready" class="etc-ready-check" data-etc-key="etc1" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 20</span></td><td class="etc-item-cell"><strong>Seedlings</strong></td><td class="etc-qty">54</td><td>Ghost Stumps</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q8" type="button">Planting Trees</button></td><td class="etc-note">Exact turn-in amount.</td></tr><tr class="etc-row" data-etc-key="etc2" data-original-order="1" data-sort-level="20" data-sort-name="basic snail shells" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Basic Snail Shells ready" class="etc-ready-check" data-etc-key="etc2" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 20</span></td><td class="etc-item-cell"><strong>Basic Snail Shells</strong></td><td class="etc-qty">10 of each color</td><td>Snails</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q11" type="button">Legend of the Snail</button></td><td class="etc-note">Keep Red / Blue / Green shells as you level.</td></tr><tr class="etc-row" data-etc-key="etc3" data-original-order="2" data-sort-level="20" data-sort-name="firewood" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Firewood ready" class="etc-ready-check" data-etc-key="etc3" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 20</span></td><td class="etc-item-cell"><strong>Firewood</strong></td><td class="etc-qty">50</td><td>Early-game stump monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q15" type="button">Thawee Fixing the Roof</button></td><td class="etc-note">Pre-collect together with Tree Branches.</td></tr><tr class="etc-row" data-etc-key="etc4" data-original-order="3" data-sort-level="20" data-sort-name="tree branches" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Tree Branches ready" class="etc-ready-check" data-etc-key="etc4" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 20</span></td><td class="etc-item-cell"><strong>Tree Branches</strong></td><td class="etc-qty">50</td><td>Early-game stump monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q15" type="button">Thawee Fixing the Roof</button></td><td class="etc-note">Pre-collect together with Firewood.</td></tr><tr class="etc-row" data-etc-key="etc5" data-original-order="4" data-sort-level="25" data-sort-name="wooden boards" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Wooden Boards ready" class="etc-ready-check" data-etc-key="etc5" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 25</span></td><td class="etc-item-cell"><strong>Wooden Boards</strong></td><td class="etc-qty">5</td><td>Monster ETC drop</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q19" type="button">Shawn the Excavator's Request</button></td><td class="etc-note">Small stack; easy to save in advance.</td></tr><tr class="etc-row" data-etc-key="etc6" data-original-order="5" data-sort-level="25" data-sort-name="slates" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Slates ready" class="etc-ready-check" data-etc-key="etc6" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 25</span></td><td class="etc-item-cell"><strong>Slates</strong></td><td class="etc-qty">5</td><td>Monster ETC drop</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q19" type="button">Shawn the Excavator's Request</button></td><td class="etc-note">Small stack; easy to save in advance.</td></tr><tr class="etc-row" data-etc-key="etc7" data-original-order="6" data-sort-level="25" data-sort-name="rat traps" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Rat Traps ready" class="etc-ready-check" data-etc-key="etc7" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 25</span></td><td class="etc-item-cell"><strong>Rat Traps</strong></td><td class="etc-qty">50</td><td>Quest-area monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q20" type="button">Request of Mrs. Reade 2 &amp; 3</button></td><td class="etc-note">Keep the full stack before turn-in.</td></tr><tr class="etc-row" data-etc-key="etc8" data-original-order="7" data-sort-level="25" data-sort-name="evil eye tails" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Evil Eye Tails ready" class="etc-ready-check" data-etc-key="etc8" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 25</span></td><td class="etc-item-cell"><strong>Evil Eye Tails</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">50 total</td><td>Evil Eyes</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q21" type="button">Lazy Little Calico</button><button class="etc-quest-link" data-jump-quest="q22" type="button">Strange Dish 1</button></td><td class="etc-note">10 + 40 across two quests. Do not NPC these.</td></tr><tr class="etc-row" data-etc-key="etc9" data-original-order="8" data-sort-level="25" data-sort-name="broken mirror glass" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Broken Mirror Glass ready" class="etc-ready-check" data-etc-key="etc9" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 25</span></td><td class="etc-item-cell"><strong>Broken Mirror Glass</strong></td><td class="etc-qty">20</td><td>Niora Hospital area monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q23" type="button">Mystery of Niora Hospital</button></td><td class="etc-note">Needed together with Zombie Charms.</td></tr><tr class="etc-row" data-etc-key="etc10" data-original-order="9" data-sort-level="25" data-sort-name="zombie charms" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Zombie Charms ready" class="etc-ready-check" data-etc-key="etc10" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 25</span></td><td class="etc-item-cell"><strong>Zombie Charms</strong></td><td class="etc-qty">100</td><td>Zombie Mushrooms</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q23" type="button">Mystery of Niora Hospital</button></td><td class="etc-note">Very easy to accidentally sell. Save 100.</td></tr><tr class="etc-row" data-etc-key="etc11" data-original-order="10" data-sort-level="25" data-sort-name="cloud foxtails" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Cloud Foxtails ready" class="etc-ready-check" data-etc-key="etc11" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 25</span></td><td class="etc-item-cell"><strong>Cloud Foxtails</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">700 total</td><td>World Tour fox monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q24" type="button">Hanako's Foxtail Wardrobe</button></td><td class="etc-note">100 + 200 + 400 across the full sequence.</td></tr><tr class="etc-row" data-etc-key="etc12" data-original-order="11" data-sort-level="27" data-sort-name="cactus stems" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Cactus Stems ready" class="etc-ready-check" data-etc-key="etc12" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 27</span></td><td class="etc-item-cell"><strong>Cactus Stems</strong></td><td class="etc-qty">30</td><td>Ariant cactus monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q25" type="button">A Request from a Member of the Sand Bandits!</button></td><td class="etc-note">Farm with Cactus Thorns.</td></tr><tr class="etc-row" data-etc-key="etc13" data-original-order="12" data-sort-level="27" data-sort-name="cactus thorns" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Cactus Thorns ready" class="etc-ready-check" data-etc-key="etc13" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 27</span></td><td class="etc-item-cell"><strong>Cactus Thorns</strong></td><td class="etc-qty">50</td><td>Ariant cactus monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q25" type="button">A Request from a Member of the Sand Bandits!</button></td><td class="etc-note">Farm with Cactus Stems.</td></tr><tr class="etc-row" data-etc-key="etc14" data-original-order="13" data-sort-level="29" data-sort-name="scorpion stings" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Scorpion Stings ready" class="etc-ready-check" data-etc-key="etc14" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 29</span></td><td class="etc-item-cell"><strong>Scorpion Stings</strong></td><td class="etc-qty">40</td><td>Scorpions</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q26" type="button">The Importance of Life Alchemy</button></td><td class="etc-note">The quest also asks for Scorpion kills.</td></tr><tr class="etc-row" data-etc-key="etc15" data-original-order="14" data-sort-level="30" data-sort-name="curse eye tails" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Curse Eye Tails ready" class="etc-ready-check" data-etc-key="etc15" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 30</span></td><td class="etc-item-cell"><strong>Curse Eye Tails</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">100 total</td><td>Curse Eyes</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q31" type="button">Mr. Wetbottom's Secret Book</button><button class="etc-quest-link" data-jump-quest="q39" type="button">Strange Dish 2</button></td><td class="etc-note">50 + 50 across two quests.</td></tr><tr class="etc-row" data-etc-key="etc16" data-original-order="15" data-sort-level="30" data-sort-name="pig heads" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Pig Heads ready" class="etc-ready-check" data-etc-key="etc16" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 30</span></td><td class="etc-item-cell"><strong>Pig Heads</strong></td><td class="etc-qty">5</td><td>Pig monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q31" type="button">Mr. Wetbottom's Secret Book</button></td><td class="etc-note">Keep these while farming other Victoria Island ETCs.</td></tr><tr class="etc-row" data-etc-key="etc17" data-original-order="16" data-sort-level="30" data-sort-name="lupin bananas" data-tier="early"><td class="etc-ready-cell"><input aria-label="Mark Lupin Bananas ready" class="etc-ready-check" data-etc-key="etc17" type="checkbox"/></td><td><span class="etc-level-badge tier-early">Lv. 30</span></td><td class="etc-item-cell"><strong>Lupin Bananas</strong></td><td class="etc-qty">50</td><td>Lupins</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q31" type="button">Mr. Wetbottom's Secret Book</button></td><td class="etc-note">Part of the same multi-item turn-in.</td></tr><tr class="etc-row" data-etc-key="etc18" data-original-order="17" data-sort-level="33" data-sort-name="jr. pepe's fish" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Jr. Pepe's Fish ready" class="etc-ready-check" data-etc-key="etc18" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 33</span></td><td class="etc-item-cell"><strong>Jr. Pepe's Fish</strong></td><td class="etc-qty">40</td><td>Jr. Pepe</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q34" type="button">Master Sergeant Fox's Secret</button></td><td class="etc-note">Save while training around El Nath.</td></tr><tr class="etc-row" data-etc-key="etc19" data-original-order="18" data-sort-level="35" data-sort-name="worn paper lanterns" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Worn Paper Lanterns ready" class="etc-ready-check" data-etc-key="etc19" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 35</span></td><td class="etc-item-cell"><strong>Worn Paper Lanterns</strong></td><td class="etc-qty">50</td><td>Paper Lantern Ghosts</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q37" type="button">The Lantern at Mushroom Shrine</button></td><td class="etc-note">Quest also asks for 100 kills.</td></tr><tr class="etc-row" data-etc-key="etc20" data-original-order="19" data-sort-level="35" data-sort-name="flaming desert etc" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Flaming Desert ETC ready" class="etc-ready-check" data-etc-key="etc20" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 35</span></td><td class="etc-item-cell"><strong>Flaming Desert ETC</strong></td><td class="etc-qty">50</td><td>Flaming Desert monster</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q38" type="button">Helping Out Bedin</button></td><td class="etc-note">Current guide lists 50 of the Flaming Desert ETC item.</td></tr><tr class="etc-row" data-etc-key="etc21" data-original-order="20" data-sort-level="35" data-sort-name="cogs" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Cogs ready" class="etc-ready-check" data-etc-key="etc21" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 35</span></td><td class="etc-item-cell"><strong>Cogs</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">110 total</td><td>Chronos</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q35" type="button">Today's Schedule</button><button class="etc-quest-link" data-jump-quest="q44" type="button">Assembling + Delivering the Alarm Clock</button></td><td class="etc-note">100 + 10. One of the best stacks to save early.</td></tr><tr class="etc-row" data-etc-key="etc22" data-original-order="21" data-sort-level="38" data-sort-name="table clocks" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Table Clocks ready" class="etc-ready-check" data-etc-key="etc22" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 38</span></td><td class="etc-item-cell"><strong>Table Clocks</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">30 total</td><td>Tick-Tocks</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q43" type="button">The Alarm Clock</button><button class="etc-quest-link" data-jump-quest="q44" type="button">Assembling + Delivering the Alarm Clock</button></td><td class="etc-note">20 + 10 across the Alarm Clock quests.</td></tr><tr class="etc-row" data-etc-key="etc23" data-original-order="22" data-sort-level="40" data-sort-name="cold eye tails" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Cold Eye Tails ready" class="etc-ready-check" data-etc-key="etc23" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 40</span></td><td class="etc-item-cell"><strong>Cold Eye Tails</strong></td><td class="etc-qty">50</td><td>Cold Eyes</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q46" type="button">Strange Dish 3</button></td><td class="etc-note">Save before returning to Tangyoon.</td></tr><tr class="etc-row" data-etc-key="etc24" data-original-order="23" data-sort-level="40" data-sort-name="lucky charms" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Lucky Charms ready" class="etc-ready-check" data-etc-key="etc24" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 40</span></td><td class="etc-item-cell"><strong>Lucky Charms</strong></td><td class="etc-qty">30</td><td>Leprechauns</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q47" type="button">Fool's Gold</button></td><td class="etc-note">Direct ETC farming quest.</td></tr><tr class="etc-row" data-etc-key="etc25" data-original-order="24" data-sort-level="40" data-sort-name="mateon tentacles" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Mateon Tentacles ready" class="etc-ready-check" data-etc-key="etc25" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 40</span></td><td class="etc-item-cell"><strong>Mateon Tentacles</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">1,500 total</td><td>Mateons</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q49" type="button">The Antidote</button></td><td class="etc-note">100 + 200 + 300 + 400 + 500 across all stages.</td></tr><tr class="etc-row" data-etc-key="etc26" data-original-order="25" data-sort-level="40" data-sort-name="yellow toy blocks" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Yellow Toy Blocks ready" class="etc-ready-check" data-etc-key="etc26" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 40</span></td><td class="etc-item-cell"><strong>Yellow Toy Blocks</strong></td><td class="etc-qty">20</td><td>Ludibrium toy monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q50" type="button">The Revolutionary Plan for Constructing Defensive Walls</button></td><td class="etc-note">Keep 20 before starting the timed hand-in.</td></tr><tr class="etc-row" data-etc-key="etc27" data-original-order="26" data-sort-level="41" data-sort-name="plateon helmets" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Plateon Helmets ready" class="etc-ready-check" data-etc-key="etc27" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 41</span></td><td class="etc-item-cell"><strong>Plateon Helmets</strong></td><td class="etc-qty">80</td><td>Plateons</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q53" type="button">Eliminating Plateon</button></td><td class="etc-note">Farm while doing the Omega Sector kill quests.</td></tr><tr class="etc-row" data-etc-key="etc28" data-original-order="27" data-sort-level="41" data-sort-name="mecateon laser guns" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Mecateon Laser Guns ready" class="etc-ready-check" data-etc-key="etc28" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 41</span></td><td class="etc-item-cell"><strong>Mecateon Laser Guns</strong></td><td class="etc-qty">150</td><td>Mecateons</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q54" type="button">Eliminating Plateon and Mecateon</button></td><td class="etc-note">Large stack; worth keeping as soon as they start dropping.</td></tr><tr class="etc-row" data-etc-key="etc29" data-original-order="28" data-sort-level="41" data-sort-name="desert giant sand" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Desert Giant Sand ready" class="etc-ready-check" data-etc-key="etc29" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 41</span></td><td class="etc-item-cell"><strong>Desert Giant Sand</strong></td><td class="etc-qty">20</td><td>Desert Giants</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q55" type="button">Queen's New Make-Up</button></td><td class="etc-note">Keep the exact stack for the queen.</td></tr><tr class="etc-row" data-etc-key="etc30" data-original-order="29" data-sort-level="43" data-sort-name="seal meat" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Seal Meat ready" class="etc-ready-check" data-etc-key="etc30" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 43</span></td><td class="etc-item-cell"><strong>Seal Meat</strong></td><td class="etc-qty">15</td><td>Freezer / Sparker</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q57" type="button">Her Secret Craving for Seal Meat</button></td><td class="etc-note">Small stack; do not NPC it.</td></tr><tr class="etc-row" data-etc-key="etc31" data-original-order="30" data-sort-level="45" data-sort-name="gray cells" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Gray Cells ready" class="etc-ready-check" data-etc-key="etc31" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 45</span></td><td class="etc-item-cell"><strong>Gray Cells</strong></td><td class="etc-qty">1 from each Gray type</td><td>Barnard / Zeta / Ultra / Chief Gray</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q61" type="button">The History of Zeta Leticulan</button></td><td class="etc-note">Four different cells are required.</td></tr><tr class="etc-row" data-etc-key="etc32" data-original-order="31" data-sort-level="50" data-sort-name="coconut husks" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Coconut Husks ready" class="etc-ready-check" data-etc-key="etc32" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 50</span></td><td class="etc-item-cell"><strong>Coconut Husks</strong></td><td class="etc-qty">150</td><td>Malaysia shared farming map</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q66" type="button">Malek's Joy of Music</button></td><td class="etc-note">Farm together with Rebabs.</td></tr><tr class="etc-row" data-etc-key="etc33" data-original-order="32" data-sort-level="50" data-sort-name="rebabs" data-tier="mid"><td class="etc-ready-cell"><input aria-label="Mark Rebabs ready" class="etc-ready-check" data-etc-key="etc33" type="checkbox"/></td><td><span class="etc-level-badge tier-mid">Lv. 50</span></td><td class="etc-item-cell"><strong>Rebabs</strong></td><td class="etc-qty">250</td><td>Malaysia shared farming map</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q66" type="button">Malek's Joy of Music</button></td><td class="etc-note">Farm together with Coconut Husks.</td></tr><tr class="etc-row" data-etc-key="etc34" data-original-order="33" data-sort-level="55" data-sort-name="book ghost sheets" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Book Ghost Sheets ready" class="etc-ready-check" data-etc-key="etc34" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 55</span></td><td class="etc-item-cell"><strong>Book Ghost Sheets</strong></td><td class="etc-qty">10</td><td>Book Ghosts</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q72" type="button">Do Gong's Teaching</button></td><td class="etc-note">First ETC step in the chain.</td></tr><tr class="etc-row" data-etc-key="etc35" data-original-order="34" data-sort-level="55" data-sort-name="kitty spirits" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Kitty Spirits ready" class="etc-ready-check" data-etc-key="etc35" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 55</span></td><td class="etc-item-cell"><strong>Kitty Spirits</strong></td><td class="etc-qty">5</td><td>Mu Lung kitty monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q72" type="button">Do Gong's Teaching</button></td><td class="etc-note">Needed after the Book Ghost step.</td></tr><tr class="etc-row" data-etc-key="etc36" data-original-order="35" data-sort-level="55" data-sort-name="wires" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Wires ready" class="etc-ready-check" data-etc-key="etc36" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 55</span></td><td class="etc-item-cell"><strong>Wires</strong></td><td class="etc-qty">80</td><td>Roid</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q73" type="button">Keeny's Research on Roid</button></td><td class="etc-note">Save the full stack before turn-in.</td></tr><tr class="etc-row" data-etc-key="etc37" data-original-order="36" data-sort-level="55" data-sort-name="tiger skins" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Tiger Skins ready" class="etc-ready-check" data-etc-key="etc37" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 55</span></td><td class="etc-item-cell"><strong>Tiger Skins</strong></td><td class="etc-qty">10</td><td>Hoguls</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q74" type="button">Tiger-Hunting</button></td><td class="etc-note">Quest also asks for 10 Hogul kills.</td></tr><tr class="etc-row" data-etc-key="etc38" data-original-order="37" data-sort-level="56" data-sort-name="100-year-old bellflowers" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark 100-Year-Old Bellflowers ready" class="etc-ready-check" data-etc-key="etc38" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 56</span></td><td class="etc-item-cell"><strong>100-Year-Old Bellflowers</strong></td><td class="etc-qty">100</td><td>Bellflower monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q77" type="button">Gathering Up the Missing Ingredients</button></td><td class="etc-note">Large stack worth pre-farming.</td></tr><tr class="etc-row" data-etc-key="etc39" data-original-order="38" data-sort-level="60" data-sort-name="peach seeds" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Peach Seeds ready" class="etc-ready-check" data-etc-key="etc39" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 60</span></td><td class="etc-item-cell"><strong>Peach Seeds</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">150 total</td><td>Peach Monkeys / Mu Lung mobs</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q83" type="button">Protecting the Peach Farm</button><button class="etc-quest-link" data-jump-quest="q97" type="button">Forgotten Master</button></td><td class="etc-note">100 + 50 across two quests. Keep extras.</td></tr><tr class="etc-row" data-etc-key="etc40" data-original-order="39" data-sort-level="60" data-sort-name="neo huroid plugs" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Neo Huroid Plugs ready" class="etc-ready-check" data-etc-key="etc40" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 60</span></td><td class="etc-item-cell"><strong>Neo Huroid Plugs</strong></td><td class="etc-qty">160</td><td>Neo Huroid</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q84" type="button">Keeny's Research on Neo Huroid</button></td><td class="etc-note">One of the larger Omega / Magatia-style ETC stacks.</td></tr><tr class="etc-row" data-etc-key="etc41" data-original-order="40" data-sort-level="60" data-sort-name="snake scales" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Snake Scales ready" class="etc-ready-check" data-etc-key="etc41" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 60</span></td><td class="etc-item-cell"><strong>Snake Scales</strong></td><td class="etc-qty">100</td><td>Pythons</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q85" type="button">Jit Hates Snakes</button></td><td class="etc-note">Quest also asks for 200 Python kills.</td></tr><tr class="etc-row" data-etc-key="etc42" data-original-order="41" data-sort-level="60" data-sort-name="scarves" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Scarves ready" class="etc-ready-check" data-etc-key="etc42" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 60</span></td><td class="etc-item-cell"><strong>Scarves</strong></td><td class="etc-qty">150</td><td>Scaredy Scarlions</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q86" type="button">Nuri's Health and Beauty</button></td><td class="etc-note">Save before buying the other requested items.</td></tr><tr class="etc-row" data-etc-key="etc43" data-original-order="42" data-sort-level="62" data-sort-name="free spirit etc" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Free Spirit ETC ready" class="etc-ready-check" data-etc-key="etc43" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 62</span></td><td class="etc-item-cell"><strong>Free Spirit ETC</strong></td><td class="etc-qty">Quest amount</td><td>Master Soul Teddies</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q88" type="button">Free Spirit</button></td><td class="etc-note">Current guide names the ETC but does not state an exact quantity.</td></tr><tr class="etc-row" data-etc-key="etc44" data-original-order="43" data-sort-level="70" data-sort-name="rash furballs" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Rash Furballs ready" class="etc-ready-check" data-etc-key="etc44" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 70</span></td><td class="etc-item-cell"><strong>Rash Furballs</strong></td><td class="etc-qty">55</td><td>Rash</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q92" type="button">Ito's Request</button></td><td class="etc-note">Farm together with Dark Rash Furballs.</td></tr><tr class="etc-row" data-etc-key="etc45" data-original-order="44" data-sort-level="70" data-sort-name="dark rash furballs" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Dark Rash Furballs ready" class="etc-ready-check" data-etc-key="etc45" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 70</span></td><td class="etc-item-cell"><strong>Dark Rash Furballs</strong></td><td class="etc-qty">75</td><td>Dark Rash</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q92" type="button">Ito's Request</button></td><td class="etc-note">Farm together with Rash Furballs.</td></tr><tr class="etc-row" data-etc-key="etc46" data-original-order="45" data-sort-level="70" data-sort-name="stormbreaker badges" data-tier="advanced"><td class="etc-ready-cell"><input aria-label="Mark Stormbreaker Badges ready" class="etc-ready-check" data-etc-key="etc46" type="checkbox"/></td><td><span class="etc-level-badge tier-advanced">Lv. 70</span></td><td class="etc-item-cell"><strong>Stormbreaker Badges</strong></td><td class="etc-qty">10</td><td>Stormbreakers</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q93" type="button">The Brewing Storm</button></td><td class="etc-note">Small ETC stack; easy to finish while doing Masteria.</td></tr><tr class="etc-row" data-etc-key="etc47" data-original-order="46" data-sort-level="71" data-sort-name="old papers" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Old Papers ready" class="etc-ready-check" data-etc-key="etc47" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 71</span></td><td class="etc-item-cell"><strong>Old Papers</strong></td><td class="etc-qty">10</td><td>Mu Lung quest-area monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q97" type="button">Forgotten Master</button></td><td class="etc-note">Farm together with Broken Deer Horns and Peach Seeds.</td></tr><tr class="etc-row" data-etc-key="etc48" data-original-order="47" data-sort-level="71" data-sort-name="broken deer horns" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Broken Deer Horns ready" class="etc-ready-check" data-etc-key="etc48" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 71</span></td><td class="etc-item-cell"><strong>Broken Deer Horns</strong></td><td class="etc-qty">10</td><td>Mu Lung quest-area monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q97" type="button">Forgotten Master</button></td><td class="etc-note">Farm together with Old Papers and Peach Seeds.</td></tr><tr class="etc-row" data-etc-key="etc49" data-original-order="48" data-sort-level="75" data-sort-name="beetle horns" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Beetle Horns ready" class="etc-ready-check" data-etc-key="etc49" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 75</span></td><td class="etc-item-cell"><strong>Beetle Horns</strong></td><td class="etc-qty">48</td><td>Beetles</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q98" type="button">Kumo's Request</button></td><td class="etc-note">Farm together with Dual Beetle Horns.</td></tr><tr class="etc-row" data-etc-key="etc50" data-original-order="49" data-sort-level="75" data-sort-name="dual beetle horns" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Dual Beetle Horns ready" class="etc-ready-check" data-etc-key="etc50" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 75</span></td><td class="etc-item-cell"><strong>Dual Beetle Horns</strong></td><td class="etc-qty">28</td><td>Dual Beetles</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q98" type="button">Kumo's Request</button></td><td class="etc-note">Farm together with Beetle Horns.</td></tr><tr class="etc-row" data-etc-key="etc51" data-original-order="50" data-sort-level="77" data-sort-name="cat dolls" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Cat Dolls ready" class="etc-ready-check" data-etc-key="etc51" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 77</span></td><td class="etc-item-cell"><strong>Cat Dolls</strong></td><td class="etc-qty">100</td><td>King Sage Cat chain monsters</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q99" type="button">Eliminating King Sage Cat</button></td><td class="etc-note">Large stack; keep all drops while progressing the chain.</td></tr><tr class="etc-row" data-etc-key="etc52" data-original-order="51" data-sort-level="84" data-sort-name="binding bridles" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Binding Bridles ready" class="etc-ready-check" data-etc-key="etc52" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 84</span></td><td class="etc-item-cell"><strong>Binding Bridles</strong><span class="etc-combined">COMBINED</span></td><td class="etc-qty">120 total</td><td>Quest target monster</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q103" type="button">The Binding</button><button class="etc-quest-link" data-jump-quest="q104" type="button">An Unknown Love</button></td><td class="etc-note">20 + 100 across two high-level quests.</td></tr><tr class="etc-row" data-etc-key="etc53" data-original-order="52" data-sort-level="85" data-sort-name="kentaurus etcs" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Kentaurus ETCs ready" class="etc-ready-check" data-etc-key="etc53" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 85</span></td><td class="etc-item-cell"><strong>Kentaurus ETCs</strong></td><td class="etc-qty">5 from each type</td><td>All 3 Kentaurus types</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q105" type="button">The Sacred Barrier of the Forest</button></td><td class="etc-note">15 total pieces: 5 from each Kentaurus type.</td></tr><tr class="etc-row" data-etc-key="etc54" data-original-order="53" data-sort-level="85" data-sort-name="lucky bus tickets" data-tier="late"><td class="etc-ready-cell"><input aria-label="Mark Lucky Bus Tickets ready" class="etc-ready-check" data-etc-key="etc54" type="checkbox"/></td><td><span class="etc-level-badge tier-late">Lv. 85</span></td><td class="etc-item-cell"><strong>Lucky Bus Tickets</strong></td><td class="etc-qty">100</td><td>Yabber Doo</td><td class="etc-quest-cell"><button class="etc-quest-link" data-jump-quest="q106" type="button">Away from Kampung</button></td><td class="etc-note">Save the whole stack before turn-in.</td></tr></tbody></table></div><div class="quest-active-box"><h3>⚠ Quest-Active / Special Drops — Don't Rely on Pre-Farming</h3><p>These are listed separately because the current guide describes them as quest-step, interaction or quest-active drops. Start the quest first.</p><div class="quest-active-grid"><div class="quest-active-card"><strong>Queen's Ring</strong><div>Retrieved from the King's Room during the quest chain.</div><button class="etc-quest-link quest-active-link" data-jump-quest="q25" type="button">Go to A Request from a Member of the Sand Bandits!</button></div><div class="quest-active-card"><strong>Special Battery</strong><div>Part of the Alarm Clock quest sequence.</div><button class="etc-quest-link quest-active-link" data-jump-quest="q44" type="button">Go to Assembling + Delivering the Alarm Clock</button></div><div class="quest-active-card"><strong>Chief Gray Notes</strong><div>The guide explicitly says to collect them while the quest is active.</div><button class="etc-quest-link quest-active-link" data-jump-quest="q56" type="button">Go to Eliminating Chief Gray</button></div><div class="quest-active-card"><strong>Secret Documents</strong><div>Collected from Omega Sector storage units during the quest.</div><button class="etc-quest-link quest-active-link" data-jump-quest="q58" type="button">Go to Trading with Alien Gray</button></div><div class="quest-active-card"><strong>Meteorite Samples</strong><div>Quest-specific samples from six Omega Sector maps.</div><button class="etc-quest-link quest-active-link" data-jump-quest="q60" type="button">Go to Collecting Meteorite Samples</button></div><div class="quest-active-card"><strong>Secret Document [2]</strong><div>Obtained from Alcadno Lab Area A-3 as part of the quest step.</div><button class="etc-quest-link quest-active-link" data-jump-quest="q68" type="button">Go to An Incident, and the Missing Alchemist</button></div><div class="quest-active-card"><strong>Old Fox Tail</strong><div>Obtained after completing the prerequisite / Goblin King sequence.</div><button class="etc-quest-link quest-active-link" data-jump-quest="q91" type="button">Go to Legends of Hometown</button></div></div></div></section></div><div class="tab-page" id="chains"><section class="extra-tab-section"><h2>Important Quest Chains</h2><div class="summary-intro"><b>Why this exists:</b> Some quests are valuable mainly because they unlock later quests. This tab keeps those chains separate from the raw EXP ranking so players do not confuse prerequisite value with immediate EXP.</div><div class="chain-grid"><div class="chain-card" data-original-order="0" data-sort-name="mr. wetbottom → rowen's cursed dolls"><b>Mr. Wetbottom → Rowen's Cursed Dolls</b><div>Mr. Wetbottom's Secret Book unlocks the later Rowen chain. Save Curse Eye Tails/Lupin Bananas and avoid selling prerequisite materials.</div></div><div class="chain-card" data-original-order="1" data-sort-name="sand bandits → deo"><b>Sand Bandits → Deo</b><div>Complete Ariant's Sand Bandit progression, including The True Identity of Sand Bandits, to reach The Bounty Hunt / Deo payoff.</div></div><div class="chain-card" data-original-order="2" data-sort-name="mrs. reade → ludibrium utility quests"><b>Mrs. Reade → Ludibrium utility quests</b><div>Request of Mrs. Reade 2 &amp; 3 combines well with other Ludibrium/Eos Tower objectives.</div></div><div class="chain-card" data-original-order="3" data-sort-name="alarm clock chain"><b>Alarm Clock Chain</b><div>The Alarm Clock → Assembling the Alarm Clock → Delivering the Alarm Clock. Keep Table Clocks and Cogs.</div></div><div class="chain-card" data-original-order="4" data-sort-name="omega sector elimination chain"><b>Omega Sector Elimination Chain</b><div>Eliminating Grays → Mateon → Plateon → Mecateon → Chief Gray and related Omega quests. Batch these into one visit.</div></div><div class="chain-card" data-original-order="5" data-sort-name="muirhat / golem chain"><b>Muirhat / Golem Chain</b><div>START HERE: click the trash can next to Muirhat to begin the hidden letter prequest (called The Lost Letter / Half-written Letter in different forum posts). Then progress through Stone Golems → Dark Stone Golems → Mixed Stone Golems → Skeletons → Drakes → Tauromacis.</div></div><div class="chain-card" data-original-order="6" data-sort-name="alcaster / book of ancient"><b>Alcaster / Book of Ancient</b><div>A long multi-area chain, but strategically important because of its classic unlock value.</div></div><div class="chain-card" data-original-order="7" data-sort-name="horntail access path"><b>Horntail Access Path</b><div>Wars of the Dragons is part of the classic Horntail-related progression path. Treat it as an unlock quest, not just EXP.</div></div></div></section></div></main><a class="back-top" href="#page-top" title="Back to top">↑</a>
 <footer><div><a href="./" style="color:#ffd54a;font-weight:900;text-decoration:none;">🏠 Back to Home</a></div>KaiokenMS • Quests Worth Doing • Dragon Ball Z Style Community Guide<div class="footer-credit">Created &amp; Maintained by -Yakir-H</div><div class="footer-rights">© 2026 -Yakir-H. All rights reserved. Please credit the original author when sharing or adapting this guide.</div></footer><script>
 const tabs=document.querySelectorAll('.guide-tab');
 tabs.forEach(btn=>{
@@ -1990,8 +2326,18 @@ function applyTopTabSort(tabId,mode,save=true){
   }
 
   if(tabId==='precollect'){
-    const grid=document.querySelector('#precollect .collect-grid');
-    sortCards(grid,document.querySelectorAll('#precollect .collect-card'),mode);
+    const tbody=document.querySelector('#etc-precollect-body');
+    if(!tbody) return;
+    const rows=[...tbody.querySelectorAll('.etc-row')];
+    rows.sort((a,b)=>{
+      if(mode==='name'){
+        return (a.dataset.sortName||'').localeCompare(b.dataset.sortName||'')
+          || Number(a.dataset.originalOrder||0)-Number(b.dataset.originalOrder||0);
+      }
+      return Number(a.dataset.sortLevel||9999)-Number(b.dataset.sortLevel||9999)
+        || (a.dataset.sortName||'').localeCompare(b.dataset.sortName||'');
+    });
+    rows.forEach(row=>tbody.appendChild(row));
     return;
   }
 
@@ -2082,6 +2428,7 @@ function loadProgress(){
   updateProgress();
   if(typeof updateAllCharacterProgress==='function') updateAllCharacterProgress();
   if(typeof applyHideCompletedState==='function') applyHideCompletedState();
+  if(typeof loadEtcReady==='function') loadEtcReady();
 }
 
 function saveProgress(){
@@ -2203,6 +2550,147 @@ questViewSizeSelect?.addEventListener('change',e=>{
   }
 });
 /* QUEST_VIEW_SIZE_END */
+
+
+
+/* ETC_PRECOLLECT_PLANNER_START */
+const etcStoragePrefix='kaioken_etc_precollect_char_';
+const etcChecks=[...document.querySelectorAll('.etc-ready-check')];
+const etcRows=[...document.querySelectorAll('#etc-precollect-body .etc-row')];
+const etcSearch=document.getElementById('etc-search');
+const etcReadyFilter=document.getElementById('etc-ready-filter');
+
+function etcStorageKey(slotId=currentCharacter){
+  return etcStoragePrefix+slotId;
+}
+
+function readEtcReady(slotId=currentCharacter){
+  try{
+    return JSON.parse(localStorage.getItem(etcStorageKey(slotId))||'{}')||{};
+  }catch(e){
+    return {};
+  }
+}
+
+function saveEtcReady(){
+  const state={};
+  etcChecks.forEach(cb=>state[cb.dataset.etcKey]=cb.checked);
+  try{localStorage.setItem(etcStorageKey(),JSON.stringify(state))}catch(e){}
+  if(typeof markProgressSaved==='function') markProgressSaved();
+  updateEtcPlanner();
+}
+
+function loadEtcReady(){
+  const state=readEtcReady();
+  etcChecks.forEach(cb=>{
+    cb.checked=state[cb.dataset.etcKey]===true;
+  });
+  updateEtcPlanner();
+}
+
+function currentCharacterDisplayName(){
+  const slot=document.querySelector(`.character-slot[data-slot="${currentCharacter}"]`);
+  return slot?.querySelector('.character-name')?.value?.trim() || `Character ${currentCharacter}`;
+}
+
+function updateEtcPlanner(){
+  const query=(etcSearch?.value||'').trim().toLowerCase();
+  const filter=etcReadyFilter?.value||'all';
+  let readyCount=0;
+
+  etcRows.forEach(row=>{
+    const cb=row.querySelector('.etc-ready-check');
+    const ready=!!cb?.checked;
+    if(ready) readyCount++;
+    row.classList.toggle('is-ready',ready);
+
+    const matchesText=!query || row.innerText.toLowerCase().includes(query);
+    const matchesReady=filter==='all' || (filter==='ready'&&ready) || (filter==='missing'&&!ready);
+    row.classList.toggle('hidden-by-etc-filter',!(matchesText&&matchesReady));
+  });
+
+  const total=etcRows.length;
+  const totalEl=document.getElementById('etc-total-count');
+  const readyEl=document.getElementById('etc-ready-count');
+  const missingEl=document.getElementById('etc-missing-count');
+  const charEl=document.getElementById('etc-active-character');
+  if(totalEl) totalEl.textContent=String(total);
+  if(readyEl) readyEl.textContent=String(readyCount);
+  if(missingEl) missingEl.textContent=String(total-readyCount);
+  if(charEl) charEl.textContent=currentCharacterDisplayName();
+}
+
+etcChecks.forEach(cb=>cb.addEventListener('change',saveEtcReady));
+etcSearch?.addEventListener('input',updateEtcPlanner);
+etcReadyFilter?.addEventListener('change',updateEtcPlanner);
+
+document.getElementById('etc-clear-character')?.addEventListener('click',()=>{
+  const name=currentCharacterDisplayName();
+  if(!confirm(`Clear the Monster ETC checklist for ${name}?\n\nThis does not reset quest completion progress.`)) return;
+  try{localStorage.removeItem(etcStorageKey())}catch(e){}
+  etcChecks.forEach(cb=>cb.checked=false);
+  updateEtcPlanner();
+  if(typeof markProgressSaved==='function') markProgressSaved();
+  if(typeof setBackupFeedback==='function') setBackupFeedback(`${name}: ETC checklist cleared.`,true);
+});
+
+function openPreCollectPlanner(){
+  const tab=document.querySelector('.guide-tab[data-tab="precollect"]');
+  if(tab && !tab.classList.contains('active')) tab.click();
+
+  setTimeout(()=>{
+    document.getElementById('monster-etc-precollect')?.scrollIntoView({
+      behavior:'smooth',
+      block:'start'
+    });
+  },80);
+}
+
+const efficiencyLink=document.getElementById('efficiency-precollect-link');
+efficiencyLink?.addEventListener('click',openPreCollectPlanner);
+efficiencyLink?.addEventListener('keydown',e=>{
+  if(e.key==='Enter' || e.key===' '){
+    e.preventDefault();
+    openPreCollectPlanner();
+  }
+});
+
+function jumpToQuestCard(qKey){
+  const tab=document.querySelector('.guide-tab[data-tab="all-quests"]');
+  if(tab && !tab.classList.contains('active')) tab.click();
+
+  // Show completed quests so the destination cannot be hidden.
+  if(typeof hideCompletedEnabled!=='undefined' && hideCompletedEnabled){
+    hideCompletedEnabled=false;
+    try{localStorage.setItem(hideCompletedStorageKey,'false')}catch(e){}
+    if(typeof applyHideCompletedState==='function') applyHideCompletedState();
+  }
+
+  const search=document.getElementById('quest-search');
+  if(search && search.value){
+    search.value='';
+    if(typeof updateSearchAndSections==='function') updateSearchAndSections();
+  }
+
+  setTimeout(()=>{
+    const cb=document.querySelector(`.quest-check[data-key="${qKey}"]`);
+    const card=cb?.closest('.quest');
+    if(!card) return;
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    card.classList.remove('continue-highlight');
+    setTimeout(()=>{
+      card.classList.add('continue-highlight');
+      setTimeout(()=>card.classList.remove('continue-highlight'),3200);
+    },350);
+  },90);
+}
+
+document.querySelectorAll('[data-jump-quest]').forEach(btn=>{
+  btn.addEventListener('click',()=>jumpToQuestCard(btn.dataset.jumpQuest));
+});
+
+loadEtcReady();
+/* ETC_PRECOLLECT_PLANNER_END */
 
 
 /* PROGRESS_BACKUP_FEATURES_START */
@@ -2331,8 +2819,10 @@ function buildProgressBackup(){
   saveCharacterConfig();
 
   const progress={};
+  const precollect={};
   validCharacterSlots.forEach(slotId=>{
     progress[slotId]=readCharacterProgress(slotId);
+    precollect[slotId]=(typeof readEtcReady==='function')?readEtcReady(slotId):{};
   });
 
   const topSorts={};
@@ -2348,6 +2838,7 @@ function buildProgressBackup(){
     questCount:checks.length,
     characters:collectCharacterConfigForBackup(),
     progress,
+    precollect,
     preferences:{
       questSort:safeLocalGet(questSortStorageKey)||'level',
       topSorts,
@@ -2424,6 +2915,19 @@ function normalizeImportedBackup(data){
     progress[slotId]=clean;
   });
 
+  const validEtcKeys=new Set(etcChecks.map(cb=>cb.dataset.etcKey));
+  const precollect={};
+  validCharacterSlots.forEach(slotId=>{
+    const src=(data.precollect && typeof data.precollect[slotId]==='object' && data.precollect[slotId])
+      ? data.precollect[slotId]
+      : {};
+    const clean={};
+    validEtcKeys.forEach(key=>{
+      clean[key]=src[key]===true;
+    });
+    precollect[slotId]=clean;
+  });
+
   const allowedQuestSorts=['level','exp','fame'];
   const questSortValue=allowedQuestSorts.includes(data.preferences?.questSort)
     ? data.preferences.questSort
@@ -2440,6 +2944,7 @@ function normalizeImportedBackup(data){
   return {
     characters:{active,names},
     progress,
+    precollect,
     preferences:{
       questSort:questSortValue,
       topSorts,
@@ -2456,6 +2961,7 @@ function applyImportedBackup(clean){
 
   validCharacterSlots.forEach(slotId=>{
     safeLocalSet(progressPrefix+slotId,JSON.stringify(clean.progress[slotId]));
+    safeLocalSet(etcStoragePrefix+slotId,JSON.stringify(clean.precollect?.[slotId]||{}));
   });
 
   safeLocalSet(questSortStorageKey,clean.preferences.questSort);
@@ -2484,6 +2990,7 @@ function applyImportedBackup(clean){
   }
 
   applyHideCompletedState();
+  if(typeof loadEtcReady==='function') loadEtcReady();
   markProgressSaved();
   updateAllCharacterProgress();
 }

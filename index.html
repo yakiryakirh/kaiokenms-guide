@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KaiokenMS Complete Progression Guide</title>
+
+<style>
+:root{
+  --space:#050914;
+  --deep:#0b1630;
+  --panel:#111d35;
+  --panel2:#172746;
+  --orange:#ff8a00;
+  --gold:#ffd54a;
+  --red:#e83b28;
+  --blue:#32a8ff;
+  --cyan:#86dcff;
+  --text:#f8fbff;
+  --muted:#b9c7da;
+  --line:#314d76;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--text);
+  font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+  line-height:1.65;
+  background:
+    radial-gradient(circle at 15% 12%, rgba(50,168,255,.13), transparent 18%),
+    radial-gradient(circle at 86% 8%, rgba(255,138,0,.12), transparent 20%),
+    linear-gradient(180deg,#030711 0%,#081226 42%,#050914 100%);
+  background-attachment:fixed;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.32;
+  background-image:
+    radial-gradient(circle,#fff 0 1px,transparent 1.4px),
+    radial-gradient(circle,#86dcff 0 1px,transparent 1.3px);
+  background-size:92px 92px,137px 137px;
+  background-position:7px 11px,51px 29px;
+  z-index:-1;
+}
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:76px 24px 58px;
+  text-align:center;
+  border-bottom:4px solid var(--orange);
+  background:
+    radial-gradient(circle at 50% 48%,rgba(255,213,74,.28) 0 7%,rgba(255,138,0,.18) 8% 18%,transparent 38%),
+    linear-gradient(135deg,#102c5a 0%,#09152d 48%,#301006 100%);
+  box-shadow:0 8px 40px rgba(0,0,0,.6);
+}
+.hero:before,.hero:after{
+  content:"";
+  position:absolute;
+  width:420px;height:420px;border-radius:50%;
+  border:2px solid rgba(255,213,74,.16);
+  top:-260px;
+}
+.hero:before{left:-110px}
+.hero:after{right:-110px}
+.hero .kicker{
+  display:inline-block;
+  padding:6px 14px;
+  border:1px solid var(--gold);
+  border-radius:999px;
+  background:rgba(0,0,0,.35);
+  color:var(--gold);
+  font-weight:900;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+h1{
+  max-width:1050px;
+  margin:.24em auto .18em;
+  font-size:clamp(2.45rem,6.3vw,5rem);
+  line-height:.98;
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:-.04em;
+  color:#fff;
+  text-shadow:
+    0 3px 0 #b53b13,
+    0 6px 0 #6d1e0a,
+    0 0 22px rgba(255,176,0,.65);
+}
+.subtitle{
+  max-width:850px;
+  margin:auto;
+  color:#e4edf8;
+  font-size:1.08rem;
+}
+.wrap{max-width:1080px;margin:auto;padding:30px 20px 80px}
+.notice,.tip,.warning{
+  position:relative;
+  padding:17px 19px;
+  border-radius:8px;
+  margin:18px 0;
+  background:linear-gradient(135deg,rgba(20,35,62,.96),rgba(10,20,39,.96));
+  border:1px solid var(--line);
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+.notice{border-left:5px solid var(--blue)}
+.tip{border-left:5px solid var(--gold)}
+.warning{border-left:5px solid var(--red)}
+.toc-wrap{margin:0}
+.toc-title{display:none}
+.toc{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:10px;
+  margin:22px 0 38px;
+  overflow:visible;
+  padding:0;
+}
+.toc a{
+  position:relative;
+  color:var(--text);
+  text-decoration:none;
+  font-weight:700;
+  font-size:1rem;
+  white-space:normal;
+  background:linear-gradient(145deg,#172a4a,#0d182d);
+  border:1px solid #355784;
+  padding:11px 14px 11px 18px;
+  border-radius:7px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);
+}
+.toc a:before{
+  content:"★";
+  color:var(--gold);
+  margin-right:8px;
+  font-size:1rem;
+  text-shadow:0 0 8px rgba(255,213,74,.55);
+}
+.toc a:hover{
+  border-color:var(--orange);
+  transform:translateY(-1px);
+  color:var(--gold);
+}
+.back-top{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:60;
+  width:46px;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  border:2px solid var(--gold);
+  background:linear-gradient(145deg,var(--orange),#c94c00);
+  color:white;
+  text-decoration:none;
+  font-size:1.25rem;
+  font-weight:1000;
+  box-shadow:0 7px 22px rgba(0,0,0,.5),0 0 18px rgba(255,138,0,.35);
+}
+.back-top:hover{transform:translateY(-2px)}
+section{scroll-margin-top:125px}
+section{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(145deg,rgba(19,34,61,.97),rgba(8,17,34,.97));
+  border:1px solid #2e4d78;
+  border-radius:10px;
+  padding:27px;
+  margin:20px 0;
+  box-shadow:0 12px 34px rgba(0,0,0,.32);
+}
+section:after{
+  content:"";
+  position:absolute;
+  right:-42px;top:-42px;
+  width:110px;height:110px;
+  border-radius:50%;
+  border:2px solid rgba(255,138,0,.11);
+  box-shadow:0 0 0 12px rgba(255,213,74,.025),0 0 0 24px rgba(50,168,255,.018);
+  pointer-events:none;
+}
+h2{
+  margin-top:0;
+  padding-bottom:9px;
+  border-bottom:2px solid rgba(255,138,0,.5);
+  color:var(--gold);
+  font-size:1.72rem;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+  text-shadow:0 0 10px rgba(255,138,0,.25);
+}
+h3{color:var(--cyan);margin-bottom:.25rem}
+b{color:#fff}
+code{
+  background:#050a13;
+  border:1px solid #365b8b;
+  border-radius:5px;
+  padding:2px 7px;
+  color:var(--gold);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin:16px 0;
+  background:rgba(4,10,20,.38);
+}
+th,td{border:1px solid #35547c;padding:10px 12px;text-align:left}
+th{
+  background:linear-gradient(180deg,#263f67,#192d4d);
+  color:var(--gold);
+  text-transform:uppercase;
+  font-size:.92rem;
+}
+tr:nth-child(even) td{background:rgba(50,168,255,.035)}
+ul,ol{padding-left:25px}
+li{margin:7px 0}
+li::marker{color:var(--orange);font-weight:900}
+footer{
+  color:var(--muted);
+  text-align:center;
+  padding:24px;
+  border-top:3px solid var(--orange);
+  background:#030711;
+}
+.small{font-size:.9rem;color:var(--muted)}
+.power-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:18px;
+  color:var(--gold);
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.power-label:before,.power-label:after{content:"◆";color:var(--orange)}
+@media(max-width:650px){
+  .hero{padding:58px 18px 42px}
+  section{padding:19px}
+  table{font-size:.88rem}
+}
+</style>
+
+</head>
+<body><div id="page-top" style="position:absolute;top:0;left:0;"></div>
+<header class="hero">
+<div class="kicker">Community Guide Challenge</div><div class="power-label">Train • Power Up • Break Your Limits</div>
+<h1>KaiokenMS Complete Progression Guide</h1>
+<p class="subtitle">A practical guide to leveling, permanent account progression, Scouter cards, alts, bossing, Dragon Balls, Fishing, Super Saiyan and Rebirth — built around KaiokenMS's custom systems rather than generic v83 advice.</p>
+</header>
+<main class="wrap">
+<div class="notice"><b>Guide status:</b> Written from KaiokenMS official feature posts, patch notes and server-community information available through August 21, 2026. KaiokenMS is in active beta, so newer patches should always take priority.</div>
+<h2>Contents</h2><div class="toc-wrap"><nav class="toc"><a href="#s1">Quick Start: What New Players Should Do First</a><a href="#s2">Leveling Efficiently</a><a href="#s3">Account Progression &amp; Achievements</a><a href="#s4">Scouter &amp; Monster Card Progression</a><a href="#s5">Why Build Alts and Mules?</a><a href="#s6">Party Quests, Bossing &amp; Points</a><a href="#s7">Dragon Balls, Shenron &amp; Super Saiyan</a><a href="#s8">Fishing: AFK Progression</a><a href="#s9">Rebirth: The Endgame Restart</a><a href="#s10">Gear, Maple Leaves &amp; Economy</a><a href="#s11">Useful Commands &amp; Quality of Life</a><a href="#s12">A Strong Daily / Session Routine</a><a href="#s13">What Is Confirmed vs. What Should Be Rechecked</a></nav></div>
+<section id="s1"><h2>Quick Start: What New Players Should Do First</h2>
+<ol>
+<li>Complete the early tutorial and quest content instead of immediately grinding random mobs.</li>
+<li>Visit the Free Market and learn the custom NPCs, especially <b>Master Roshi</b>, who warps players to training areas based on level and progression.</li>
+<li>Start the <b>Achievement Medal</b> system early. It is an account-wide progression system, so milestones matter beyond a single character.</li>
+<li>Get and use a <b>Scouter</b>. Monster Card completion becomes a permanent progression path.</li>
+<li>Do not ignore Party Quests, bossing, Dojo, Maple Leaves, and the server's custom shops. KaiokenMS is designed around several progression systems rather than only raw grinding.</li>
+<li>Begin thinking about the seven Dragon Balls early. Rebirth and Super Saiyan are long-term goals, not early-game shortcuts.</li>
+</ol>
+<div class="tip"><b>Important:</b> KaiokenMS is actively developed. Patch notes can change optimal routes, drop rates, balance, and available systems. Always check the newest server announcements before committing large amounts of resources.</div>
+</section><section id="s2"><h2>Leveling Efficiently</h2>
+<p>KaiokenMS includes a custom leveling helper specifically to reduce the need to guess where to train. <b>Master Roshi</b> can warp you to training maps appropriate for your current level and progression.</p>
+<h3>Practical leveling approach</h3>
+<ul>
+<li>Prioritize maps where you can kill monsters quickly. A theoretically higher-level map is not automatically better if your kill speed collapses.</li>
+<li>Use Master Roshi as your baseline recommendation, then compare EXP speed in practice.</li>
+<li>Questlines and Party Quests remain useful because maximum-level restrictions were removed from all PQs and many existing questlines.</li>
+<li>Monster respawn speed was increased in the August 19 balance update, improving normal grinding efficiency.</li>
+</ul>
+<h3>Community-tested examples</h3>
+<p>Community discussion has pointed players in the 90s toward <b>Galloperas</b>. Earlier characters have also used <b>Ghost Ship</b>, while <b>Temple of Time</b> appears in later leveling discussion. Treat these as community observations rather than fixed official level brackets; your damage and kill speed matter.</p>
+<h3>Hyperbolic Time Chamber</h3>
+<p>The Hyperbolic Time Chamber is a custom training system with scaled monsters and bonus EXP. Its monster balance was adjusted so less powerful characters have a more reasonable chance of clearing it. Include the available Time Chamber training in your routine rather than relying entirely on field grinding.</p>
+</section><section id="s3"><h2>Account Progression &amp; Achievements</h2>
+<p>The <b>Achievement Medal System</b> is explicitly account-wide. Completing achievements and milestones improves your Achievement Medal and creates long-term account progression.</p>
+<ul>
+<li>Check achievements early instead of waiting until endgame.</li>
+<li>Complete easy milestones while leveling naturally.</li>
+<li>Daily Quest progression can be rerolled/replaced if you receive a task you do not want to complete.</li>
+<li>Creating and developing additional characters can be worthwhile when it contributes to account milestones or gives you a useful farming/support character.</li>
+</ul>
+<p>The key idea is efficiency: do activities that advance more than one system at once. A leveling session can also produce Monster Cards, quest progress, Maple Leaves, mesos, drops, and achievements.</p>
+</section><section id="s4"><h2>Scouter &amp; Monster Card Progression</h2>
+<p>The Scouter is one of KaiokenMS's most important permanent progression systems.</p>
+<table><tr><th>Completion</th><th>Permanent Reward</th></tr>
+<tr><td>All 5 Monster Cards for a regular monster</td><td><b>+1 All Stats</b></td></tr>
+<tr><td>Complete the card set for a Boss</td><td><b>+1 Weapon Attack and +1 Magic Attack</b></td></tr></table>
+<p>The system was implemented retroactively, so existing completed Monster Card sets can receive credit while using the Scouter.</p>
+<p>While wearing a Scouter, players can use drop-information commands such as <code>@whodrops</code> and <code>@whatdropsfrom</code>. This makes card hunting useful both for permanent stats and for learning the server's drop tables.</p>
+<div class="tip"><b>Advanced account strategy:</b> Monster Book collection progress is handled separately by characters in actual play. Players should verify current behavior for repeated stat rewards across alts because this interaction is not explicitly documented in the official patch-note wording and may change during beta.</div>
+</section><section id="s5"><h2>Why Build Alts and Mules?</h2>
+<p>Extra characters are more useful when they have a defined job instead of being leveled randomly.</p>
+<ul>
+<li><b>Farming mule:</b> a character with strong map clearing can farm ETC items, quest drops, cards, Maple Leaves and other materials efficiently.</li>
+<li><b>Bishop/support:</b> Priest/Bishop provides Holy Symbol and later strong area clearing, making it a natural utility/farming character.</li>
+<li><b>Achievement progression:</b> some character development can contribute to the account-wide Achievement system.</li>
+<li><b>Different class coverage:</b> certain maps, bosses and farming tasks are much easier on one class than another.</li>
+</ul>
+<p>Do not level every mule to endgame automatically. First collect easy progression, complete useful milestones, and only invest further when the character has a clear purpose.</p>
+</section><section id="s6"><h2>Party Quests, Bossing &amp; Points</h2>
+<p>Bossing and Party Quests are separate progression tracks rather than optional nostalgia content.</p>
+<ul>
+<li><b>Boss Points:</b> defeating bosses awards Boss Points that can be spent on useful rewards and custom progression benefits.</li>
+<li><b>PQ Points:</b> Party Quest rewards were significantly increased in the August 19 balance update.</li>
+<li>Old maximum-level restrictions were removed from all Party Quests and many questlines, allowing higher-level characters to return to older content.</li>
+<li>Boss prequests normally matter. A Boss Prequest Skip Ticket exists as a convenience item, and its updated behavior includes providing the required Eye of Fire for Zakum/Chaos Zakum entry.</li>
+</ul>
+<p>For efficient progression, combine boss clears with prequests, achievements, Boss Points, and any Monster Card boss sets you still need.</p>
+</section><section id="s7"><h2>Dragon Balls, Shenron &amp; Super Saiyan</h2>
+<p>The seven Dragon Balls are a core long-term progression system. Collecting all seven allows you to summon <b>Shenron</b> and select special wishes.</p>
+<h3>Super Saiyan</h3>
+<p>Super Saiyan is unlocked through a Shenron wish after collecting all seven Dragon Balls. A later update increased its duration from <b>60 to 90 seconds</b> and added <b>+50 Weapon Attack</b> and <b>+50 Magic Attack</b>.</p>
+<h3>Known late Dragon Ball boss rates</h3>
+<table><tr><th>Dragon Ball</th><th>Boss</th><th>Rate</th></tr>
+<tr><td>#6</td><td>Zakum</td><td>1/5</td></tr>
+<tr><td>#6</td><td>Von Leon</td><td>1/5</td></tr>
+<tr><td>#7</td><td>Horntail</td><td>1/10</td></tr>
+<tr><td>#7</td><td>Chaos Zakum</td><td>1/5</td></tr>
+<tr><td>#7</td><td>Pink Bean</td><td>1/2</td></tr></table>
+<p>These rates were specifically rebalanced on August 19, 2026.</p>
+</section><section id="s8"><h2>Fishing: AFK Progression</h2>
+<p>KaiokenMS has a custom Fishing System that can be used from any map for AFK rewards.</p>
+<ul>
+<li>Fishing Chair and bait are available through the Bulma Shop.</li>
+<li>Use <code>@fishinglist</code> to inspect the current reward pool.</li>
+<li>Unique KaiokenMS items can be obtained through fishing.</li>
+<li><b>All seven Dragon Balls can be obtained through fishing, including Dragon Ball #7.</b></li>
+</ul>
+<p>This makes fishing relevant even to endgame progression. If you are going AFK, fishing can turn otherwise unused time into resources and a chance at Dragon Balls.</p>
+</section><section id="s9"><h2>Rebirth: The Endgame Restart</h2>
+<p>KaiokenMS is not designed as a traditional easy-rebirth server. The developer has described Rebirth as an <b>endgame goal</b>.</p>
+<h3>Core requirement</h3>
+<p>Reach <b>Level 200</b> and obtain the required Shenron Rebirth wish by collecting all seven Dragon Balls.</p>
+<h3>Class restriction</h3>
+<p>Rebirth does not provide a free switch into an unrelated class family. You remain within your current archetype/class family and can choose a branch within that family as progression resumes.</p>
+<p>Example: a Thief can change between appropriate Thief branches, but Rebirth is not intended to turn that character into an unrelated Magician family character.</p>
+<h3>Recent Rebirth fixes</h3>
+<ul>
+<li>Saving AP after Rebirth was fixed.</li>
+<li>A post-Rebirth skill upgrade issue incorrectly claiming missing 1st/2nd/3rd Job skills was fixed.</li>
+<li>A bug that incorrectly granted Super Saiyan after Rebirth was fixed.</li>
+</ul>
+<div class="warning"><b>Do not assume undocumented behavior.</b> Exact skill retention and branch interactions should be checked against the newest patch notes before planning a permanent build around them.</div>
+</section><section id="s10"><h2>Gear, Maple Leaves &amp; Economy</h2>
+<p>KaiokenMS provides several ways to improve gear outside ordinary v83 scrolling.</p>
+<ul>
+<li><b>Maple Leaves:</b> used in custom progression and equipment systems. Pan's Maple Leaf Shop has been rebalanced during beta.</li>
+<li><b>AEE system:</b> the server uses an equipment enhancement system intended to scale with higher-level gear, keeping endgame equipment valuable.</li>
+<li><b>Skill Book Shop:</b> Gohan in the Free Market sells Skill Books, with prices balanced around beta economy data.</li>
+<li><b>Ore Bank / Scroll Bank:</b> dedicated storage systems reduce inventory pressure for upgrade materials.</li>
+<li><b>Tradable custom items:</b> NX items and Kaioken custom items were made tradable and can be sold through Player Shops.</li>
+<li><b>Stock Market:</b> Dr. Gero in the Free Market launched a pilot Stock Market system, initially centered on Maple Leaves.</li>
+</ul>
+</section><section id="s11"><h2>Useful Commands &amp; Quality of Life</h2>
+<table>
+<tr><th>Command / Feature</th><th>Purpose</th></tr>
+<tr><td><code>@gachalist</code></td><td>View available Gachapon rewards.</td></tr>
+<tr><td><code>@dps</code></td><td>Enter the dedicated DPS testing area.</td></tr>
+<tr><td><code>@whodrops</code></td><td>Drop lookup available through Scouter progression/current access rules.</td></tr>
+<tr><td><code>@whatdropsfrom</code></td><td>Inspect drops from monsters.</td></tr>
+<tr><td><code>@fishinglist</code></td><td>View Fishing rewards.</td></tr>
+<tr><td><code>@roll</code></td><td>Quick random roll command.</td></tr>
+<tr><td>Expandable Inventory</td><td>Drag the bottom-right corner of the inventory window to resize it.</td></tr>
+<tr><td>Item Vac</td><td>Vacuum map drops without requiring a pet; documented as obtainable through the Vote Shop using Kaio Points.</td></tr>
+</table>
+<p>Z Card access has also included convenience commands such as storage/shop access. Because command access has changed during beta, use the latest patch notes as the final authority.</p>
+</section><section id="s12"><h2>A Strong Daily / Session Routine</h2>
+<ol>
+<li>Check your Achievement/Daily Quest progress and replace an unwanted daily when appropriate.</li>
+<li>Use available Hyperbolic Time Chamber training.</li>
+<li>Run profitable or progression-relevant Party Quests and collect PQ Points.</li>
+<li>Kill bosses that advance Boss Points, Dragon Balls, prequests, achievements, or Monster Card boss sets.</li>
+<li>Use Master Roshi to select an efficient grinding map for your current character.</li>
+<li>While grinding, target unfinished 5/5 Monster Card sets instead of farming EXP alone.</li>
+<li>Use your dedicated farming/support character when its clear speed or utility is better than your main.</li>
+<li>When going AFK, consider Fishing so idle time can still produce rewards and potentially Dragon Balls.</li>
+</ol>
+<p>This “stack several goals at once” approach is the central efficiency principle for KaiokenMS.</p>
+</section><section id="s13"><h2>What Is Confirmed vs. What Should Be Rechecked</h2>
+<p><b>Confirmed by official KaiokenMS feature/patch material:</b> account-wide Achievement progression; Scouter rewards for completed Monster Card sets; Master Roshi leveling warps; Hyperbolic Time Chamber balance; Boss Points; Fishing and all seven Dragon Balls in its reward pool; Super Saiyan via Shenron; Rebirth as an endgame Dragon Ball goal; the August 19 Dragon Ball #6/#7 boss rates; AP-saving Rebirth fix; increased PQ Points and faster monster respawns.</p>
+<p><b>Community-observed or still worth verifying after patches:</b> exact best map for every level/class, detailed alt Monster Book reward interactions, and exact skill behavior across Rebirth branches. Beta changes can invalidate old advice quickly.</p>
+</section>
+<section><h2>Common Progression Mistakes to Avoid</h2>
+<ul>
+<li><b>Grinding EXP only:</b> Whenever possible, train on monsters whose card sets, drops, quests, or achievements you still need. KaiokenMS rewards overlapping progression.</li>
+<li><b>Ignoring the Scouter:</b> Regular 5/5 Monster Card sets provide permanent stats, so low-level monsters can remain valuable even after you outlevel them.</li>
+<li><b>Ignoring old content after leveling past it:</b> KaiokenMS removed maximum-level restrictions from Party Quests and many questlines, so older content can still be revisited for progression.</li>
+<li><b>Judging training maps only by monster level:</b> Kill speed matters. A lower map you clear instantly can outperform a stronger map that takes several attacks per monster.</li>
+<li><b>Forgetting custom NPCs and shops:</b> Check the Free Market systems regularly. Master Roshi, Gohan, Dr. Gero and other custom NPCs can affect leveling, skill books, economy and progression.</li>
+<li><b>Planning around old beta information:</b> Drop rates, shops, class balance and custom systems have changed repeatedly. Newer patch notes override older advice.</li>
+</ul>
+</section>
+<section><h2>Progression Priorities by Stage</h2>
+<table>
+<tr><th>Stage</th><th>Main Priorities</th></tr>
+<tr><td>Early Game</td><td>Questlines, fast leveling, easy achievements, Scouter setup, easy Monster Card sets, learning Free Market NPCs.</td></tr>
+<tr><td>Mid Game</td><td>Efficient training maps, PQ Points, Boss Points, stronger card sets, equipment upgrades, useful farming/support alts.</td></tr>
+<tr><td>Late Game</td><td>Boss prequests, high-value boss clears, Dragon Balls, boss Monster Card sets, stronger equipment and account progression.</td></tr>
+<tr><td>Endgame</td><td>Complete all seven Dragon Balls, Shenron wishes, Super Saiyan progression and preparation for Rebirth.</td></tr>
+</table>
+</section>
+<section><h2>Useful Farming Mindset</h2>
+<p>A good farming character is not simply the character with the highest displayed damage. For repeated material and Monster Card farming, prioritize <b>map coverage, reliable one-shot or fast kills, mobility, low downtime and useful support skills</b>. This is why support/area-clearing characters can remain valuable even when they are not your main bossing character.</p>
+<p>Before farming a specific item for a long period, use the server's available drop-information tools and current community information. KaiokenMS has custom drop tables and custom progression, so a generic MapleStory database may not reflect the server correctly.</p>
+</section>
+<section><h2>Final Advice</h2><p>KaiokenMS rewards players who think in terms of <b>long-term progression</b>. Do not measure a session only by levels gained. The strongest sessions often advance EXP, achievements, Monster Cards, Boss Points, PQ Points, equipment, mesos and Dragon Ball progress at the same time.</p><p>Use the server's custom systems. Master Roshi exists so you do not have to guess every training map. The Scouter turns ordinary monster hunting into permanent stats. Fishing turns AFK time into progression. Bossing feeds multiple systems. Rebirth is the destination after those systems, not a replacement for them.</p></section>
+
+
+</main>
+<footer>KaiokenMS Complete Progression Guide • Updated for August 2026 beta information</footer>
+<a class="back-top" href="#page-top" title="Back to top">↑</a></body></html>

@@ -502,6 +502,136 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
     margin-left:0;
   }
 }
+
+/* ===== Quest progress backup / recovery ===== */
+.char-progress-mini{
+  margin-top:8px;
+  padding-top:7px;
+  border-top:1px solid rgba(118,149,187,.18);
+  color:#9fb1c8;
+  font-size:.75rem;
+  font-weight:800;
+  line-height:1.25;
+}
+.character-slot.active .char-progress-mini{
+  color:#ffd54a;
+}
+
+.backup-panel{
+  margin:14px 0 16px;
+  padding:15px;
+  border:1px solid #355784;
+  border-radius:14px;
+  background:
+    radial-gradient(circle at 0 0,rgba(61,122,184,.16),transparent 36%),
+    rgba(8,18,32,.82);
+  box-shadow:0 10px 28px rgba(0,0,0,.18);
+}
+.backup-panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:12px;
+}
+.backup-title{
+  color:#fff;
+  font-weight:1000;
+  font-size:1rem;
+}
+.backup-reminder{
+  max-width:790px;
+  margin-top:5px;
+  color:#aebdd0;
+  font-size:.79rem;
+  line-height:1.45;
+}
+.save-status{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex:0 0 auto;
+  padding:6px 9px;
+  border:1px solid rgba(104,201,142,.34);
+  border-radius:999px;
+  background:rgba(44,122,76,.12);
+  color:#bdeacb;
+  font-size:.74rem;
+  font-weight:900;
+  white-space:nowrap;
+}
+.save-dot{
+  color:#64d58a;
+  font-size:.7rem;
+}
+.backup-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.backup-btn{
+  appearance:none;
+  border:1px solid #355784;
+  border-radius:9px;
+  background:#14243a;
+  color:#eaf2ff;
+  padding:9px 12px;
+  font:inherit;
+  font-size:.8rem;
+  font-weight:900;
+  cursor:pointer;
+  transition:transform .12s ease,border-color .12s ease,background .12s ease;
+}
+.backup-btn:hover{
+  transform:translateY(-1px);
+  border-color:#69b9f0;
+  background:#19304d;
+}
+.backup-btn.primary{
+  border-color:#79c9ff;
+  background:linear-gradient(135deg,#15375a,#10243b);
+}
+.backup-btn.accent{
+  border-color:#e0ad4f;
+  color:#ffd977;
+  background:linear-gradient(135deg,#3a2a12,#1e1a15);
+}
+.backup-btn.is-active{
+  border-color:#c99cff;
+  background:linear-gradient(135deg,#44285e,#21152f);
+  color:#efd9ff;
+}
+.backup-feedback{
+  min-height:1.2em;
+  margin-top:9px;
+  color:#aebdd0;
+  font-size:.77rem;
+  font-weight:800;
+}
+.backup-feedback.success{color:#91e7ad}
+.backup-feedback.error{color:#ff9f9f}
+
+.quest.hidden-by-completed{
+  display:none!important;
+}
+.quest.continue-highlight{
+  outline:2px solid #ffd54a;
+  box-shadow:0 0 0 5px rgba(255,213,74,.12),0 10px 30px rgba(0,0,0,.25);
+  animation:continuePulse 1.5s ease 2;
+}
+@keyframes continuePulse{
+  0%,100%{transform:translateZ(0);box-shadow:0 0 0 4px rgba(255,213,74,.10)}
+  50%{box-shadow:0 0 0 10px rgba(255,213,74,.20)}
+}
+@media(max-width:800px){
+  .backup-panel-head{flex-direction:column}
+  .save-status{white-space:normal}
+  .backup-actions{display:grid;grid-template-columns:1fr 1fr}
+  .backup-btn{width:100%}
+}
+@media(max-width:520px){
+  .backup-actions{grid-template-columns:1fr}
+}
 </style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body><div id="page-top" style="position:absolute;top:0;left:0"></div>
 <nav class="site-nav">
@@ -538,21 +668,43 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <div class="character-actions">
 <button class="charbtn select-char" type="button">Use Character</button>
 </div>
-</div>
+<div class="char-progress-mini">0 / 108 completed • 0%</div></div>
 <div class="character-slot" data-slot="2">
 <input aria-label="Character 2 name" class="character-name" maxlength="24" value="Character 2"/>
 <div class="character-actions">
 <button class="charbtn select-char" type="button">Use Character</button>
 </div>
-</div>
+<div class="char-progress-mini">0 / 108 completed • 0%</div></div>
 <div class="character-slot" data-slot="3">
 <input aria-label="Character 3 name" class="character-name" maxlength="24" value="Character 3"/>
 <div class="character-actions">
 <button class="charbtn select-char" type="button">Use Character</button>
 </div>
-</div>
+<div class="char-progress-mini">0 / 108 completed • 0%</div></div>
 </div>
 <div class="active-character-note">Currently tracking quests for: <b id="active-character-name">Character 1</b></div>
+</div><div class="backup-panel" id="quest-backup-panel">
+<div class="backup-panel-head">
+<div>
+<div class="backup-title">💾 Progress Backup &amp; Quick Actions</div>
+<div class="backup-reminder">
+        Progress is saved automatically in this browser. Export a backup before clearing browser data,
+        changing browsers or moving to another device.
+      </div>
+</div>
+<div aria-live="polite" class="save-status" id="save-status">
+<span class="save-dot">●</span>
+<span id="last-saved-text">Saved locally in this browser</span>
+</div>
+</div>
+<div class="backup-actions">
+<button class="backup-btn primary" id="export-progress" type="button">💾 Export Progress</button>
+<button class="backup-btn" id="import-progress" type="button">📥 Import Progress</button>
+<input accept=".json,application/json" hidden="" id="import-progress-file" type="file"/>
+<button aria-pressed="false" class="backup-btn" id="hide-completed" type="button">👁 Hide Completed</button>
+<button class="backup-btn accent" id="continue-progress" type="button">▶ Continue Progress</button>
+</div>
+<div aria-live="polite" class="backup-feedback" id="backup-feedback"></div>
 </div>
 <div class="tools-panel">
 <div class="searchbox">
@@ -571,7 +723,7 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <div class="ptitle">☑️ Your Quest Progress</div>
 <div class="progressbar"><span id="progress-fill"></span></div>
 <div class="progressnum" id="progress-num">0 / 0 completed</div>
-<button class="resetbtn" id="reset-progress" type="button">Reset checklist</button>
+<button class="resetbtn" id="reset-progress" title="Reset quest progress for the currently selected character only" type="button">🗑 Reset Character Progress</button>
 </div>
 </div>
 <h2 id="quest-level-toc-title">Quick Navigation</h2><nav class="toc" id="quest-level-toc"><a href="#s1">Levels 1–10</a><a href="#s2">Levels 11–20</a><a href="#s3">Levels 21–30</a><a href="#s4">Levels 31–40</a><a href="#s5">Levels 41–50</a><a href="#s6">Levels 51–60</a><a href="#s7">Levels 61–69</a><a href="#s8">Levels 70+</a></nav>
@@ -1467,7 +1619,7 @@ function updateSearchAndSections(){
 
   if(currentQuestSort==='level'){
     levelSections.forEach(sec=>{
-      const visible=sec.querySelector('.quest:not(.hidden-by-search)');
+      const visible=sec.querySelector('.quest:not(.hidden-by-search):not(.hidden-by-completed)');
       sec.style.display=visible?'':'none';
     });
   }else{
@@ -1720,7 +1872,9 @@ function saveCharacterConfig(){
     names[id]=clean;
   });
   localStorage.setItem(characterStorageKey,JSON.stringify({active:currentCharacter,names}));
+  if(typeof markProgressSaved==='function') markProgressSaved();
   updateActiveCharacterLabel();
+  if(typeof updateAllCharacterProgress==='function') updateAllCharacterProgress();
 }
 
 function updateActiveCharacterLabel(){
@@ -1742,13 +1896,18 @@ function loadProgress(){
     cb.closest('.quest').classList.toggle('done',cb.checked);
   });
   updateProgress();
+  if(typeof updateAllCharacterProgress==='function') updateAllCharacterProgress();
+  if(typeof applyHideCompletedState==='function') applyHideCompletedState();
 }
 
 function saveProgress(){
   const saved={};
   checks.forEach(cb=>saved[cb.dataset.key]=cb.checked);
   localStorage.setItem(progressStorageKey(),JSON.stringify(saved));
+  if(typeof markProgressSaved==='function') markProgressSaved();
   updateProgress();
+  if(typeof updateAllCharacterProgress==='function') updateAllCharacterProgress();
+  if(typeof applyHideCompletedState==='function') applyHideCompletedState();
 }
 
 function updateProgress(){
@@ -1798,13 +1957,368 @@ document.getElementById('reset-progress')?.addEventListener('click',()=>{
   if(confirm(`Reset all completed quest checkmarks for ${name}?`)){
     localStorage.removeItem(progressStorageKey());
     checks.forEach(c=>{c.checked=false;c.closest('.quest').classList.remove('done')});
+    if(typeof markProgressSaved==='function') markProgressSaved();
     updateProgress();
+    if(typeof updateAllCharacterProgress==='function') updateAllCharacterProgress();
+    if(typeof applyHideCompletedState==='function') applyHideCompletedState();
+    if(typeof setBackupFeedback==='function') setBackupFeedback(`${name} progress was reset.`,true);
   }
 });
 
 document.getElementById('quest-search')?.addEventListener('input',()=>{
   updateSearchAndSections();
 });
+
+
+/* PROGRESS_BACKUP_FEATURES_START */
+const questBackupVersion=1;
+const questBackupFormat='KaiokenMS Quest Progress Backup';
+const lastSavedStorageKey='kaioken_quest_last_saved_v1';
+const hideCompletedStorageKey='kaioken_hide_completed_v1';
+const validCharacterSlots=['1','2','3'];
+let hideCompletedEnabled=false;
+
+function safeLocalGet(key){
+  try{return localStorage.getItem(key)}catch(e){return null}
+}
+
+function safeLocalSet(key,value){
+  try{localStorage.setItem(key,value);return true}catch(e){return false}
+}
+
+function currentCharacterName(slotId=currentCharacter){
+  const slot=document.querySelector(`.character-slot[data-slot="${slotId}"]`);
+  return slot?.querySelector('.character-name')?.value?.trim() || `Character ${slotId}`;
+}
+
+function formatSavedTime(iso){
+  if(!iso) return 'Saved locally in this browser';
+  const d=new Date(iso);
+  if(Number.isNaN(d.getTime())) return 'Saved locally in this browser';
+  try{
+    return 'Last saved: '+new Intl.DateTimeFormat(undefined,{
+      hour:'2-digit',
+      minute:'2-digit',
+      day:'2-digit',
+      month:'short'
+    }).format(d);
+  }catch(e){
+    return 'Last saved: '+d.toLocaleString();
+  }
+}
+
+function refreshLastSavedLabel(){
+  const label=document.getElementById('last-saved-text');
+  if(label) label.textContent=formatSavedTime(safeLocalGet(lastSavedStorageKey));
+}
+
+function markProgressSaved(){
+  safeLocalSet(lastSavedStorageKey,new Date().toISOString());
+  refreshLastSavedLabel();
+}
+
+function readCharacterProgress(slotId){
+  let saved={};
+  try{
+    saved=JSON.parse(safeLocalGet(progressPrefix+slotId)||'{}')||{};
+  }catch(e){
+    saved={};
+  }
+  return saved;
+}
+
+function updateAllCharacterProgress(){
+  const total=checks.length;
+  validCharacterSlots.forEach(slotId=>{
+    const saved=readCharacterProgress(slotId);
+    const done=checks.reduce((count,cb)=>count+(saved[cb.dataset.key]===true?1:0),0);
+    const pct=total?Math.round(done/total*100):0;
+    const slot=document.querySelector(`.character-slot[data-slot="${slotId}"]`);
+    const mini=slot?.querySelector('.char-progress-mini');
+    if(mini) mini.textContent=`${done} / ${total} completed • ${pct}%`;
+  });
+}
+
+function setBackupFeedback(message,success=null){
+  const el=document.getElementById('backup-feedback');
+  if(!el) return;
+  el.textContent=message||'';
+  el.classList.remove('success','error');
+  if(success===true) el.classList.add('success');
+  if(success===false) el.classList.add('error');
+}
+
+function applyHideCompletedState(){
+  cards.forEach(card=>{
+    const cb=card.querySelector('.quest-check');
+    card.classList.toggle('hidden-by-completed',hideCompletedEnabled && !!cb?.checked);
+  });
+
+  const btn=document.getElementById('hide-completed');
+  if(btn){
+    btn.setAttribute('aria-pressed',hideCompletedEnabled?'true':'false');
+    btn.classList.toggle('is-active',hideCompletedEnabled);
+    btn.textContent=hideCompletedEnabled?'👁 Show Completed':'👁 Hide Completed';
+  }
+
+  if(typeof updateSearchAndSections==='function') updateSearchAndSections();
+}
+
+function loadHideCompletedPreference(){
+  hideCompletedEnabled=safeLocalGet(hideCompletedStorageKey)==='true';
+  applyHideCompletedState();
+}
+
+document.getElementById('hide-completed')?.addEventListener('click',()=>{
+  hideCompletedEnabled=!hideCompletedEnabled;
+  safeLocalSet(hideCompletedStorageKey,String(hideCompletedEnabled));
+  applyHideCompletedState();
+  setBackupFeedback(
+    hideCompletedEnabled
+      ? 'Completed quests are hidden for the active character.'
+      : 'Completed quests are visible again.',
+    true
+  );
+});
+
+function collectCharacterConfigForBackup(){
+  const names={};
+  document.querySelectorAll('.character-slot').forEach(slot=>{
+    const id=slot.dataset.slot;
+    names[id]=(slot.querySelector('.character-name')?.value||`Character ${id}`).trim()||`Character ${id}`;
+  });
+  return {active:currentCharacter,names};
+}
+
+function buildProgressBackup(){
+  // Make sure the currently visible character state is written first.
+  saveProgress();
+  saveCharacterConfig();
+
+  const progress={};
+  validCharacterSlots.forEach(slotId=>{
+    progress[slotId]=readCharacterProgress(slotId);
+  });
+
+  const topSorts={};
+  Object.keys(typeof topSortOptions==='object'?topSortOptions:{}).forEach(tabId=>{
+    const value=safeLocalGet(topSortStoragePrefix+tabId);
+    if(value) topSorts[tabId]=value;
+  });
+
+  return {
+    format:questBackupFormat,
+    version:questBackupVersion,
+    exportedAt:new Date().toISOString(),
+    questCount:checks.length,
+    characters:collectCharacterConfigForBackup(),
+    progress,
+    preferences:{
+      questSort:safeLocalGet(questSortStorageKey)||'level',
+      topSorts,
+      hideCompleted:hideCompletedEnabled
+    }
+  };
+}
+
+function safeBackupFilename(){
+  const d=new Date();
+  const stamp=[
+    d.getFullYear(),
+    String(d.getMonth()+1).padStart(2,'0'),
+    String(d.getDate()).padStart(2,'0')
+  ].join('-');
+  return `kaiokenms-quest-progress-${stamp}.json`;
+}
+
+document.getElementById('export-progress')?.addEventListener('click',()=>{
+  try{
+    const backup=buildProgressBackup();
+    const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=safeBackupFilename();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    setBackupFeedback('Backup exported successfully. Keep the JSON file somewhere safe.',true);
+  }catch(err){
+    console.error(err);
+    setBackupFeedback('Could not export the backup. Your browser may be blocking file downloads.',false);
+  }
+});
+
+document.getElementById('import-progress')?.addEventListener('click',()=>{
+  const input=document.getElementById('import-progress-file');
+  if(input){
+    input.value='';
+    input.click();
+  }
+});
+
+function normalizeImportedBackup(data){
+  if(!data || typeof data!=='object') throw new Error('Invalid backup file.');
+  if(data.format!==questBackupFormat) throw new Error('This is not a KaiokenMS quest progress backup.');
+  if(Number(data.version)!==questBackupVersion) throw new Error('This backup version is not supported.');
+
+  const validQuestKeys=new Set(checks.map(cb=>cb.dataset.key));
+  const names={'1':'Character 1','2':'Character 2','3':'Character 3'};
+  const incomingNames=data.characters?.names||{};
+
+  validCharacterSlots.forEach(slotId=>{
+    const value=String(incomingNames[slotId]||names[slotId]).trim().slice(0,24);
+    names[slotId]=value||`Character ${slotId}`;
+  });
+
+  const active=validCharacterSlots.includes(String(data.characters?.active))
+    ? String(data.characters.active)
+    : '1';
+
+  const progress={};
+  validCharacterSlots.forEach(slotId=>{
+    const src=(data.progress && typeof data.progress[slotId]==='object' && data.progress[slotId])
+      ? data.progress[slotId]
+      : {};
+    const clean={};
+    validQuestKeys.forEach(key=>{
+      clean[key]=src[key]===true;
+    });
+    progress[slotId]=clean;
+  });
+
+  const allowedQuestSorts=['level','exp','fame'];
+  const questSortValue=allowedQuestSorts.includes(data.preferences?.questSort)
+    ? data.preferences.questSort
+    : 'level';
+
+  const topSorts={};
+  if(data.preferences?.topSorts && typeof data.preferences.topSorts==='object'){
+    Object.entries(data.preferences.topSorts).forEach(([tabId,value])=>{
+      const allowed=(topSortOptions?.[tabId]||[]).map(x=>x[0]);
+      if(allowed.includes(value)) topSorts[tabId]=value;
+    });
+  }
+
+  return {
+    characters:{active,names},
+    progress,
+    preferences:{
+      questSort:questSortValue,
+      topSorts,
+      hideCompleted:data.preferences?.hideCompleted===true
+    }
+  };
+}
+
+function applyImportedBackup(clean){
+  safeLocalSet(characterStorageKey,JSON.stringify(clean.characters));
+
+  validCharacterSlots.forEach(slotId=>{
+    safeLocalSet(progressPrefix+slotId,JSON.stringify(clean.progress[slotId]));
+  });
+
+  safeLocalSet(questSortStorageKey,clean.preferences.questSort);
+  Object.entries(clean.preferences.topSorts).forEach(([tabId,value])=>{
+    safeLocalSet(topSortStoragePrefix+tabId,value);
+  });
+  safeLocalSet(hideCompletedStorageKey,String(clean.preferences.hideCompleted));
+
+  currentCharacter=clean.characters.active;
+  hideCompletedEnabled=clean.preferences.hideCompleted;
+
+  loadCharacterConfig();
+  loadProgress();
+
+  currentQuestSort=clean.preferences.questSort;
+  applyQuestSort(currentQuestSort);
+
+  if(typeof populateTopSort==='function'){
+    populateTopSort(activeQuestTabId());
+  }
+
+  applyHideCompletedState();
+  markProgressSaved();
+  updateAllCharacterProgress();
+}
+
+document.getElementById('import-progress-file')?.addEventListener('change',async e=>{
+  const file=e.target.files?.[0];
+  if(!file) return;
+
+  try{
+    if(file.size>2*1024*1024) throw new Error('Backup file is unexpectedly large.');
+
+    const text=await file.text();
+    const data=JSON.parse(text);
+    const clean=normalizeImportedBackup(data);
+
+    const activeName=clean.characters.names[clean.characters.active]||'the imported character';
+    const ok=confirm(
+      `Import this quest backup?\n\n`+
+      `This will replace the saved quest progress for all 3 character slots in this browser.\n`+
+      `Active character after import: ${activeName}`
+    );
+    if(!ok){
+      setBackupFeedback('Import cancelled. Nothing was changed.',null);
+      return;
+    }
+
+    applyImportedBackup(clean);
+    setBackupFeedback('Backup imported successfully. All 3 character slots were restored.',true);
+  }catch(err){
+    console.error(err);
+    setBackupFeedback(err?.message||'Could not import this backup file.',false);
+  }finally{
+    e.target.value='';
+  }
+});
+
+function showAllQuestsTab(){
+  const btn=document.querySelector('.guide-tab[data-tab="all-quests"]');
+  if(btn && !btn.classList.contains('active')){
+    btn.click();
+  }
+}
+
+document.getElementById('continue-progress')?.addEventListener('click',()=>{
+  showAllQuestsTab();
+
+  const search=document.getElementById('quest-search');
+  if(search && search.value){
+    search.value='';
+  }
+  updateSearchAndSections();
+
+  requestAnimationFrame(()=>{
+    const incomplete=[...document.querySelectorAll('#all-quests .quest')]
+      .filter(card=>!card.querySelector('.quest-check')?.checked);
+
+    if(!incomplete.length){
+      setBackupFeedback(`${currentCharacterName()}: all ${checks.length} quests are complete!`,true);
+      return;
+    }
+
+    const target=incomplete[0];
+    target.classList.remove('continue-highlight');
+    target.scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(()=>{
+      target.classList.add('continue-highlight');
+      setTimeout(()=>target.classList.remove('continue-highlight'),3200);
+    },450);
+
+    const title=target.querySelector('.qtitle')?.textContent?.trim()||'next incomplete quest';
+    setBackupFeedback(`Continuing ${currentCharacterName()} at: ${title}`,true);
+  });
+});
+
+// Initial state for the new UI.
+refreshLastSavedLabel();
+updateAllCharacterProgress();
+loadHideCompletedPreference();
+/* PROGRESS_BACKUP_FEATURES_END */
+
 
 try{
   const savedSort=localStorage.getItem(questSortStorageKey);

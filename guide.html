@@ -366,7 +366,34 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
     text-align:left;
   }
 }
-</style></head>
+
+.author-stamp{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:14px;
+  padding:6px 11px;
+  border:1px solid rgba(255,213,74,.55);
+  border-radius:999px;
+  background:rgba(3,7,17,.68);
+  color:#ffd54a;
+  font-size:.82rem;
+  font-weight:1000;
+  letter-spacing:.04em;
+  box-shadow:0 0 14px rgba(255,138,0,.10);
+}
+.footer-credit{
+  margin-top:8px;
+  color:#ffd54a;
+  font-weight:900;
+  font-size:.88rem;
+}
+.footer-rights{
+  margin-top:4px;
+  color:#b9c7da;
+  font-size:.78rem;
+}
+</style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body>
 <nav class="site-nav">
 <div class="brand">🐉 KaiokenMS Guides</div>
@@ -377,7 +404,7 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 </div>
 </nav>
 <header class="hero"><div class="kicker">Complete Progression Guide</div><h1>KaiokenMS Guide Sections</h1>
-<p class="subtitle">Each section now has its own page. Quick Start is on the left, Monster Book is highlighted on the right, and the rest follow in the same progression order.</p></header>
+<p class="subtitle">Each section now has its own page. Quick Start is on the left, Monster Book is highlighted on the right, and the rest follow in the same progression order.</p><div class="author-stamp">⚡ Original Guide • Created &amp; Maintained by -Yakir-H</div></header>
 <main class="wrap">
 <div class="notice"><b>Choose a section:</b> nothing is stacked into one long guide anymore. Open only the topic you want, then use Previous / Next or return here.</div>
 <div class="view-controls">
@@ -468,7 +495,7 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 <div class="open">Open Section →</div>
 </a>
 </div>
-</main><footer>KaiokenMS Complete Progression Guide</footer><script>
+</main><footer>KaiokenMS Complete Progression Guide<div class="footer-credit">Created &amp; Maintained by -Yakir-H</div><div class="footer-rights">© 2026 -Yakir-H. All rights reserved. Please credit the original author when sharing or adapting this guide.</div></footer><script>
 const grid=document.querySelector('.card-grid');
 const buttons=[...document.querySelectorAll('.view-btn')];
 const storageKey='kaioken_guide_view_v2';

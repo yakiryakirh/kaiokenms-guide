@@ -1,5 +1,6 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>KaiokenMS Complete Progression Guide</title><style>
 :root{
   --space:#050914;--deep:#0b1630;--panel:#111d35;--panel2:#172746;
@@ -80,124 +81,240 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
   .card-grid,.visual,.visual.reverse,.page-nav{grid-template-columns:1fr}
   .page-nav a:last-child{text-align:left}
 }
+
+.view-controls{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:0 0 18px;
+  padding:10px 12px;
+  border:1px solid #35547c;
+  border-radius:12px;
+  background:rgba(5,11,23,.82);
+}
+.view-controls .label{
+  color:var(--muted);
+  font-weight:900;
+}
+.view-buttons{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.view-btn{
+  border:1px solid #35547c;
+  background:linear-gradient(145deg,#172a4a,#0d182d);
+  color:#fff;
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:900;
+  cursor:pointer;
+  font-family:inherit;
+}
+.view-btn:hover,.view-btn.active{
+  border-color:var(--orange);
+  color:var(--gold);
+  box-shadow:0 0 14px rgba(255,138,0,.14);
+}
+
+/* Small cards: compact two-column grid */
+.card-grid.view-small{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+.card-grid.view-small .guide-card{
+  min-height:170px;
+  padding:16px;
+}
+.card-grid.view-small .guide-card .emoji{font-size:2rem}
+.card-grid.view-small .guide-card h2{font-size:1.25rem;margin:.15em 0 .25em}
+.card-grid.view-small .guide-card p{font-size:.92rem;margin:.2em 0 .5em}
+
+/* Large cards: spacious one-column layout */
+.card-grid.view-large{
+  grid-template-columns:1fr;
+}
+.card-grid.view-large .guide-card{
+  min-height:250px;
+  padding:24px 28px;
+}
+.card-grid.view-large .guide-card .emoji{font-size:3rem}
+.card-grid.view-large .guide-card h2{font-size:1.7rem}
+.card-grid.view-large .guide-card p{font-size:1.02rem;max-width:780px}
+
+/* List view */
+.card-grid.view-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.card-grid.view-list .guide-card{
+  min-height:0;
+  padding:12px 15px;
+  display:grid;
+  grid-template-columns:46px minmax(210px,.9fr) 1.5fr auto;
+  align-items:center;
+  gap:12px;
+}
+.card-grid.view-list .guide-card .emoji{
+  font-size:1.65rem;
+  line-height:1;
+}
+.card-grid.view-list .guide-card .hot-label{
+  display:none;
+}
+.card-grid.view-list .guide-card h2{
+  margin:0;
+  padding:0;
+  border:0;
+  font-size:1.05rem;
+  white-space:nowrap;
+}
+.card-grid.view-list .guide-card p{
+  margin:0;
+  font-size:.88rem;
+  color:var(--muted);
+}
+.card-grid.view-list .guide-card .open{
+  margin:0;
+  white-space:nowrap;
+}
+.card-grid.view-list .guide-card.hot{
+  border-width:1px;
+  box-shadow:0 0 12px rgba(255,122,0,.18);
+}
+.card-grid.view-list .guide-card.hot h2:before{
+  content:"🔥 ";
+}
+
+@media(max-width:760px){
+  .card-grid.view-small{grid-template-columns:1fr}
+  .card-grid.view-list .guide-card{
+    grid-template-columns:38px 1fr;
+  }
+  .card-grid.view-list .guide-card p,
+  .card-grid.view-list .guide-card .open{
+    grid-column:2;
+  }
+  .card-grid.view-list .guide-card h2{
+    white-space:normal;
+  }
+}
 </style></head>
 <body>
 <nav class="site-nav">
-  <div class="brand">🐉 KaiokenMS Guides</div>
-  <div class="nav-links">
-    <a href="./">🏠 Home</a>
-    <a class="active" href="guide.html">📘 Main Guide</a>
-    <a href="quests.html">📜 Quest Guide</a>
-  </div>
+<div class="brand">🐉 KaiokenMS Guides</div>
+<div class="nav-links">
+<a href="./">🏠 Home</a>
+<a class="active" href="guide.html">📘 Main Guide</a>
+<a href="quests.html">📜 Quest Guide</a>
+</div>
 </nav>
-
 <header class="hero"><div class="kicker">Complete Progression Guide</div><h1>KaiokenMS Guide Sections</h1>
 <p class="subtitle">Each section now has its own page. Quick Start is on the left, Monster Book is highlighted on the right, and the rest follow in the same progression order.</p></header>
 <main class="wrap">
 <div class="notice"><b>Choose a section:</b> nothing is stacked into one long guide anymore. Open only the topic you want, then use Previous / Next or return here.</div>
-<div class="card-grid">
-    <a class="guide-card" href="quick-start.html">
-      <div class="emoji">🚀</div>
-      
-      <h2>Quick Start</h2>
-      <p>What new players should do first</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card hot" href="monster-book.html">
-      <div class="emoji">🔥</div>
-      <span class="hot-label">🔥 IMPORTANT</span>
-      <h2>Monster Book &amp; Scouter</h2>
-      <p>Permanent stats, boss cards and long-term account power</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="leveling.html">
-      <div class="emoji">⚡</div>
-      
-      <h2>Leveling</h2>
-      <p>Master Roshi, kill speed and the Hyperbolic Time Chamber</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="achievements.html">
-      <div class="emoji">🏅</div>
-      
-      <h2>Achievements</h2>
-      <p>Account-wide progression and milestone priorities</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="alts-mules.html">
-      <div class="emoji">👥</div>
-      
-      <h2>Alts &amp; Mules</h2>
-      <p>Why and when extra characters are worth building</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="mesos-farming.html">
-      <div class="emoji">💰</div>
-      
-      <h2>Mesos &amp; Farming</h2>
-      <p>Active farming, MP3, market value and Gachapon</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="pq-bossing.html">
-      <div class="emoji">👹</div>
-      
-      <h2>PQ &amp; Bossing</h2>
-      <p>Boss Points, PQ Points and prequest value</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="dragon-balls.html">
-      <div class="emoji">🐉</div>
-      
-      <h2>Dragon Balls</h2>
-      <p>Shenron, Super Saiyan and late Dragon Ball rates</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="fishing.html">
-      <div class="emoji">🎣</div>
-      
-      <h2>Fishing</h2>
-      <p>AFK progression and Dragon Ball access</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="rebirth.html">
-      <div class="emoji">♻️</div>
-      
-      <h2>Rebirth</h2>
-      <p>Level 200, Shenron wish and class-family restrictions</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="economy.html">
-      <div class="emoji">🏪</div>
-      
-      <h2>Economy &amp; Shops</h2>
-      <p>Maple Leaves, custom shops and trading systems</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="commands.html">
-      <div class="emoji">⌨️</div>
-      
-      <h2>Useful Commands</h2>
-      <p>Drop lookup, fishing list, DPS and QoL</p>
-      <div class="open">Open Section →</div>
-    </a>
-    
-    <a class="guide-card" href="routine.html">
-      <div class="emoji">✅</div>
-      
-      <h2>Session Routine</h2>
-      <p>A practical way to stack multiple progression systems</p>
-      <div class="open">Open Section →</div>
-    </a>
-    </div>
-</main><footer>KaiokenMS Complete Progression Guide</footer></body></html>
+<div class="view-controls">
+<div class="label">View:</div>
+<div class="view-buttons">
+<button class="view-btn" data-view="list" type="button">☰ List</button>
+<button class="view-btn active" data-view="small" type="button">▦ Small Cards</button>
+<button class="view-btn" data-view="large" type="button">▣ Large Cards</button>
+</div>
+</div><div class="card-grid view-small">
+<a class="guide-card" href="quick-start.html">
+<div class="emoji">🚀</div>
+<h2>Quick Start</h2>
+<p>What new players should do first</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card hot" href="monster-book.html">
+<div class="emoji">🔥</div>
+<span class="hot-label">🔥 IMPORTANT</span>
+<h2>Monster Book &amp; Scouter</h2>
+<p>Permanent stats, boss cards and long-term account power</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="leveling.html">
+<div class="emoji">⚡</div>
+<h2>Leveling</h2>
+<p>Master Roshi, kill speed and the Hyperbolic Time Chamber</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="achievements.html">
+<div class="emoji">🏅</div>
+<h2>Achievements</h2>
+<p>Account-wide progression and milestone priorities</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="alts-mules.html">
+<div class="emoji">👥</div>
+<h2>Alts &amp; Mules</h2>
+<p>Why and when extra characters are worth building</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="mesos-farming.html">
+<div class="emoji">💰</div>
+<h2>Mesos &amp; Farming</h2>
+<p>Active farming, MP3, market value and Gachapon</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="pq-bossing.html">
+<div class="emoji">👹</div>
+<h2>PQ &amp; Bossing</h2>
+<p>Boss Points, PQ Points and prequest value</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="dragon-balls.html">
+<div class="emoji">🐉</div>
+<h2>Dragon Balls</h2>
+<p>Shenron, Super Saiyan and late Dragon Ball rates</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="fishing.html">
+<div class="emoji">🎣</div>
+<h2>Fishing</h2>
+<p>AFK progression and Dragon Ball access</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="rebirth.html">
+<div class="emoji">♻️</div>
+<h2>Rebirth</h2>
+<p>Level 200, Shenron wish and class-family restrictions</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="economy.html">
+<div class="emoji">🏪</div>
+<h2>Economy &amp; Shops</h2>
+<p>Maple Leaves, custom shops and trading systems</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="commands.html">
+<div class="emoji">⌨️</div>
+<h2>Useful Commands</h2>
+<p>Drop lookup, fishing list, DPS and QoL</p>
+<div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="routine.html">
+<div class="emoji">✅</div>
+<h2>Session Routine</h2>
+<p>A practical way to stack multiple progression systems</p>
+<div class="open">Open Section →</div>
+</a>
+</div>
+</main><footer>KaiokenMS Complete Progression Guide</footer><script>
+const grid=document.querySelector('.card-grid');
+const buttons=[...document.querySelectorAll('.view-btn')];
+const storageKey='kaioken_guide_view_v1';
+
+function setView(view){
+  grid.classList.remove('view-list','view-small','view-large');
+  grid.classList.add('view-'+view);
+  buttons.forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  localStorage.setItem(storageKey,view);
+}
+buttons.forEach(btn=>btn.addEventListener('click',()=>setView(btn.dataset.view)));
+const saved=localStorage.getItem(storageKey);
+if(['list','small','large'].includes(saved)) setView(saved);
+</script></body></html>

@@ -1531,6 +1531,125 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
     align-self:center;
   }
 }
+
+
+
+/* ===== Kerning Pre-Collect Checklist ===== */
+.kerning-precollect-box{
+  margin:16px 0;
+  padding:16px;
+  border:2px solid #62b9ec;
+  border-radius:13px;
+  background:
+    linear-gradient(135deg,rgba(21,56,85,.45),rgba(12,23,39,.92));
+  box-shadow:0 10px 28px rgba(0,0,0,.18);
+}
+.kerning-precollect-head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 170px;
+  gap:16px;
+  align-items:start;
+}
+.kerning-precollect-head h3{
+  margin:4px 0 6px;
+  color:#fff;
+  font-size:1rem;
+}
+.kerning-precollect-head p{
+  margin:0;
+  color:#b8c7d8;
+  font-size:.79rem;
+  line-height:1.48;
+}
+.kerning-precollect-total{
+  padding:12px;
+  border:1px solid #4d7fa8;
+  border-radius:11px;
+  background:rgba(9,30,49,.72);
+  text-align:center;
+}
+.kerning-precollect-total strong{
+  display:block;
+  color:#8ff0b0;
+  font-size:1.8rem;
+  line-height:1;
+}
+.kerning-precollect-total span,
+.kerning-precollect-total small{
+  display:block;
+  margin-top:4px;
+  color:#afc2d5;
+  font-size:.69rem;
+}
+.kerning-precollect-groups{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:9px;
+  margin-top:14px;
+}
+.kpc-group{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  min-height:150px;
+  padding:11px;
+  border:1px solid #3e638a;
+  border-radius:10px;
+  background:rgba(7,19,33,.64);
+}
+.kpc-group>b{
+  margin-bottom:3px;
+  color:#ffd978;
+  font-size:.77rem;
+}
+.kpc-group span{
+  color:#c3d1df;
+  font-size:.69rem;
+  line-height:1.3;
+}
+.kpc-group span strong{
+  color:#fff;
+}
+.kpc-group em{
+  margin-top:auto;
+  padding-top:7px;
+  border-top:1px solid rgba(91,125,162,.25);
+  color:#7ed9ff;
+  font-size:.67rem;
+  font-style:normal;
+  font-weight:1000;
+}
+.kerning-precollect-tip{
+  margin-top:11px;
+  padding:10px 12px;
+  border-left:4px solid #ffd54a;
+  border-radius:8px;
+  background:rgba(255,213,74,.06);
+  color:#d5e0eb;
+  font-size:.76rem;
+  line-height:1.45;
+}
+.kerning-precollect-tip b{
+  color:#ffd54a;
+}
+@media(max-width:1100px){
+  .kerning-precollect-groups{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+@media(max-width:720px){
+  .kerning-precollect-head{
+    grid-template-columns:1fr;
+  }
+  .kerning-precollect-groups{
+    grid-template-columns:1fr 1fr;
+  }
+}
+@media(max-width:480px){
+  .kerning-precollect-groups{
+    grid-template-columns:1fr;
+  }
+}
 </style><meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body><div id="page-top" style="position:absolute;top:0;left:0"></div>
 <nav class="site-nav">
@@ -2587,7 +2706,64 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <div><b>⚡ Efficiency</b><span>Finish every objective available in the same floor before moving deeper into the mall.</span></div>
 <div><b>🔊 Boss warning</b><span>After killing Rock Spirit, listen to the sound. You will need to identify it immediately afterward.</span></div>
 </div>
-<div class="kerning-table-wrap"><table class="kerning-guide-table"><thead><tr><th>#</th><th>Phase</th><th>Quest Step</th><th>What To Do</th><th>Reference EXP</th></tr></thead><tbody><tr><td class="step-num">1</td><td class="step-phase">Arrival</td><td class="step-name">Jake → Kerning Square</td><td class="step-action">Take Jake's quest. Use the Kerning subway turnstile, choose the Kerning Square option, wait for the ride, then speak with Hyeokyi.</td><td class="step-exp">2,400 EXP</td></tr><tr><td class="step-num">2</td><td class="step-phase">Arrival</td><td class="step-name">Hyeokyi → Lana</td><td class="step-action">Speak with Lana in the next area.</td><td class="step-exp">1,320 EXP</td></tr><tr><td class="step-num">3</td><td class="step-phase">Arrival</td><td class="step-name">Lana → Dongdong</td><td class="step-action">Find Dongdong on the far right side and speak with him.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">4</td><td class="step-phase">Bubble Tea</td><td class="step-name">Tapioca Bubble Collection</td><td class="step-action">Collect 30 Pink Tapioca Bubbles, 30 Green Tapioca Bubbles and 40 Yellow Tapioca Bubbles from the Bubble Tea monsters.</td><td class="step-exp">14,800 EXP</td></tr><tr><td class="step-num">5</td><td class="step-phase">Bubble Tea</td><td class="step-name">Find the Map</td><td class="step-action">Complete Dongdong's map search objective and return the map to him.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">6</td><td class="step-phase">Dolls</td><td class="step-name">Find Tina</td><td class="step-action">Return to Lana, then speak with Tina above the area.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">7</td><td class="step-phase">Dolls</td><td class="step-name">Plushie Collection</td><td class="step-action">Collect 50 Yeti Plushies, 50 Jr. Pepe Plushies and 20 Orange Mushroom Plushies. The plushie monsters appear from the grab-machine mobs.</td><td class="step-exp">15,300 EXP</td></tr><tr><td class="step-num">8</td><td class="step-phase">Keys</td><td class="step-name">Find Marshall</td><td class="step-action">Take Lana's next request and speak with Marshall at the top of the map.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">9</td><td class="step-phase">Keys</td><td class="step-name">Locker Key</td><td class="step-action">Complete Lana's key objective, return to the subway lobby and interact with the lockers to receive the key.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">10</td><td class="step-phase">Keys</td><td class="step-name">Deliver the Key</td><td class="step-action">Bring the key from the lockers to Marshall.</td><td class="step-exp">1,560 EXP</td></tr><tr><td class="step-num">11</td><td class="step-phase">Fashion</td><td class="step-name">Find Lala</td><td class="step-action">Speak with Lala for the next part of the chain.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">12</td><td class="step-phase">Fashion</td><td class="step-name">Hat Collection</td><td class="step-action">Collect 50 Bunny Hats, 50 Wigs and 50 Top Hats.</td><td class="step-exp">16,700 EXP</td></tr><tr><td class="step-num">13</td><td class="step-phase">Fashion</td><td class="step-name">Perfume Collection</td><td class="step-action">Collect 30 Pink, 30 Purple and 30 Yellow Perfume Bottles.</td><td class="step-exp">13,900 EXP</td></tr><tr><td class="step-num">14</td><td class="step-phase">Fashion</td><td class="step-name">Perfume Tests</td><td class="step-action">Complete the three timed perfume tests. After being sprayed, reach Lana within the short timer and test the perfume choice.</td><td class="step-exp">6,900 EXP total</td></tr><tr><td class="step-num">15</td><td class="step-phase">Music</td><td class="step-name">CD Collection</td><td class="step-action">Collect 50 Rainbow CDs and 50 Normal CDs.</td><td class="step-exp">15,100 EXP</td></tr><tr><td class="step-num">16</td><td class="step-phase">Music</td><td class="step-name">Norma's MP3</td><td class="step-action">Help Norma recover the MP3 objective and defeat 50 speaker monsters.</td><td class="step-exp">14,100 EXP</td></tr><tr><td class="step-num">17</td><td class="step-phase">Music</td><td class="step-name">Collect Cords</td><td class="step-action">Collect 50 Cords from the red speaker monsters inside the timed area.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">18</td><td class="step-phase">Boss</td><td class="step-name">Rock Spirit</td><td class="step-action">Collect 1 Music Sheet and defeat Rock Spirit. Pay attention to the sound played after the boss dies because the next step tests you on it.</td><td class="step-exp">48,500 EXP</td></tr><tr><td class="step-num">19</td><td class="step-phase">Boss</td><td class="step-name">Sound Check</td><td class="step-action">Listen to the three sample sounds and enter the number matching the sound you heard after Rock Spirit died. A wrong answer means repeating the boss check.</td><td class="step-exp">32,500 EXP</td></tr><tr><td class="step-num">20</td><td class="step-phase">Finish</td><td class="step-name">Return the Book</td><td class="step-action">Take Norma's book back to Lana.</td><td class="step-exp">1,320 EXP</td></tr><tr><td class="step-num">21</td><td class="step-phase">Finish</td><td class="step-name">Complete Kerning Square</td><td class="step-action">Return to Hyeokyi to close the questline and receive the completion reward.</td><td class="step-exp">37,200 EXP</td></tr></tbody></table></div><div class="kerning-finish-box">
+<div class="kerning-precollect-box" id="kerning-precollect-list">
+<div class="kerning-precollect-head">
+<div>
+<div class="route-eyebrow">FASTEST WAY TO CLEAR KERNING SQUARE</div>
+<h3>📦 Pre-Collect These Before Talking to the Quest NPCs</h3>
+<p>
+        If the monsters are already available to you, collect the full stacks below first.
+        Then go back through the NPCs and turn the quests in one after another instead of stopping to farm after every dialogue step.
+      </p>
+</div>
+<div class="kerning-precollect-total">
+<strong>560</strong>
+<span>Total ETC pieces</span>
+<small>14 different items</small>
+</div>
+</div>
+<div class="kerning-precollect-groups">
+<div class="kpc-group">
+<b>🧋 Tapioca Bubbles</b>
+<span><strong>30</strong> Pink Tapioca Bubbles</span>
+<span><strong>30</strong> Green Tapioca Bubbles</span>
+<span><strong>40</strong> Yellow Tapioca Bubbles</span>
+<em>100 total</em>
+</div>
+<div class="kpc-group">
+<b>🧸 Plushies</b>
+<span><strong>50</strong> Yeti Plushies</span>
+<span><strong>50</strong> Jr. Pepe Plushies</span>
+<span><strong>20</strong> Orange Mushroom Plushies</span>
+<em>120 total</em>
+</div>
+<div class="kpc-group">
+<b>🎩 Fashion Items</b>
+<span><strong>50</strong> Bunny Hats</span>
+<span><strong>50</strong> Wigs</span>
+<span><strong>50</strong> Top Hats</span>
+<em>150 total</em>
+</div>
+<div class="kpc-group">
+<b>🧴 Perfume Bottles</b>
+<span><strong>30</strong> Pink Perfume Bottles</span>
+<span><strong>30</strong> Purple Perfume Bottles</span>
+<span><strong>30</strong> Yellow Perfume Bottles</span>
+<em>90 total</em>
+</div>
+<div class="kpc-group">
+<b>💿 CDs</b>
+<span><strong>50</strong> Rainbow CDs</span>
+<span><strong>50</strong> Normal CDs</span>
+<em>100 total</em>
+</div>
+</div>
+<div class="kerning-precollect-tip">
+<b>⚡ Recommended:</b>
+    farm everything from the first Tapioca Bubble items through the CDs before doing the NPC turn-ins.
+    Once the stacks are ready, run through the quest dialogue in sequence and clear a large part of Kerning Square with almost no farming interruptions.
+  </div>
+</div><div class="kerning-table-wrap"><table class="kerning-guide-table"><thead><tr><th>#</th><th>Phase</th><th>Quest Step</th><th>What To Do</th><th>Reference EXP</th></tr></thead><tbody><tr><td class="step-num">1</td><td class="step-phase">Arrival</td><td class="step-name">Jake → Kerning Square</td><td class="step-action">Take Jake's quest. Use the Kerning subway turnstile, choose the Kerning Square option, wait for the ride, then speak with Hyeokyi.</td><td class="step-exp">2,400 EXP</td></tr><tr><td class="step-num">2</td><td class="step-phase">Arrival</td><td class="step-name">Hyeokyi → Lana</td><td class="step-action">Speak with Lana in the next area.</td><td class="step-exp">1,320 EXP</td></tr><tr><td class="step-num">3</td><td class="step-phase">Arrival</td><td class="step-name">Lana → Dongdong</td><td class="step-action">Find Dongdong on the far right side and speak with him.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">4</td><td class="step-phase">Bubble Tea</td><td class="step-name">Tapioca Bubble Collection</td><td class="step-action">Collect 30 Pink Tapioca Bubbles, 30 Green Tapioca Bubbles and 40 Yellow Tapioca Bubbles from the Bubble Tea monsters.</td><td class="step-exp">14,800 EXP</td></tr><tr><td class="step-num">5</td><td class="step-phase">Bubble Tea</td><td class="step-name">Find the Map</td><td class="step-action">Complete Dongdong's map search objective and return the map to him.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">6</td><td class="step-phase">Dolls</td><td class="step-name">Find Tina</td><td class="step-action">Return to Lana, then speak with Tina above the area.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">7</td><td class="step-phase">Dolls</td><td class="step-name">Plushie Collection</td><td class="step-action">Collect 50 Yeti Plushies, 50 Jr. Pepe Plushies and 20 Orange Mushroom Plushies. The plushie monsters appear from the grab-machine mobs.</td><td class="step-exp">15,300 EXP</td></tr><tr><td class="step-num">8</td><td class="step-phase">Keys</td><td class="step-name">Find Marshall</td><td class="step-action">Take Lana's next request and speak with Marshall at the top of the map.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">9</td><td class="step-phase">Keys</td><td class="step-name">Locker Key</td><td class="step-action">Complete Lana's key objective, return to the subway lobby and interact with the lockers to receive the key.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">10</td><td class="step-phase">Keys</td><td class="step-name">Deliver the Key</td><td class="step-action">Bring the key from the lockers to Marshall.</td><td class="step-exp">1,560 EXP</td></tr><tr><td class="step-num">11</td><td class="step-phase">Fashion</td><td class="step-name">Find Lala</td><td class="step-action">Speak with Lala for the next part of the chain.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">12</td><td class="step-phase">Fashion</td><td class="step-name">Hat Collection</td><td class="step-action">Collect 50 Bunny Hats, 50 Wigs and 50 Top Hats.</td><td class="step-exp">16,700 EXP</td></tr><tr><td class="step-num">13</td><td class="step-phase">Fashion</td><td class="step-name">Perfume Collection</td><td class="step-action">Collect 30 Pink, 30 Purple and 30 Yellow Perfume Bottles.</td><td class="step-exp">13,900 EXP</td></tr><tr><td class="step-num">14</td><td class="step-phase">Fashion</td><td class="step-name">Perfume Tests</td><td class="step-action">Complete the three timed perfume tests. After being sprayed, reach Lana within the short timer and test the perfume choice.</td><td class="step-exp">6,900 EXP total</td></tr><tr><td class="step-num">15</td><td class="step-phase">Music</td><td class="step-name">CD Collection</td><td class="step-action">Collect 50 Rainbow CDs and 50 Normal CDs.</td><td class="step-exp">15,100 EXP</td></tr><tr><td class="step-num">16</td><td class="step-phase">Music</td><td class="step-name">Norma's MP3</td><td class="step-action">Help Norma recover the MP3 objective and defeat 50 speaker monsters.</td><td class="step-exp">14,100 EXP</td></tr><tr><td class="step-num">17</td><td class="step-phase">Music</td><td class="step-name">Collect Cords</td><td class="step-action">Collect 50 Cords from the red speaker monsters inside the timed area.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">18</td><td class="step-phase">Boss</td><td class="step-name">Rock Spirit</td><td class="step-action">Collect 1 Music Sheet and defeat Rock Spirit. Pay attention to the sound played after the boss dies because the next step tests you on it.</td><td class="step-exp">48,500 EXP</td></tr><tr><td class="step-num">19</td><td class="step-phase">Boss</td><td class="step-name">Sound Check</td><td class="step-action">Listen to the three sample sounds and enter the number matching the sound you heard after Rock Spirit died. A wrong answer means repeating the boss check.</td><td class="step-exp">32,500 EXP</td></tr><tr><td class="step-num">20</td><td class="step-phase">Finish</td><td class="step-name">Return the Book</td><td class="step-action">Take Norma's book back to Lana.</td><td class="step-exp">1,320 EXP</td></tr><tr><td class="step-num">21</td><td class="step-phase">Finish</td><td class="step-name">Complete Kerning Square</td><td class="step-action">Return to Hyeokyi to close the questline and receive the completion reward.</td><td class="step-exp">37,200 EXP</td></tr></tbody></table></div><div class="kerning-finish-box">
 <b>✅ When Kerning Square is finished:</b>
   If you are not yet ready for the Muirhat chain, use Master Roshi, the Hyperbolic Time Chamber,
   useful PQs or Monster Book farming to bridge the remaining levels. At <b>Lv. 55+</b>, move into

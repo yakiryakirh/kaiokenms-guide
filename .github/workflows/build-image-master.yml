@@ -1,0 +1,88 @@
+name: Build Image Master
+
+on:
+  push:
+    branches:
+      - image-master-build
+    paths:
+      - '.github/workflows/build-image-master.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout control repo
+        uses: actions/checkout@v4
+
+      - name: Clone GMS v83 image source
+        run: |
+          git clone --depth 1 https://github.com/andrenogrib/gms_v83_wztoweb.git source
+
+      - name: Build normalized image library
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out/source-tree
+          cp -a source/WEB/. out/source-tree/
+          python - <<'PY'
+          import csv, hashlib, json, re
+          from pathlib import Path
+
+          root = Path('out/source-tree')
+          rows=[]
+          for p in root.rglob('*'):
+              if not p.is_file():
+                  continue
+              if p.suffix.lower() not in {'.png','.jpg','.jpeg','.gif'}:
+                  continue
+              rel=p.relative_to(root).as_posix()
+              data=p.read_bytes()
+              sha=hashlib.sha256(data).hexdigest()
+              # Best-effort numeric ID extraction. Preserve original path for exact lookup.
+              nums=re.findall(r'(?<!\d)(\d{4,10})(?!\d)', p.stem)
+              game_id=nums[0].lstrip('0') if nums else ''
+              rows.append({
+                  'category': rel.split('/')[0] if '/' in rel else '',
+                  'game_id': game_id,
+                  'filename': p.name,
+                  'relative_path': rel,
+                  'size_bytes': len(data),
+                  'sha256': sha,
+              })
+          rows.sort(key=lambda r:(r['category'],r['game_id'],r['relative_path']))
+          with open('out/image-index.csv','w',newline='',encoding='utf-8') as f:
+              w=csv.DictWriter(f,fieldnames=['category','game_id','filename','relative_path','size_bytes','sha256'])
+              w.writeheader(); w.writerows(rows)
+          bycat={}
+          for r in rows: bycat[r['category']]=bycat.get(r['category'],0)+1
+          summary={'total_images':len(rows),'categories':bycat}
+          Path('out/image-summary.json').write_text(json.dumps(summary,indent=2,ensure_ascii=False),encoding='utf-8')
+          print(json.dumps(summary,indent=2))
+          PY
+
+      - name: Create archives
+        run: |
+          cd out
+          tar -czf gms-v83-images.tar.gz source-tree image-index.csv image-summary.json
+          zip -q -r gms-v83-image-index.zip image-index.csv image-summary.json
+
+      - name: Upload image index artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gms-v83-image-index
+          path: out/gms-v83-image-index.zip
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload complete image library artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gms-v83-images
+          path: out/gms-v83-images.tar.gz
+          compression-level: 0
+          retention-days: 7

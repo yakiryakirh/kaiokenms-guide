@@ -6,6 +6,11 @@ on:
       - image-master-build
     paths:
       - '.github/workflows/build-image-master.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/build-image-master.yml'
   workflow_dispatch:
 
 permissions:
@@ -43,7 +48,6 @@ jobs:
               rel=p.relative_to(root).as_posix()
               data=p.read_bytes()
               sha=hashlib.sha256(data).hexdigest()
-              # Best-effort numeric ID extraction. Preserve original path for exact lookup.
               nums=re.findall(r'(?<!\d)(\d{4,10})(?!\d)', p.stem)
               game_id=nums[0].lstrip('0') if nums else ''
               rows.append({

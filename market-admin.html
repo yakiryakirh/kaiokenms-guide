@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>KaiokenMS Market • Staff Console</title>
+  <link rel="stylesheet" href="market-admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">PRIVATE STAFF TOOL</div>
+      <h1>KaiokenMS Market Staff Console</h1>
+      <p>Catalog management, market moderation, reports and staff access in one protected console.</p>
+    </div>
+    <div class="account-box">
+      <span id="account-avatar" class="account-avatar" hidden></span>
+      <span id="role-badge" class="role-badge" hidden></span>
+      <span id="account-name">Not signed in</span>
+      <button id="discord-login" type="button">Sign in with Discord</button>
+      <button id="sign-out" type="button" hidden>Sign out</button>
+      <a href="market.html">Back to Market</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="access-panel" class="access-panel">
+      <strong id="access-title">Checking access…</strong>
+      <span id="access-text">The URL is public, but all staff data and actions are protected by Supabase RLS and role checks.</span>
+    </section>
+
+    <section id="admin-app" hidden>
+      <nav class="staff-tabs" aria-label="Staff console sections">
+        <button class="tab active" type="button" data-tab="catalog">Item Catalog</button>
+        <button class="tab" type="button" data-tab="listings">Market Posts</button>
+        <button class="tab" type="button" data-tab="reports">Reports</button>
+        <button class="tab" id="team-tab-button" type="button" data-tab="team" hidden>Team Access</button>
+        <button class="tab" type="button" data-tab="guide">Staff Guide</button>
+      </nav>
+
+      <section class="tab-panel active" id="tab-catalog">
+        <div class="stats">
+          <div><b id="stat-total">0</b><span>Total</span></div>
+          <div><b id="stat-enabled">0</b><span>Market Enabled</span></div>
+          <div><b id="stat-custom">0</b><span>Kaioken Custom</span></div>
+          <div><b id="stat-unverified">0</b><span>Needs Verification</span></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="filters">
+            <input id="search" type="search" placeholder="Search items, aliases, source…" autocomplete="off">
+            <select id="category-filter">
+              <option value="all">All categories</option>
+              <option value="dragon_ball">Dragon Ball</option>
+              <option value="equipment">Equipment</option>
+              <option value="scroll">Scrolls</option>
+              <option value="material">Materials</option>
+              <option value="currency">Currency</option>
+              <option value="consumable">Consumables</option>
+              <option value="gachapon">Gachapon</option>
+              <option value="special">Special</option>
+              <option value="service">Services</option>
+              <option value="etc">ETC</option>
+              <option value="other">Other</option>
+            </select>
+            <select id="enabled-filter">
+              <option value="all">Enabled + disabled</option>
+              <option value="enabled">Enabled only</option>
+              <option value="disabled">Disabled only</option>
+            </select>
+          </div>
+          <div class="toolbar-actions">
+            <button id="add-item" class="primary" type="button">＋ Add Item</button>
+            <button id="import-open" type="button">Import CSV</button>
+            <button id="export-csv" type="button">Export CSV</button>
+          </div>
+        </div>
+        <div id="status" class="status"></div>
+        <div id="item-grid" class="item-grid"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-listings">
+        <div class="section-head">
+          <div><div class="eyebrow">MODERATION</div><h2>Market Posts</h2><p>Edit, hide, restore, mark sold or permanently delete listings.</p></div>
+          <button id="refresh-listings" type="button">Refresh</button>
+        </div>
+        <div class="toolbar compact-toolbar">
+          <div class="filters listing-filters">
+            <input id="listing-search" type="search" placeholder="Search item, IGN, contact, notes…">
+            <select id="listing-state-filter"><option value="all">All states</option><option value="open">Open</option><option value="hidden">Hidden</option><option value="sold">Sold</option></select>
+            <select id="listing-side-filter"><option value="all">Buy + Sell</option><option value="sell">Selling</option><option value="buy">Buying</option></select>
+          </div>
+        </div>
+        <div id="listing-status" class="status"></div>
+        <div id="listing-grid" class="listing-grid"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-reports">
+        <div class="section-head">
+          <div><div class="eyebrow">MODERATION</div><h2>Player Reports</h2><p>Reports are private and are never visible to normal market users.</p></div>
+          <button id="refresh-reports" type="button">Refresh</button>
+        </div>
+        <div id="report-status" class="status"></div>
+        <div id="report-grid" class="report-grid"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-team">
+        <div class="section-head">
+          <div><div class="eyebrow">EDITOR ONLY</div><h2>Team Access</h2><p>Grant or remove staff permissions. Discord name and avatar are shown automatically after the user has signed in at least once.</p></div>
+          <button id="refresh-team" type="button">Refresh</button>
+        </div>
+        <div class="permission-grid">
+          <article><b>Editor</b><span>Full catalog + moderation + reports + guide + team access management.</span></article>
+          <article><b>Game Developer</b><span>Catalog + moderation + reports + private guide. Cannot grant or remove staff roles.</span></article>
+        </div>
+        <form id="staff-form" class="staff-form">
+          <label><span>Supabase User UID</span><input id="staff-user-id" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></label>
+          <label><span>Role</span><select id="staff-role"><option value="game_developer">Game Developer</option><option value="editor">Editor</option></select></label>
+          <button class="primary" type="submit">Add / Update Staff</button>
+        </form>
+        <p class="hint">The person must sign in through Discord at least once before their UID can be granted a role. Team cards then show their Discord display name and avatar for easier identification.</p>
+        <div id="team-status" class="status"></div>
+        <div id="staff-grid" class="staff-grid"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-guide">
+        <div class="guide-card">
+          <div class="guide-icon">📘</div>
+          <div>
+            <div class="eyebrow">PRIVATE DOWNLOAD</div>
+            <h2>KaiokenMS Market Staff Guide</h2>
+            <p>The PDF explains catalog changes, safe deletion, moderation, reports, role access, CSV import and security rules.</p>
+            <p class="hint">The PDF is stored in a private Supabase Storage bucket. It is not published in the GitHub repository.</p>
+          </div>
+          <button id="download-guide" class="primary" type="button">Download Staff Guide</button>
+        </div>
+        <div id="guide-status" class="status"></div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="item-dialog">
+    <form id="item-form" method="dialog">
+      <div class="dialog-head"><div><div class="eyebrow">CATALOG ITEM</div><h2 id="item-dialog-title">Add Item</h2></div><button class="close" value="cancel" formmethod="dialog" aria-label="Close">×</button></div>
+      <input id="item-id" type="hidden">
+      <div class="form-grid">
+        <label class="wide"><span>Name</span><input id="item-name" maxlength="120" required></label>
+        <label><span>Slug</span><input id="item-slug" maxlength="160" placeholder="auto-generated-from-name" required></label>
+        <label><span>Kind</span><select id="item-kind"><option value="maple">MapleStory</option><option value="kaioken_custom">KaiokenMS Custom</option><option value="service">Service</option></select></label>
+        <label><span>Category</span><select id="item-category"><option value="dragon_ball">Dragon Ball</option><option value="equipment">Equipment</option><option value="scroll">Scroll</option><option value="material">Material</option><option value="currency">Currency</option><option value="consumable">Consumable</option><option value="gachapon">Gachapon</option><option value="special">Special</option><option value="service">Service</option><option value="etc">ETC</option><option value="other">Other</option></select></label>
+        <label><span>Subcategory</span><input id="item-subcategory" maxlength="80"></label>
+        <label><span>Maple Item ID</span><input id="item-maple-id" type="number" min="0" step="1"></label>
+        <label><span>Sort Order</span><input id="item-sort" type="number" value="0" step="1"></label>
+        <label class="wide"><span>Aliases, separated by commas</span><input id="item-aliases" maxlength="400"></label>
+        <label class="wide"><span>Description</span><textarea id="item-description" maxlength="600" rows="3"></textarea></label>
+        <label><span>Source Name</span><input id="item-source-name" maxlength="100"></label>
+        <label><span>Source URL</span><input id="item-source-url" type="url"></label>
+        <label class="wide"><span>Image URL</span><input id="item-image-url" placeholder="market-assets/items/... or https://..."></label>
+        <label class="wide"><span>Upload / replace icon</span><input id="item-image-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small>Uploaded to private-controlled Supabase storage. Max 1 MB.</small></label>
+        <label class="wide"><span>Metadata JSON</span><textarea id="item-metadata" rows="5" spellcheck="false">{}</textarea></label>
+      </div>
+      <div class="checks"><label><input id="item-tradable" type="checkbox" checked> Tradable</label><label><input id="item-verified" type="checkbox"> Verified</label><label><input id="item-enabled" type="checkbox" checked> Market enabled</label></div>
+      <div id="form-status" class="status"></div>
+      <div class="dialog-actions"><button value="cancel" formmethod="dialog" type="button" id="cancel-item">Cancel</button><button class="primary" type="submit" id="save-item">Save Item</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="import-dialog">
+    <form method="dialog" id="import-form">
+      <div class="dialog-head"><div><div class="eyebrow">PRIVATE BULK TOOL</div><h2>Import Catalog CSV</h2></div><button class="close" value="cancel" formmethod="dialog">×</button></div>
+      <p class="hint">Rows are upserted by <code>slug</code>. Existing items with the same slug are updated.</p>
+      <input id="csv-file" type="file" accept=".csv,text/csv" required>
+      <div id="import-summary" class="import-summary">Choose a CSV file.</div><div id="import-status" class="status"></div>
+      <div class="dialog-actions"><button type="button" id="cancel-import">Cancel</button><button class="primary" type="submit">Import</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="listing-dialog">
+    <form id="listing-form" method="dialog">
+      <div class="dialog-head"><div><div class="eyebrow">STAFF EDIT</div><h2>Edit Market Post</h2></div><button class="close" value="cancel" formmethod="dialog">×</button></div>
+      <input id="listing-id" type="hidden"><input id="listing-catalog-id" type="hidden">
+      <div class="form-grid">
+        <label><span>Side</span><select id="listing-side"><option value="sell">Sell</option><option value="buy">Buy</option></select></label>
+        <label><span>Category</span><select id="listing-category"><option value="equipment">Equipment</option><option value="scroll">Scroll</option><option value="consumable">Consumable</option><option value="etc">ETC</option><option value="material">Material</option><option value="currency">Currency</option><option value="dragon_ball">Dragon Ball</option><option value="gachapon">Gachapon</option><option value="special">Special</option><option value="service">Service</option><option value="other">Other</option></select></label>
+        <label class="wide"><span>Item / Service Name</span><input id="listing-item-name" maxlength="60" required></label>
+        <label><span>Quantity</span><input id="listing-quantity" type="number" min="1" max="999999" required></label>
+        <label><span>Price Mesos</span><input id="listing-price" type="number" min="0" max="99999999999" required></label>
+        <label><span>IGN</span><input id="listing-ign" maxlength="20" required></label>
+        <label><span>Contact</span><input id="listing-contact" maxlength="80"></label>
+        <label class="wide"><span>Notes</span><textarea id="listing-notes" maxlength="240" rows="3"></textarea></label>
+      </div>
+      <div class="checks"><label><input id="listing-negotiable" type="checkbox"> Negotiable</label></div>
+      <div id="listing-form-status" class="status"></div>
+      <div class="dialog-actions"><button type="button" id="cancel-listing">Cancel</button><button class="primary" type="submit">Save Post</button></div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.min.js"></script>
+  <script src="market-config.js"></script>
+  <script src="market-admin.js"></script>
+</body>
+</html>

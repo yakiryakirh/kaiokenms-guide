@@ -1,0 +1,59 @@
+name: Build v83 Image Pack
+
+on:
+  push:
+    branches: [image-pipeline]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout working branch
+        uses: actions/checkout@v4
+
+      - name: Clone GMS v83 image source
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/andrenogrib/gms_v83_wztoweb.git source
+          cd source
+          git sparse-checkout set WEB
+
+      - name: Build image inventory
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv, hashlib
+          root = Path('source/WEB')
+          out = Path('image-pack')
+          out.mkdir(exist_ok=True)
+          rows=[]
+          exts={'.png','.jpg','.jpeg','.gif','.webp'}
+          for p in root.rglob('*'):
+              if p.is_file() and p.suffix.lower() in exts:
+                  rel=p.relative_to(root).as_posix()
+                  h=hashlib.sha256(p.read_bytes()).hexdigest()
+                  rows.append((rel,p.stat().st_size,h))
+          with (out/'inventory.csv').open('w',newline='',encoding='utf-8') as f:
+              w=csv.writer(f); w.writerow(['path','size_bytes','sha256']); w.writerows(rows)
+          print(f'images={len(rows)}')
+          PY
+
+      - name: Copy source image tree
+        run: |
+          mkdir -p image-pack/WEB
+          cp -a source/WEB/. image-pack/WEB/
+
+      - name: Create archive
+        run: |
+          tar -czf gms-v83-image-pack.tar.gz image-pack
+          du -sh gms-v83-image-pack.tar.gz
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gms-v83-image-pack
+          path: gms-v83-image-pack.tar.gz
+          compression-level: 0
+          retention-days: 7

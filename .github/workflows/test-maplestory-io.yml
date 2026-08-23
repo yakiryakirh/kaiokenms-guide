@@ -1,0 +1,12 @@
+name: Test MapleStory IO
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -L --fail --max-time 20 -o sample.png https://maplestory.io/api/GMS/83/npc/2004/icon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maplestory-io-sample
+          path: sample.png

@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Clone GMS v83 image source
+      - name: Clone GMS v83 source
         run: |
           git clone --depth 1 --filter=blob:none --sparse https://github.com/andrenogrib/gms_v83_wztoweb.git source
           cd source
@@ -30,7 +30,7 @@ jobs:
           from pathlib import Path
           import csv, hashlib
           root = Path('source/WEB')
-          out = Path('image-pack')
+          out = Path('v83-pack')
           out.mkdir(exist_ok=True)
           rows=[]
           exts={'.png','.jpg','.jpeg','.gif','.webp'}
@@ -46,24 +46,20 @@ jobs:
           print(f'images={len(rows)}')
           PY
 
-      - name: Copy image tree
+      - name: Copy generated WEB database
         run: |
-          mkdir -p image-pack/WEB
-          find source/WEB -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.gif' -o -iname '*.webp' \) -print0 | while IFS= read -r -d '' f; do
-            rel="${f#source/WEB/}"
-            mkdir -p "image-pack/WEB/$(dirname "$rel")"
-            cp "$f" "image-pack/WEB/$rel"
-          done
+          mkdir -p v83-pack/WEB
+          cp -a source/WEB/. v83-pack/WEB/
 
       - name: Create archive
         run: |
-          tar -czf gms-v83-image-pack.tar.gz image-pack
-          du -sh gms-v83-image-pack.tar.gz
+          tar -czf gms-v83-web-pack.tar.gz v83-pack
+          du -sh gms-v83-web-pack.tar.gz
 
-      - name: Upload image artifact
+      - name: Upload v83 WEB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gms-v83-image-pack
-          path: gms-v83-image-pack.tar.gz
+          name: gms-v83-web-pack
+          path: gms-v83-web-pack.tar.gz
           compression-level: 0
           retention-days: 7

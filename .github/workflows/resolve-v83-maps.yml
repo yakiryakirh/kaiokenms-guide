@@ -1,0 +1,26 @@
+name: Resolve v83 Map Images
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'resolve-maps-trigger.txt'
+  workflow_dispatch:
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: |
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/andrenogrib/gms_v83_wztoweb.git source
+          cd source
+          git sparse-checkout set WEB
+      - run: python tools/resolve_v83_map_images.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v83-resolved-maps
+          path: |
+            resolved-maps/
+            resolved-maps.csv
+          retention-days: 7

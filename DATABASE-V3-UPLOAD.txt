@@ -1,0 +1,32 @@
+KaiokenMS Database V3 - Upload steps
+
+1. Supabase -> SQL Editor -> New query.
+2. Run database-v3-cleanup.sql once.
+   Expected result: KaiokenMS Database V3 cleanup complete
+
+3. GitHub repo root: replace these files:
+   database.html
+   database.css
+   database.js
+   quests.html
+
+4. Upload/replace the included files inside images/ as well.
+   This is required for the Dragon Ball and custom scroll icons.
+
+5. Do NOT upload database-v3-cleanup.sql to the public GitHub repo.
+
+6. Commit suggestion:
+   Database V3 clean UI, live search and linked data
+
+7. After GitHub Pages updates, use Ctrl+F5 once.
+   V3 also includes cache-busting query strings for database JS/CSS and custom icons.
+
+Quick tests:
+- Items: type W -> suggestions should open immediately and be scrollable.
+- NPCs: type M -> suggestions should open immediately.
+- Open a normal item -> no raw JSON/source labels; show clean stats and Dropped By when available.
+- Click a Dropped By monster -> opens the monster entry.
+- Open a monster -> Found In Maps and Drops are clickable when those relationships exist in the data.
+- Open a map -> Monsters, NPCs and portal destinations are clickable.
+- KaiokenMS Unique -> only server-specific items should remain.
+- Dragon Balls 1 through 7 -> original local sprites, not flame placeholders.

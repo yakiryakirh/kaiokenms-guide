@@ -33,3 +33,54 @@
   .suggestions{top:46px;max-height:340px}
   .search-input-wrap{width:100%}
 }
+
+/* ===== Database V3: wide live search + clean linked details ===== */
+.searchbar{
+  grid-template-columns:minmax(560px,1fr) 160px auto;
+  gap:12px;
+  padding:18px;
+  align-items:start;
+}
+.search-input-wrap{min-width:0;position:relative}
+.searchbar input{
+  width:100%;height:54px;font-size:18px;font-weight:750;
+  border:2px solid #5e93bc;background:#0c1928;
+  box-shadow:0 0 0 3px rgba(83,172,222,.08),0 10px 28px rgba(0,0,0,.18);
+  padding:0 16px;
+}
+.searchbar input:focus{outline:none;border-color:#ffd84d;box-shadow:0 0 0 4px rgba(255,216,77,.12),0 12px 32px rgba(0,0,0,.25)}
+.searchbar select,.searchbar button{height:54px}
+.suggestions{
+  top:60px;max-height:520px;padding:8px;border:2px solid #5686ad;
+  background:#0b1725;box-shadow:0 22px 55px rgba(0,0,0,.58)
+}
+.suggestion-item{grid-template-columns:48px 1fr;padding:10px 11px;min-height:58px}
+.suggestion-icon{width:46px;height:46px}
+.suggestion-icon img{max-width:42px;max-height:42px}
+.suggestion-copy strong{font-size:14px}
+.suggestion-copy small{font-size:11px}
+.suggestion-empty{padding:16px;color:#9fb6ca;text-align:center;font-size:13px}
+
+.detail-facts{margin-top:20px;border-top:1px solid #29445e;padding-top:4px}
+.detail-facts>h3,.relation-section>h3{margin:14px 0 10px;color:#ffd95e;font-size:16px}
+.relation-section{margin-top:20px;border-top:1px solid #29445e;padding-top:4px}
+.relation-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.relation-chip{
+  display:grid;grid-template-columns:46px 1fr;gap:10px;align-items:center;width:100%;
+  border:1px solid #345b7d;border-radius:12px;background:#13253a;color:#edf7ff;padding:8px 10px;text-align:left;cursor:pointer
+}
+.relation-chip:hover{border-color:#77d1ff;background:#1b3149;transform:translateY(-1px)}
+.relation-icon{width:44px;height:44px;border:1px solid #345b7d;border-radius:9px;background:#0b1724;display:grid;place-items:center;overflow:hidden}
+.relation-icon img{max-width:40px;max-height:40px;object-fit:contain}
+.relation-copy{display:flex;min-width:0;flex-direction:column;gap:2px}
+.relation-copy strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.relation-copy small{color:#82cfff;font-size:10px}
+.relation-empty{margin:0;color:#91a9bf;font-size:13px}
+.raw-json,.detail-source,.source-banner,.source-links,.source-chip{display:none!important}
+
+@media(max-width:900px){
+  .searchbar{grid-template-columns:1fr 150px}.searchbar button{grid-column:1/-1}.relation-list{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .searchbar{grid-template-columns:1fr}.searchbar input{height:50px;font-size:16px}.searchbar select,.searchbar button{height:48px}.suggestions{top:56px;max-height:420px}
+}

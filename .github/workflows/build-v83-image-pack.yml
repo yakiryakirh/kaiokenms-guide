@@ -3,8 +3,8 @@ name: Build v83 Image Pack
 on:
   push:
     branches: [image-pipeline]
-    paths:
-      - '.github/workflows/build-v83-image-pack.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:

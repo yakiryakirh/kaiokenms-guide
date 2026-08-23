@@ -18,7 +18,7 @@ jobs:
         run: |
           git clone --depth 1 --filter=blob:none --sparse https://github.com/andrenogrib/gms_v83_wztoweb.git source
           cd source
-          git sparse-checkout set wz_files/wz/Quest.wz WEB/Map/map-links.json wz_files/wz/Map.wz/Map
+          git sparse-checkout set wz_files/wz/Quest.wz WEB/Map wz_files/wz/Map.wz/Map
 
       - name: Package Quest WZ and map relationship sources
         run: |

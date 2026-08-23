@@ -1,5 +1,9 @@
 name: Test MapleStory IO
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-maplestory-io.yml'
   workflow_dispatch:
 jobs:
   test:

@@ -192,6 +192,38 @@ footer{text-align:center;color:var(--muted);padding:24px;border-top:3px solid va
     grid-area:refresh;
   }
 }
+
+.server-stats{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:14px;
+  margin:0 0 34px;
+}
+.server-stat{
+  min-height:118px;
+  border:1px solid rgba(255,138,0,.32);
+  border-radius:14px;
+  padding:20px 18px;
+  background:linear-gradient(145deg,rgba(25,32,49,.98),rgba(18,24,38,.98));
+  box-shadow:0 12px 28px rgba(0,0,0,.22);
+}
+.server-stat span{
+  display:block;
+  color:#d5deec;
+  font-weight:900;
+  font-size:.95rem;
+  text-transform:uppercase;
+}
+.server-stat b{
+  display:block;
+  margin-top:8px;
+  color:var(--gold);
+  font-size:1.9rem;
+  line-height:1;
+}
+@media(max-width:850px){.server-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.server-stats{grid-template-columns:1fr 1fr}.server-stat{min-height:96px;padding:15px}}
+
 </style>
 <meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
 <body>
@@ -213,6 +245,15 @@ footer{text-align:center;color:var(--muted);padding:24px;border-top:3px solid va
   to make sure you are viewing the latest version. If an older version still appears, try <span class="refresh-key">Ctrl + F5</span>.
 </div>
 <main class="wrap">
+
+<section class="server-stats" aria-label="KaiokenMS Server Rates">
+  <div class="server-stat"><span>Channels</span><b>3</b></div>
+  <div class="server-stat"><span>EXP Rate</span><b>x10</b></div>
+  <div class="server-stat"><span>Quest EXP</span><b>x5</b></div>
+  <div class="server-stat"><span>Meso Rate</span><b>x8</b></div>
+  <div class="server-stat"><span>Drop Rate</span><b>x3</b></div>
+</section>
+
 <h2 class="section-title">Choose a Guide</h2>
 <div class="guide-grid">
 <article class="card">
@@ -237,7 +278,7 @@ footer{text-align:center;color:var(--muted);padding:24px;border-top:3px solid va
 </div>
 <div class="card-content">
 <h2>📜 Quests Worth Doing</h2>
-<p>A large quest manager with 100+ cross-checked quests, Hidden Street links, prerequisites, Top EXP recommendations, Pre-Collect lists, important quest chains, Search and separate progress for up to 3 characters.</p>
+<p>A large quest manager with 100+ quests, prerequisites, Top EXP recommendations, Pre-Collect lists, important quest chains, Search and separate progress for up to 3 characters.</p>
 <div class="meta">
 <span class="tag">100+ Quests</span>
 <span class="tag">3 Characters</span>

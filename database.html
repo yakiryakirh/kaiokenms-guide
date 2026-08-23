@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="KaiokenMS GMS v83 database and custom server reference for items, monsters, NPCs, maps, quests and server systems.">
+<meta name="description" content="KaiokenMS community database for items, monsters, NPCs, maps, quests and custom server systems.">
 <meta name="author" content="-Yakir-H">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://maplestory.io https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: https://maplestory.io https://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https://discord.com https://*.supabase.co">
-<title>KaiokenMS Database • GMS v83 + Custom</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://maplestory.io https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: https://maplestory.io https://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'">
+<title>KaiokenMS Database</title>
 <link rel="stylesheet" href="database.css">
 </head>
 <body>
@@ -21,34 +21,15 @@
   <button class="nav-refresh-btn" id="nav-refresh-btn" type="button">🔄 Refresh</button>
 </nav>
 <header class="hero">
-  <div class="kicker">GMS v83 + KaiokenMS Custom Data</div>
+  <div class="kicker">KaiokenMS Community Database</div>
   <h1>🗃️ KaiokenMS Database</h1>
-  <p>Search the original GMS v83 data and keep KaiokenMS custom items, NPCs, systems and corrections in the same place. The goal is the useful depth of MapleStory.Wiki with a cleaner KaiokenMS layer on top.</p>
+  <p>Search items, monsters, NPCs, maps, quests and jobs in one place, with KaiokenMS custom items and systems built directly into the same database.</p>
   <div class="author">⚡ Community database • Created &amp; maintained by -Yakir-H</div>
 </header>
 <main class="wrap">
-  <div class="rates" aria-label="KaiokenMS server rates">
-    <div class="rate-card"><span>CHANNELS</span><b>3</b></div>
-    <div class="rate-card"><span>EXP RATE</span><b>x10</b></div>
-    <div class="rate-card"><span>QUEST EXP</span><b>x5</b></div>
-    <div class="rate-card"><span>MESO RATE</span><b>x8</b></div>
-    <div class="rate-card"><span>DROP RATE</span><b>x3</b></div>
-  </div>
-
-  <div class="source-banner">
-    <b>Reference layer:</b> original GMS v83 game data is loaded through MapleStory.IO and cross checked against community references. KaiokenMS custom information is kept separately so server changes never get mixed up with original v83 data.
-    <div class="source-links">
-      <a class="source-chip" href="https://maplestory.wiki/GMS/83" target="_blank" rel="noopener">MapleStory.Wiki • GMS 83</a>
-      <a class="source-chip" href="https://maplestory.io/" target="_blank" rel="noopener">MapleStory.IO API</a>
-      <a class="source-chip" href="https://bbb.hidden-street.net/" target="_blank" rel="noopener">BBB Hidden Street</a>
-      <a class="source-chip" href="https://global.hidden-street.net/" target="_blank" rel="noopener">Global Hidden Street</a>
-    </div>
-  </div>
-
   <section class="section" id="explorer">
     <div class="section-head">
-      <div><h2>🔎 GMS v83 Explorer</h2><p>Search by name or exact ID. Click a result for the full raw record and a clean quick view.</p></div>
-      <a id="staff-entry" class="staff-link" href="database-admin.html">🛠 Database Editor</a>
+      <div><h2>🔎 Database Explorer</h2><p>Start typing to get instant alphabetical suggestions, or search by exact ID.</p></div>
     </div>
     <div class="explorer-tabs" id="entity-tabs">
       <button class="entity-tab active" data-entity="item" type="button">📦 Items</button>
@@ -60,46 +41,49 @@
       <button class="entity-tab" data-entity="custom" type="button">🔥 KaiokenMS Custom</button>
     </div>
     <form class="searchbar" id="db-search-form">
-      <input id="db-search" type="search" placeholder="Search items by name or enter an ID…" autocomplete="off">
+      <div class="search-input-wrap">
+        <input id="db-search" type="search" placeholder="Start typing an item name or enter an ID…" autocomplete="off" aria-autocomplete="list" aria-controls="db-suggestions" aria-expanded="false">
+        <div class="suggestions" id="db-suggestions" role="listbox" hidden></div>
+      </div>
       <select id="result-count" aria-label="Results per page"><option value="24">24 results</option><option value="48">48 results</option><option value="96">96 results</option></select>
       <button type="submit">Search Database</button>
     </form>
-    <div class="explorer-status" id="explorer-status">Loading GMS v83 items…</div>
-    <div class="offline-note" id="api-note" hidden>MapleStory.IO could not be reached from your browser. KaiokenMS custom data still works, and the source buttons above can be used directly.</div>
+    <div class="explorer-status" id="explorer-status">Loading items…</div>
+    <div class="offline-note" id="api-note" hidden>The main database could not be reached right now. KaiokenMS custom entries are still available.</div>
     <div class="result-grid" id="result-grid"></div>
     <button class="load-more" id="load-more" type="button" hidden>Load More</button>
   </section>
 
   <section class="section" id="events">
-    <div class="section-head"><div><h2>🔥 EXP &amp; Drop Events</h2><p>Only confirmed staff announcements are treated as event times.</p></div></div>
+    <div class="section-head"><div><h2>🔥 EXP &amp; Drop Events</h2><p>Event history is shown only when the timing was confirmed in server announcements.</p></div></div>
     <div class="event-grid">
       <article class="event-card">
         <h3>Current schedule status</h3>
-        <p><strong>No fixed repeating 2x EXP schedule is verified yet.</strong> The announcement log shows different event windows, including one event started for the next two hours and another explicit 11:00 to 15:00 UTC window.</p>
-        <p><strong>No repeating 2x Drop server event was found</strong> in the announcement log provided so far. 2x Drop coupons sold by NPCs are separate from server wide events.</p>
+        <p><strong>No fixed repeating 2x EXP schedule is confirmed yet.</strong> Recent events used different time windows, so they currently appear to be activated by staff rather than a permanent weekly timer.</p>
+        <p><strong>No fixed repeating 2x Drop server event is confirmed yet.</strong> Timed Drop coupons sold by NPCs are separate from server-wide events.</p>
       </article>
       <article class="event-card">
-        <h3>Verified event history</h3>
+        <h3>Recent confirmed EXP events</h3>
         <ul class="event-history">
-          <li><b>11 Aug 2026</b>: Double EXP announced for the next 2 hours at 18:45 UTC.</li>
-          <li><b>14 Aug 2026</b>: Double EXP explicitly announced for 11:00 to 15:00 UTC.</li>
-          <li>Later community messages mention extra Double EXP around restarts and updates, which points to staff triggered events rather than a fixed weekly timer.</li>
+          <li><b>11 Aug 2026</b>: Double EXP ran for 2 hours starting around 18:45 UTC.</li>
+          <li><b>14 Aug 2026</b>: Double EXP ran from 11:00 to 15:00 UTC.</li>
+          <li>Additional Double EXP windows have also been activated around updates and restarts.</li>
         </ul>
       </article>
     </div>
   </section>
 
   <section class="section" id="useful-npcs">
-    <div class="section-head"><div><h2>🧭 Useful KaiokenMS NPCs</h2><p>The NPCs players should learn early. Shop prices shown here come from the in game screenshots supplied for the guide.</p></div></div>
+    <div class="section-head"><div><h2>🧭 Useful KaiokenMS NPCs</h2><p>Important NPCs, what they do and the useful shop options players should know.</p></div></div>
     <div class="npc-grid" id="npc-grid"></div>
   </section>
 
   <section class="section" id="features">
-    <div class="section-head"><div><h2>⚡ KaiokenMS Systems</h2><p>Server specific features kept separate from original v83 data so players can instantly see what is custom.</p></div></div>
+    <div class="section-head"><div><h2>⚡ KaiokenMS Systems</h2><p>Custom progression, quality-of-life, bossing and Dragon Ball systems available on the server.</p></div></div>
     <div class="feature-grid" id="feature-grid"></div>
   </section>
 </main>
-<footer class="footer">MapleStory game assets and original game data belong to NEXON. This is an independent community reference for KaiokenMS. GMS v83 data is referenced through MapleStory.IO and community databases.</footer>
+<footer class="footer">KaiokenMS community database • Created &amp; maintained by -Yakir-H • MapleStory game assets belong to their respective rights holders.</footer>
 
 <dialog id="detail-dialog">
   <div class="modal-head"><h2 id="detail-title">Database Entry</h2><button class="close" id="detail-close" type="button" aria-label="Close">×</button></div>

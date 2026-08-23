@@ -1,0 +1,38 @@
+KaiokenMS Database V2 — upload steps
+
+1. Supabase SQL Editor
+   Run: database-v2-patch.sql
+   Expected result: KaiokenMS Database V2 patch complete
+
+2. Supabase Authentication → URL Configuration → Redirect URLs
+   Add this private staff redirect:
+   https://yakiryakirh.github.io/kaiokenms-guide/staff-database.html
+
+3. GitHub
+   Upload/replace the files from this package in the repository root.
+   Important new private staff files:
+   staff-database.html
+   staff-database.css
+   staff-database.js
+
+4. The public Database has NO Editor / Discord login button.
+   Staff access is only through the separate URL:
+   https://yakiryakirh.github.io/kaiokenms-guide/staff-database.html
+   Do not add this URL to the public navigation.
+
+5. Old admin routes
+   database-admin.html and market-admin.html now redirect back to the public Database and contain no login UI.
+   Old orphaned database-admin.css / database-admin.js can be deleted from GitHub if they still exist.
+
+6. After commit
+   Ctrl + F5
+   Test:
+   - Home page shows Channels / EXP / Quest EXP / Meso / Drop stats.
+   - Database page does not show source websites or a staff/login button.
+   - Type W in Items: alphabetical suggestions should appear immediately.
+   - Repeat in Monsters / NPCs / Maps / Quests / Jobs / KaiokenMS Custom.
+   - Dragon Ball 1 through 7 images are visible.
+   - Staff URL signs in through Discord and still recognizes Editor / Game Developer roles.
+
+Suggested commit message:
+Database V2: autocomplete, private staff editor and image cleanup

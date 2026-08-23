@@ -24,9 +24,10 @@
 
   <header class="market-hero">
     <div>
-      <div class="kicker">KAIokenMS COMMUNITY</div>
+      <div class="kicker">KAIOKENMS COMMUNITY</div>
       <h1>💰 Player Market</h1>
-      <p>Post items you want to sell or buy, find other players, and keep older listings visible instead of losing them after a week.</p>
+      <div class="community-badge">Community Run • Unofficial</div>
+      <p>A community powered market for KaiokenMS players. Buy, sell, and trade items, services, and more with other players. Built to make trading easier, faster, and more organized for the KaiokenMS community.</p>
     </div>
     <div class="hero-rules">
       <b>🛡 Safe Trading</b>
@@ -58,6 +59,7 @@
         <div id="account-name" class="account-name">Browsing as guest</div>
         <button id="discord-login" class="discord-btn" type="button">Discord Sign In</button>
         <button id="sign-out" class="secondary-btn" type="button" hidden>Sign Out</button>
+        <a id="staff-console-link" class="staff-console-btn" href="market-admin.html" hidden>🛠 Staff Console</a>
         <button id="open-listing-form" class="post-btn" type="button">＋ Post Listing</button>
       </div>
     </section>
@@ -98,6 +100,9 @@
           <option value="scroll">Scrolls</option>
           <option value="consumable">Consumables</option>
           <option value="etc">ETC</option>
+          <option value="material">Materials / Ores</option>
+          <option value="currency">Currency</option>
+          <option value="dragon_ball">Dragon Balls</option>
           <option value="gachapon">Gachapon</option>
           <option value="special">Special / Rare</option>
           <option value="service">Service</option>
@@ -149,21 +154,27 @@
 
         <label>
           <span>Category</span>
-          <select id="listing-category" required>
-            <option value="equipment">Equipment</option>
-            <option value="scroll">Scrolls</option>
-            <option value="consumable">Consumables</option>
-            <option value="etc">ETC</option>
-            <option value="gachapon">Gachapon</option>
-            <option value="special">Special / Rare</option>
-            <option value="service">Service</option>
-            <option value="other">Other</option>
-          </select>
+          <input id="listing-category-display" type="text" value="Choose an item first" readonly>
+          <input id="listing-category" type="hidden">
         </label>
 
         <label class="wide">
-          <span>Item / Service Name</span>
-          <input id="listing-item" type="text" minlength="2" maxlength="60" required placeholder="Example: White Scroll">
+          <span>Item / Service</span>
+          <div class="catalog-picker">
+            <input id="listing-item-search" type="search" maxlength="80" autocomplete="off" placeholder="Search the approved item catalog...">
+            <input id="listing-catalog-id" type="hidden">
+            <input id="listing-item" type="hidden">
+            <div id="catalog-results" class="catalog-results" hidden></div>
+            <div id="selected-catalog-item" class="selected-catalog-item" hidden>
+              <div class="selected-item-icon"><img id="selected-item-image" alt="" hidden><span id="selected-item-placeholder">📦</span></div>
+              <div>
+                <b id="selected-item-name"></b>
+                <span id="selected-item-meta"></span>
+              </div>
+              <button id="clear-selected-item" class="secondary-btn compact-btn" type="button">Change</button>
+            </div>
+          </div>
+          <small>Only approved catalog items can be posted. This keeps item names clean and consistent.</small>
         </label>
 
         <label>
@@ -249,7 +260,10 @@
         </div>
         <span class="age-badge"></span>
       </div>
-      <h2 class="item-name"></h2>
+      <div class="listing-item-title">
+        <div class="listing-item-icon"><img class="listing-item-image" alt="" hidden><span class="listing-item-placeholder">📦</span></div>
+        <h2 class="item-name"></h2>
+      </div>
       <div class="listing-price"></div>
       <div class="listing-meta">
         <span class="listing-quantity"></span>

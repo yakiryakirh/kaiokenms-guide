@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https://discord.com https://*.supabase.co">
   <title>KaiokenMS Market • Staff Console</title>
   <link rel="stylesheet" href="market-admin.css">
 </head>
@@ -156,8 +157,17 @@
         <label class="wide"><span>Description</span><textarea id="item-description" maxlength="600" rows="3"></textarea></label>
         <label><span>Source Name</span><input id="item-source-name" maxlength="100"></label>
         <label><span>Source URL</span><input id="item-source-url" type="url"></label>
-        <label class="wide"><span>Image URL</span><input id="item-image-url" placeholder="market-assets/items/... or https://..."></label>
-        <label class="wide"><span>Upload / replace icon</span><input id="item-image-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small>Uploaded to private-controlled Supabase storage. Max 1 MB.</small></label>
+        <div class="wide image-control">
+          <span class="field-title">Item Image</span>
+          <div class="image-control-grid">
+            <div id="item-image-preview" class="item-image-preview"><span>📦</span></div>
+            <div class="image-control-fields">
+              <label><span>Image URL</span><input id="item-image-url" placeholder="https://... or an existing asset path"></label>
+              <label><span>Upload / replace icon</span><input id="item-image-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small>Publicly viewable item icon. Only staff can upload, replace or delete. Max 1 MB.</small></label>
+              <button id="item-remove-image" class="danger subtle-danger" type="button">Remove Current Image</button>
+            </div>
+          </div>
+        </div>
         <label class="wide"><span>Metadata JSON</span><textarea id="item-metadata" rows="5" spellcheck="false">{}</textarea></label>
       </div>
       <div class="checks"><label><input id="item-tradable" type="checkbox" checked> Tradable</label><label><input id="item-verified" type="checkbox"> Verified</label><label><input id="item-enabled" type="checkbox" checked> Market enabled</label></div>

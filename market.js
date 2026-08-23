@@ -24,9 +24,12 @@
   let listings = [];
   let currentTab = "active";
   let refreshTimer = null;
+  let catalogSearchTimer = null;
+  let selectedCatalogItem = null;
 
   const allowedCategories = new Set([
-    "equipment","scroll","consumable","etc","gachapon","special","service","other"
+    "equipment","scroll","consumable","etc","material","currency","dragon_ball",
+    "gachapon","special","service","other"
   ]);
   const allowedSides = new Set(["sell","buy"]);
 
@@ -73,6 +76,119 @@
     document.getElementById("account-name").textContent = displayUserName();
     document.getElementById("discord-login").hidden = !!user;
     document.getElementById("sign-out").hidden = !user;
+  }
+
+  async function refreshStaffAccess() {
+    const link = document.getElementById("staff-console-link");
+    link.hidden = true;
+    if (!user || !db) return;
+    const { data, error } = await db.rpc("market_staff_role");
+    if (!error && (data === "editor" || data === "game_developer")) {
+      link.hidden = false;
+      link.textContent = data === "editor" ? "🛠 Staff Console • Editor" : "🛠 Staff Console • Developer";
+    }
+  }
+
+  function itemPlaceholder(item) {
+    if (item?.category === "dragon_ball") return "🐉";
+    if (item?.category === "scroll") return "📜";
+    if (item?.category === "equipment") return "⚔️";
+    if (item?.category === "material") return "💎";
+    if (item?.category === "currency") return "🪙";
+    if (item?.category === "service") return "🛠️";
+    return "📦";
+  }
+
+  function setSelectedCatalogItem(item) {
+    selectedCatalogItem = item || null;
+    const search = document.getElementById("listing-item-search");
+    const selected = document.getElementById("selected-catalog-item");
+    const results = document.getElementById("catalog-results");
+    const img = document.getElementById("selected-item-image");
+    const placeholder = document.getElementById("selected-item-placeholder");
+    results.hidden = true;
+
+    if (!item) {
+      document.getElementById("listing-catalog-id").value = "";
+      document.getElementById("listing-item").value = "";
+      document.getElementById("listing-category").value = "";
+      document.getElementById("listing-category-display").value = "Choose an item first";
+      search.hidden = false;
+      search.value = "";
+      selected.hidden = true;
+      img.hidden = true;
+      img.removeAttribute("src");
+      placeholder.hidden = false;
+      return;
+    }
+
+    document.getElementById("listing-catalog-id").value = safeString(item.id, 80);
+    document.getElementById("listing-item").value = safeString(item.name, 60);
+    document.getElementById("listing-category").value = safeString(item.category, 30);
+    document.getElementById("listing-category-display").value = safeString(item.category, 30).replaceAll("_", " ");
+    document.getElementById("selected-item-name").textContent = safeString(item.name, 120);
+    document.getElementById("selected-item-meta").textContent = `${safeString(item.category, 30).replaceAll("_", " ")} • ${item.kind === "kaioken_custom" ? "KaiokenMS Custom" : item.kind === "service" ? "Service" : "MapleStory"}`;
+    placeholder.textContent = itemPlaceholder(item);
+    if (item.image_url) {
+      img.src = item.image_url;
+      img.hidden = false;
+      placeholder.hidden = true;
+      img.onerror = () => { img.hidden = true; placeholder.hidden = false; };
+    } else {
+      img.hidden = true;
+      placeholder.hidden = false;
+    }
+    search.hidden = true;
+    selected.hidden = false;
+  }
+
+  function renderCatalogResults(rows) {
+    const box = document.getElementById("catalog-results");
+    box.replaceChildren();
+    if (!rows.length) {
+      const empty = document.createElement("div");
+      empty.className = "catalog-result";
+      empty.textContent = "No approved items found.";
+      box.append(empty);
+      box.hidden = false;
+      return;
+    }
+    rows.forEach(item => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "catalog-result";
+      const icon = document.createElement("div");
+      icon.className = "catalog-result-icon";
+      if (item.image_url) {
+        const img = document.createElement("img");
+        img.src = item.image_url; img.alt = ""; img.loading = "lazy";
+        img.onerror = () => { icon.replaceChildren(document.createTextNode(itemPlaceholder(item))); };
+        icon.append(img);
+      } else icon.textContent = itemPlaceholder(item);
+      const text = document.createElement("div");
+      const name = document.createElement("b"); name.textContent = safeString(item.name, 120);
+      const meta = document.createElement("span"); meta.textContent = safeString(item.category, 30).replaceAll("_", " ");
+      text.append(name, meta);
+      const kind = document.createElement("span");
+      kind.className = "catalog-kind";
+      kind.textContent = item.kind === "kaioken_custom" ? "KaiokenMS" : item.kind === "service" ? "Service" : "Maple";
+      b.append(icon, text, kind);
+      b.addEventListener("click", () => setSelectedCatalogItem(item));
+      box.append(b);
+    });
+    box.hidden = false;
+  }
+
+  async function searchCatalog(query = "") {
+    if (!db) return;
+    const q = safeString(query, 80);
+    const { data, error } = await db.rpc("market_search_items", { p_query: q, p_limit: 20 });
+    if (error) {
+      console.error(error);
+      setStatus("Could not search the item catalog.", "error");
+      return;
+    }
+    renderCatalogResults(Array.isArray(data) ? data : []);
   }
 
   function updateCounts() {
@@ -159,6 +275,15 @@
         state === "waiting" ? `WAITING • ${relativeAge(row)}` : `ACTIVE • ${relativeAge(row)}`;
 
       frag.querySelector(".item-name").textContent = safeString(row.item_name, 60);
+      const listingImg = frag.querySelector(".listing-item-image");
+      const listingPlaceholder = frag.querySelector(".listing-item-placeholder");
+      listingPlaceholder.textContent = itemPlaceholder(row);
+      if (row.item_image_url) {
+        listingImg.src = row.item_image_url;
+        listingImg.hidden = false;
+        listingPlaceholder.hidden = true;
+        listingImg.onerror = () => { listingImg.hidden = true; listingPlaceholder.hidden = false; };
+      }
       frag.querySelector(".listing-price").textContent =
         `${formatMesos(row.price_mesos)}${row.negotiable ? " • Negotiable" : ""}`;
       frag.querySelector(".listing-quantity").textContent = `Qty: ${Number(row.quantity || 1)}`;
@@ -218,7 +343,7 @@
     setStatus("Loading market...");
     const { data, error } = await db
       .from("market_public_listings")
-      .select("id,owner_id,side,category,item_name,quantity,price_mesos,negotiable,ign,contact,notes,created_at,refreshed_at,updated_at,sold_at,market_state")
+      .select("id,owner_id,side,category,item_name,quantity,price_mesos,negotiable,ign,contact,notes,created_at,refreshed_at,updated_at,sold_at,market_state,catalog_item_id,item_image_url,item_kind,item_subcategory")
       .order("created_at", { ascending: false })
       .limit(500);
 
@@ -246,19 +371,31 @@
     document.getElementById("listing-dialog-title").textContent = "Post a Listing";
     document.getElementById("save-listing").textContent = "Publish Listing";
     document.getElementById("notes-count").textContent = "0";
+    setSelectedCatalogItem(null);
   }
 
   async function openPost() {
     if (!(await requireUser())) return;
     resetListingForm();
     listingDialog.showModal();
+    await searchCatalog("");
+    document.getElementById("listing-item-search").focus();
   }
 
   function openEdit(row) {
+    resetListingForm();
     document.getElementById("listing-id").value = row.id;
     document.getElementById("listing-side").value = row.side;
-    document.getElementById("listing-category").value = row.category;
-    document.getElementById("listing-item").value = safeString(row.item_name, 60);
+    if (row.catalog_item_id) {
+      setSelectedCatalogItem({
+        id: row.catalog_item_id, name: row.item_name, category: row.category,
+        image_url: row.item_image_url || null, kind: row.item_kind || "maple",
+        subcategory: row.item_subcategory || null
+      });
+    } else {
+      document.getElementById("listing-item-search").value = safeString(row.item_name, 60);
+      setStatus("This is a legacy listing. Choose its catalog item before saving changes.");
+    }
     document.getElementById("listing-quantity").value = Number(row.quantity || 1);
     document.getElementById("listing-price").value = Number(row.price_mesos || 0);
     document.getElementById("listing-negotiable").checked = !!row.negotiable;
@@ -275,6 +412,7 @@
     const side = document.getElementById("listing-side").value;
     const category = document.getElementById("listing-category").value;
     const item = safeString(document.getElementById("listing-item").value, 60);
+    const catalogItemId = safeString(document.getElementById("listing-catalog-id").value, 80);
     const qty = Number(document.getElementById("listing-quantity").value);
     const price = Number(document.getElementById("listing-price").value);
     const ign = safeString(document.getElementById("listing-ign").value, 20);
@@ -282,8 +420,9 @@
     const notes = safeString(document.getElementById("listing-notes").value, 240);
 
     if (!allowedSides.has(side)) throw new Error("Invalid listing type.");
-    if (!allowedCategories.has(category)) throw new Error("Invalid category.");
-    if (item.length < 2) throw new Error("Item name is too short.");
+    if (!allowedCategories.has(category)) throw new Error("Choose an approved catalog item.");
+    if (!/^[0-9a-f-]{36}$/i.test(catalogItemId)) throw new Error("Choose an approved catalog item.");
+    if (item.length < 2) throw new Error("Choose an approved catalog item.");
     if (!Number.isInteger(qty) || qty < 1 || qty > 999999) throw new Error("Invalid quantity.");
     if (!Number.isSafeInteger(price) || price < 0 || price > 99999999999) throw new Error("Invalid price.");
     if (!/^[A-Za-z0-9_]{2,20}$/.test(ign)) throw new Error("IGN must use 2–20 letters, numbers or underscore.");
@@ -292,6 +431,7 @@
       side,
       category,
       item_name: item,
+      catalog_item_id: catalogItemId,
       quantity: qty,
       price_mesos: price,
       negotiable: document.getElementById("listing-negotiable").checked,
@@ -428,6 +568,17 @@
       document.getElementById("notes-count").textContent = String(e.target.value.length);
     });
 
+    document.getElementById("listing-item-search").addEventListener("input", e => {
+      clearTimeout(catalogSearchTimer);
+      catalogSearchTimer = setTimeout(() => searchCatalog(e.target.value), 180);
+    });
+    document.getElementById("listing-item-search").addEventListener("focus", e => searchCatalog(e.target.value));
+    document.getElementById("clear-selected-item").addEventListener("click", () => {
+      setSelectedCatalogItem(null);
+      searchCatalog("");
+      document.getElementById("listing-item-search").focus();
+    });
+
     ["market-search","side-filter","category-filter","sort-filter"].forEach(id => {
       document.getElementById(id).addEventListener(id === "market-search" ? "input" : "change", render);
     });
@@ -464,10 +615,12 @@
     const { data } = await db.auth.getSession();
     user = data?.session?.user || null;
     updateAccountUI();
+    await refreshStaffAccess();
 
     db.auth.onAuthStateChange((_event, session) => {
       user = session?.user || null;
       updateAccountUI();
+      refreshStaffAccess();
       render();
     });
 

@@ -75,7 +75,12 @@ jobs:
               dst=Path(rel); dst.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(p,dst); copied+=1
           print('copied release files',copied)
           PY
-          rm -f market.html market-admin.html market.js market-admin.js market.css market-admin.css market-config.js || true
+          rm -f market.html market-admin.html market.js market-admin.js market.css market-admin.css market-config.js \
+            database-admin.html database-admin.js database-admin.css \
+            staff-database.html staff-database.js staff-database.css || true
+          grep -RIl --include='*.html' 'market-config.js' . | while read -r f; do
+            sed -i -E '/<script[^>]*src="market-config\.js"[^>]*><\/script>/d' "$f"
+          done || true
 
       - name: Checkout v83 WEB source
         run: |

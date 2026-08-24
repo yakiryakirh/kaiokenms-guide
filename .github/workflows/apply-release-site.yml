@@ -1,0 +1,141 @@
+name: Apply PRE V4 release site
+
+on:
+  push:
+    branches: [pre-v4-release]
+    paths:
+      - '.github/workflows/apply-release-site.yml'
+      - 'release-payload2/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: pre-v4-release
+          fetch-depth: 0
+
+      - name: Reconstruct site bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat release-payload2/c-*.txt > /tmp/release.b64
+          python - <<'PY'
+          from pathlib import Path
+          import base64,gzip,io,tarfile,zipfile,json,shutil,os
+          b64=''.join(Path('/tmp/release.b64').read_text().split())
+          raw=gzip.decompress(base64.b64decode(b64))
+          print('decoded bytes',len(raw),'head',raw[:16])
+          extracted=False
+          bio=io.BytesIO(raw)
+          if zipfile.is_zipfile(bio):
+              bio.seek(0)
+              with zipfile.ZipFile(bio) as z:
+                  z.extractall('/tmp/release-site')
+              extracted=True
+          else:
+              bio.seek(0)
+              try:
+                  with tarfile.open(fileobj=bio,mode='r:*') as t:
+                      t.extractall('/tmp/release-site')
+                  extracted=True
+              except tarfile.TarError:
+                  pass
+          if not extracted:
+              try:
+                  obj=json.loads(raw.decode('utf-8'))
+                  if isinstance(obj,dict):
+                      for rel,val in obj.items():
+                          p=Path('/tmp/release-site')/rel
+                          p.parent.mkdir(parents=True,exist_ok=True)
+                          if isinstance(val,str): p.write_text(val,encoding='utf-8')
+                          else: p.write_bytes(base64.b64decode(val))
+                      extracted=True
+              except Exception as e:
+                  print('json decode failed',e)
+          if not extracted:
+              raise SystemExit('Unknown release payload format')
+          root=Path('/tmp/release-site')
+          children=list(root.iterdir())
+          if len(children)==1 and children[0].is_dir(): root=children[0]
+          print('payload root',root)
+          allowed={'.html','.css','.js','.png','.jpg','.jpeg','.webp','.json','.md','.txt'}
+          skip_prefix=('images/maps/','data/db-index','data/map-spatial','data/item-relations')
+          count=0
+          for p in root.rglob('*'):
+              if not p.is_file(): continue
+              rel=p.relative_to(root).as_posix()
+              if rel.startswith(skip_prefix): continue
+              if p.suffix.lower() not in allowed: continue
+              dst=Path(rel)
+              dst.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(p,dst)
+              count+=1
+          print('copied',count,'release files')
+          PY
+
+      - name: Remove temporarily disabled Market
+        shell: bash
+        run: |
+          rm -f market.html market-admin.html market.js market-admin.js market.css market-admin.css market-config.js || true
+          grep -RIl --include='*.html' 'market.html' . | while read -r f; do
+            sed -i -E 's#<a[^>]*href="market\.html"[^>]*>[^<]*</a>##g' "$f"
+          done
+
+      - name: Validate release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html
+          test -s guide.html
+          test -s database.html
+          test -s database.js
+          test -s quests.html
+          test -s data/db-index.js
+          test -s data/map-spatial.js
+          test -s data/item-relations.js
+          node --check database.js
+          if grep -RIn --include='*.html' -E 'href="market\.html"|Community Player Market' .; then
+            echo 'Market reference still present' >&2
+            exit 1
+          fi
+          if grep -RIn --include='*.html' --include='*.js' -E 'MapleWiki|maplestory\.wiki' .; then
+            echo 'Public MapleWiki label/reference found' >&2
+            exit 1
+          fi
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          missing=[]
+          for f in Path('.').glob('*.html'):
+              txt=f.read_text(encoding='utf-8',errors='ignore')
+              for ref in re.findall(r'(?:href|src)=["\']([^"\']+)["\']',txt):
+                  if ref.startswith(('http:','https:','#','mailto:','javascript:','data:')): continue
+                  clean=ref.split('#')[0].split('?')[0]
+                  if not clean: continue
+                  p=(f.parent/clean)
+                  if not p.exists(): missing.append((f.name,clean))
+          print('missing local refs',len(missing))
+          for x in missing[:30]: print(x)
+          if missing: raise SystemExit(1)
+          PY
+
+      - name: Commit release site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No release site changes to commit'
+          else
+            git commit -m 'Apply PRE V4 release site'
+            git push origin HEAD:pre-v4-release
+          fi

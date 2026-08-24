@@ -5,20 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="KaiokenMS community database for items, monsters, NPCs, maps, quests and custom server systems.">
 <meta name="author" content="-Yakir-H">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://maplestory.io https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: https://maplestory.io https://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://maplestory.io https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: https://maplestory.io https://raw.githubusercontent.com https://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'">
 <title>KaiokenMS Database</title>
-<link rel="stylesheet" href="database.css?v=3">
+<link rel="stylesheet" href="database.css?v=4">
 </head>
 <body>
 <nav class="site-nav">
   <div class="brand">🐉 KaiokenMS Guides</div>
   <div class="nav-links">
+    <button class="nav-back-link" type="button" onclick="if(document.referrer){history.back()}else{location.href='guide.html'}" title="Go back to the previous page">↩ Back</button>
     <a href="./">🏠 Home</a>
     <a href="guide.html">📘 Main Guide</a>
     <a href="quests.html">📜 Quest Guide</a>
     <a class="active" href="database.html">🗃️ Database</a>
   </div>
-  <button class="nav-refresh-btn" id="nav-refresh-btn" type="button">🔄 Refresh</button>
+  <button aria-label="Refresh this guide" class="nav-refresh-btn" id="nav-refresh-btn" title="Refresh this guide" type="button">🔄 Refresh</button>
 </nav>
 <header class="hero">
   <div class="kicker">KaiokenMS Community Database</div>
@@ -51,46 +52,19 @@
     <div class="explorer-status" id="explorer-status">Loading items…</div>
     <div class="offline-note" id="api-note" hidden>The main database could not be reached right now. KaiokenMS custom entries are still available.</div>
     <div class="result-grid" id="result-grid"></div>
-    <button class="load-more" id="load-more" type="button" hidden>Load More</button>
-  </section>
-
-  <section class="section" id="events">
-    <div class="section-head"><div><h2>🔥 EXP &amp; Drop Events</h2><p>Event history is shown only when the timing was confirmed in server announcements.</p></div></div>
-    <div class="event-grid">
-      <article class="event-card">
-        <h3>Current schedule status</h3>
-        <p><strong>No fixed repeating 2x EXP schedule is confirmed yet.</strong> Recent events used different time windows, so they currently appear to be activated by staff rather than a permanent weekly timer.</p>
-        <p><strong>No fixed repeating 2x Drop server event is confirmed yet.</strong> Timed Drop coupons sold by NPCs are separate from server-wide events.</p>
-      </article>
-      <article class="event-card">
-        <h3>Recent confirmed EXP events</h3>
-        <ul class="event-history">
-          <li><b>11 Aug 2026</b>: Double EXP ran for 2 hours starting around 18:45 UTC.</li>
-          <li><b>14 Aug 2026</b>: Double EXP ran from 11:00 to 15:00 UTC.</li>
-          <li>Additional Double EXP windows have also been activated around updates and restarts.</li>
-        </ul>
-      </article>
-    </div>
-  </section>
-
-  <section class="section" id="useful-npcs">
-    <div class="section-head"><div><h2>🧭 Useful KaiokenMS NPCs</h2><p>Important NPCs, what they do and the useful shop options players should know.</p></div></div>
-    <div class="npc-grid" id="npc-grid"></div>
-  </section>
-
-  <section class="section" id="features">
-    <div class="section-head"><div><h2>⚡ KaiokenMS Systems</h2><p>Custom progression, quality-of-life, bossing and Dragon Ball systems available on the server.</p></div></div>
-    <div class="feature-grid" id="feature-grid"></div>
+    <nav class="db-pagination" id="db-pagination" aria-label="Database pages" hidden></nav>
   </section>
 </main>
 <footer class="footer">KaiokenMS community database • Created &amp; maintained by -Yakir-H • MapleStory game assets belong to their respective rights holders.</footer>
-
 <dialog id="detail-dialog">
   <div class="modal-head"><h2 id="detail-title">Database Entry</h2><button class="close" id="detail-close" type="button" aria-label="Close">×</button></div>
   <div class="modal-body" id="detail-body"></div>
 </dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="market-config.js"></script>
-<script src="database.js?v=3"></script>
+<script src="supabase-config.js"></script>
+<script src="data/db-index.js?v=2"></script>
+<script src="data/map-spatial.js?v=2"></script>
+<script src="data/item-relations.js?v=2"></script>
+<script src="database.js?v=5"></script>
 </body>
 </html>

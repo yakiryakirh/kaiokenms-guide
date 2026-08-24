@@ -67,7 +67,8 @@ code{background:#050a13;border:1px solid #365b8b;border-radius:5px;padding:2px 7
 .guide-card h2{border:0;margin:.25em 0 .3em}
 .guide-card p{color:var(--muted)}
 .guide-card .emoji{font-size:2.6rem}
-.guide-card .open{margin-top:auto;color:var(--gold);font-weight:1000}
+.guide-card .open{margin-top:auto;color:#f4f8ff;font-weight:1000}
+.guide-card h2{color:var(--gold);text-shadow:0 0 12px rgba(255,213,74,.08)}
 .page-nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
 .page-nav a{display:block;text-decoration:none;color:#fff;font-weight:900;padding:12px 14px;border:1px solid #35547c;border-radius:10px;background:linear-gradient(145deg,#172a4a,#0d182d)}
 .page-nav a:last-child{text-align:right}.page-nav a:hover{border-color:var(--orange);color:var(--gold)}
@@ -256,6 +257,19 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
   padding-top:5px;
   font-size:.72rem;
 }
+
+/* Human-friendly section groups */
+.section-group-title{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:7px 0 1px;padding:7px 10px;border-bottom:1px solid rgba(134,220,255,.24);color:#9fe3ff;font-size:.78rem;font-weight:1000;letter-spacing:.12em;text-transform:uppercase}
+.section-group-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgba(255,138,0,.55),transparent)}
+.guide-card{position:relative;overflow:hidden}
+.guide-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#32a8ff,#594cff);opacity:.62}
+.guide-card:hover:before{width:5px;background:linear-gradient(#ffd54a,#ff8a00);opacity:1}
+.guide-card .emoji{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(134,220,255,.2);border-radius:10px;background:rgba(4,10,20,.42)}
+.guide-card.hot:before{width:5px;background:linear-gradient(#ffd54a,#ff5b22);opacity:1}
+.card-grid.view-medium .section-group-title{margin-top:13px}
+.card-grid.view-list .section-group-title{margin-top:9px}
+.card-grid.view-list .guide-card .emoji{width:34px;height:34px}
+.card-grid.view-tiny .guide-card[href="routine.html"],.card-grid.view-medium .guide-card[href="routine.html"]{grid-column:1/-1;min-height:105px}
 
 /* Medium tiles: larger, but still compact enough for only a short downward scroll */
 .card-grid.view-medium{
@@ -476,13 +490,12 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 <header class="hero"><div class="kicker">Complete Progression Guide</div><h1>KaiokenMS Guide Sections</h1>
 <p class="subtitle">Each section now has its own page. Quick Start is on the left, Monster Book is highlighted on the right, and the rest follow in the same progression order.</p><div class="author-stamp">⚡ Original Guide • Created &amp; Maintained by -Yakir-H</div></header>
 <main class="wrap">
-<div class="notice"><b>Choose a section:</b> nothing is stacked into one long guide anymore. Open only the topic you want, then use Previous / Next or return here.</div>
 <div class="view-controls">
 <div class="label">View:</div>
 <div class="view-buttons">
-<button class="view-btn" data-view="list" type="button">☰ List</button>
-<button class="view-btn active" data-view="tiny" type="button">▦ Tiny Tiles</button>
-<button class="view-btn" data-view="medium" type="button">▣ Medium Tiles</button>
+<button class="view-btn" data-view="list" type="button">☰ Clean List</button>
+<button class="view-btn" data-view="tiny" type="button">▦ Compact</button>
+<button class="view-btn active" data-view="medium" type="button">▣ Comfortable</button>
 </div>
 </div><div class="card-grid view-tiny">
 <a class="guide-card" href="quick-start.html">
@@ -568,7 +581,15 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 </main><footer>KaiokenMS Complete Progression Guide<div class="footer-credit">Created &amp; Maintained by -Yakir-H</div><div class="footer-rights">© 2026 -Yakir-H. All rights reserved. Please credit the original author when sharing or adapting this guide.</div></footer><script>
 const grid=document.querySelector('.card-grid');
 const buttons=[...document.querySelectorAll('.view-btn')];
-const storageKey='kaioken_guide_view_v2';
+const storageKey='kaioken_guide_view_v3';
+const sectionGroups=[
+  ['🚀 Getting Started',['quick-start.html','monster-book.html','leveling.html']],
+  ['🏅 Character Progression',['achievements.html','alts-mules.html','rebirth.html']],
+  ['💰 Economy & Activities',['mesos-farming.html','fishing.html','economy.html','commands.html']],
+  ['👹 Late Game & Special Systems',['pq-bossing.html','dragon-balls.html']],
+  ['✅ Session Plan',['routine.html']]
+];
+for(const [label,hrefs] of sectionGroups){const first=[...grid.querySelectorAll('.guide-card')].find(card=>hrefs.includes(card.getAttribute('href')));if(!first)continue;const heading=document.createElement('div');heading.className='section-group-title';heading.textContent=label;grid.insertBefore(heading,first)}
 
 function setView(view){
   grid.classList.remove('view-tiny','view-medium','view-list');
@@ -579,11 +600,16 @@ function setView(view){
 buttons.forEach(btn=>btn.addEventListener('click',()=>setView(btn.dataset.view)));
 const saved=localStorage.getItem(storageKey);
 if(['tiny','medium','list'].includes(saved)) setView(saved);
-else setView('tiny');
+else setView('medium');
 </script><script>
 /* GLOBAL_NAV_REFRESH_START */
 document.getElementById('nav-refresh-btn')?.addEventListener('click',()=>{
   window.location.reload();
 });
 /* GLOBAL_NAV_REFRESH_END */
-</script></body></html>
+</script><script src="site-navigation.js?v=12"></script></body></html>
+
+
+
+
+

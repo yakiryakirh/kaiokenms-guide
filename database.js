@@ -1,406 +1,289 @@
 (() => {
-  "use strict";
+  'use strict';
 
-  const API = "https://maplestory.io/api/GMS/83";
-  const $ = id => document.getElementById(id);
-  const grid = $("result-grid");
-  const status = $("explorer-status");
-  const search = $("db-search");
-  const countSelect = $("result-count");
-  const suggestions = $("db-suggestions");
-  const dialog = $("detail-dialog");
-  const detailTitle = $("detail-title");
-  const detailBody = $("detail-body");
+  const API='https://maplestory.io/api/GMS/83';
+  const RAW='https://raw.githubusercontent.com/andrenogrib/gms_v83_wztoweb/refs/heads/main/WEB/';
+  const idx=window.KAIOKEN_DB_INDEX||{npcs:[],mobs:[],maps:[],quests:[],meta:{}};
+  const spatial=(window.KAIOKEN_MAP_SPATIAL||{}).maps||{};
+  const rel=window.KAIOKEN_ITEM_RELATIONS||{itemDrops:{},mobDrops:{},itemShops:{},itemNames:{}};
+  const $=id=>document.getElementById(id);
+  const grid=$('result-grid'), status=$('explorer-status'), search=$('db-search'), count=$('result-count');
+  const sugg=$('db-suggestions'), pager=$('db-pagination'), dialog=$('detail-dialog'), detailTitle=$('detail-title'), detailBody=$('detail-body');
+  let entity='item', page=1, query='', itemRows=[], customRows=[], monsterKind='monster', viewMode='compact', categoryFilter='all', mapRegionFilter='all', npcRegionFilter='all', mobRegionFilter='all', questRegionFilter='all', itemSourceMode='landing', gachaCity='';
 
-  let entity = "item";
-  let startPosition = 0;
-  let lastQuery = "";
-  let loading = false;
-  let customEntries = [];
-  let suggestionTimer = null;
-  let suggestionRequest = 0;
-  let activeSuggestion = -1;
+  const cfg={
+    item:['Items','Item','📦'],mob:['Monsters','Monster','👹'],npc:['NPCs','NPC','🧑'],map:['Maps','Map','🗺️'],quest:['Quests','Quest','📜'],job:['Jobs','Job','⚔️'],custom:['KaiokenMS Unique','KaiokenMS Entry','✨']
+  };
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const norm=s=>String(s??'').trim();
+  const nkey=v=>{try{return String(parseInt(v,10))}catch{return String(v??'')}};
+  const icon=(type,id)=>type==='mob'?`${API}/mob/${id}/icon`:type==='npc'?`${API}/npc/${id}/icon`:type==='item'?`${API}/item/${id}/icon`:'';
+  const assetUrl=(path,folder)=>{const p=String(path||'');if(!p)return '';if(/^https?:/i.test(p))return p;return `${RAW}${p.includes('/')?p:`${folder}/images/${p}`}`};
+  const npcImage=row=>assetUrl(row?.image||row?.preview,'Npc')||icon('npc',row?.id);
+  const portalPalette=['#ff9800','#25b6ff','#e84dff','#38d996','#ff4d6d','#ffd43b','#7c6cff','#00c9b7'];
+  const portalColor=id=>portalPalette[[...String(id||'')].reduce((n,c)=>n+c.charCodeAt(0),0)%portalPalette.length];
+  const mapRegions=['Amoria','Ellin','Ereve','Maple Island','Masteria','Ossyria','Rien','Victoria Island','World Tour'];
+  function mapRegion(row){const text=`${row?.street||''} ${row?.name||''}`;if(/amoria|wedding|chapel/i.test(text))return'Amoria';if(/ellin|altaire|primeval/i.test(text))return'Ellin';if(/ereve|empress|knight stronghold|crossroads of ereve/i.test(text))return'Ereve';if(/maple island|maple road|amherst|southperry|rainbow street/i.test(text))return'Maple Island';if(/masteria|new leaf|crimsonwood|phantom forest|haunted house|bigger ben|mesogears/i.test(text))return'Masteria';if(/rien|snow island|aran's past|mirror cave/i.test(text))return'Rien';if(/zipangu|showa|mushroom shrine|singapore|malaysia|thailand|floating market|china|taiwan|korean folk town|trend zone|world tour/i.test(text))return'World Tour';if(/victoria|henesys|perion|kerning|ellinia|sleepywood|nautilus|florina|ant tunnel|deep valley|dungeon|kerning square|construction site|swamp/i.test(text))return'Victoria Island';return'Ossyria'}
+  const mapByName=new Map((idx.maps||[]).map(m=>[norm(m.name).toLowerCase(),m]));
+  const mapByIdFast=new Map((idx.maps||[]).map(m=>[nkey(m.id),m]));
+  const npcRegion=row=>mapRegion(mapByName.get(norm(row?.firstMap).toLowerCase())||{name:row?.firstMap||'',street:row?.firstMap||''});
+  const mobRegionById=new Map();let mobRegionsReady=false;
+  function prepareMobRegions(){if(mobRegionsReady)return;mobRegionsReady=true;for(const m of Object.values(spatial)){const region=mapRegion(m);for(const mob of (m?.mobs||[])){const id=nkey(mob.id);if(id&&!mobRegionById.has(id))mobRegionById.set(id,{region,map:m})}}}
+  const mobRegion=row=>{prepareMobRegions();return mobRegionById.get(nkey(row?.id))?.region||mapRegion({name:row?.firstMap||'',street:row?.firstMap||''})};
+  const locationGroup=(type,row)=>{if(type==='npc')return norm(row?.firstMap||'Unknown location');if(type==='mob'){prepareMobRegions();const m=mobRegionById.get(nkey(row?.id))?.map;return norm(m?.street||m?.name||'Unknown location')}return''};
+  const npcByIdFast=new Map((idx.npcs||[]).map(n=>[nkey(n.id),n]));
+  const questRegionCache=new Map();
+  const questRegion=row=>{const key=nkey(row?.id);if(questRegionCache.has(key))return questRegionCache.get(key);const loc=(row?.startLocations||row?.endLocations||[])[0],map=loc&&(mapByIdFast.get(nkey(loc.mapId))||spatial[nkey(loc.mapId)]),npc=npcByIdFast.get(nkey(row?.startNpc))||npcByIdFast.get(nkey(row?.endNpc)),region=map?mapRegion(map):npc?npcRegion(npc):'Ossyria';questRegionCache.set(key,region);return region};
+  const isBoss=row=>/boss|pianus|zakum|horntail|papulatus|manon|griffey|mano|stumpy|deo|king clang|tae roon|timer|snowman|elliza|dyle|faust|mushmom|balrog|leviathan/i.test(row?.name||'')||Number(row?.exp||0)>=Math.max(500,Number(row?.level||1)*20);
+  const mapImage=m=>m?.id?`${API}/map/${m.id}/render/0`:(m?.image||m?.fallbackImage||'');
+  const uniqueBy=(arr,key='id')=>[...new Map((arr||[]).map(x=>[String(x?.[key]??''),x])).values()].filter(x=>String(x?.[key]??''));
 
-  const entityConfig = {
-    item: { label: "Items", singular: "Item", icon: "📦", placeholder: "Start typing an item name or enter an ID…", image: id => `${API}/item/${id}/icon` },
-    mob: { label: "Monsters", singular: "Monster", icon: "👹", placeholder: "Start typing a monster name or enter an ID…", image: id => `${API}/mob/${id}/icon` },
-    npc: { label: "NPCs", singular: "NPC", icon: "🧑", placeholder: "Start typing an NPC name or enter an ID…", image: id => `${API}/npc/${id}/icon` },
-    map: { label: "Maps", singular: "Map", icon: "🗺️", placeholder: "Start typing a map name or enter an ID…", image: id => `${API}/map/${id}/icon` },
-    quest: { label: "Quests", singular: "Quest", icon: "📜", placeholder: "Start typing a quest name or enter an ID…", image: id => `${API}/quest/${id}/icon` },
-    job: { label: "Jobs", singular: "Job", icon: "⚔️", placeholder: "Start typing a job name or enter an ID…", image: null },
-    custom: { label: "KaiokenMS Unique", singular: "KaiokenMS Entry", icon: "✨", placeholder: "Start typing a unique KaiokenMS item…", image: null }
+  const customFallback=[
+    ...Array.from({length:7},(_,i)=>({name:`Dragon Ball (${i+1}-Star)`,category:'Dragon Balls',description:'One of the seven Dragon Balls used by the custom Shenron system.',image_url:`images/dragon-ball-${i+1}-item.png`,verified:true})),
+    {name:'Maple Leaf Box',category:'Boxes',description:'Custom KaiokenMS reward box used in server progression.',image_url:'images/maple-leaf-box-v2.png',verified:true},
+    {name:'Senzu Bean',category:'Consumables',description:'Dragon Ball inspired consumable used by KaiokenMS.',image_url:'images/senzu-bean-original.png',verified:true},
+    {name:'Kaioken ItemVac',category:'Utility',description:'Timed utility that automatically pulls nearby monster drops while farming.',image_url:'images/item-vac-website.png',verified:true},
+    {name:'Scouter',game_id:1022042,category:'Equipment',description:'Equip the Scouter and inspect monsters for useful combat and drop information.',image_url:'images/scouter-1022042-icon.png',verified:true},
+    {name:'Kaioken Force Scroll 10%',category:'Kaioken Scrolls',description:'Custom KaiokenMS progression scroll.',image_url:'images/kaioken-scroll-icon.png',verified:true},
+    {name:'Kaioken Stability Scroll 100%',category:'Kaioken Scrolls',description:'Custom KaiokenMS progression scroll.',image_url:'images/kaioken-scroll-icon.png',verified:true},
+    {name:'Kaioken Surge Scroll',category:'Kaioken Scrolls',description:'Custom KaiokenMS progression scroll.',image_url:'images/kaioken-scroll-icon.png',verified:true},
+    {name:'Equip Enhancement Scroll',category:'Enhancement Scrolls',description:'Enhances upgraded equipment. Failure can destroy the item.',image_url:'images/equip-enhancement-scroll.png',verified:true},
+    {name:'Advanced Equip Enhancement Scroll',category:'Enhancement Scrolls',description:'Advanced equipment enhancement scroll.',image_url:'images/advanced-equip-enhancement-scroll.png',verified:true},
+    {name:'Protection Scroll',category:'Enhancement Scrolls',description:'Protects equipment from destruction by one failed enhancement.',image_url:'images/protection-scroll.png',verified:true}
+  ];
+
+  const jobs={
+    Warrior:['Warrior (1st)','Fighter (2nd)','Page (2nd)','Spearman (2nd)','Crusader (3rd)','White Knight (3rd)','Dragon Knight (3rd)','Hero (4th)','Paladin (4th)','Dark Knight (4th)'],
+    Magician:['Magician (1st)','F/P Wizard (2nd)','I/L Wizard (2nd)','Cleric (2nd)','F/P Mage (3rd)','I/L Mage (3rd)','Priest (3rd)','F/P Arch Mage (4th)','I/L Arch Mage (4th)','Bishop (4th)'],
+    Bowman:['Archer (1st)','Hunter (2nd)','Crossbowman (2nd)','Ranger (3rd)','Sniper (3rd)','Bow Master (4th)','Marksman (4th)'],
+    Thief:['Rogue (1st)','Assassin (2nd)','Bandit (2nd)','Hermit (3rd)','Chief Bandit (3rd)','Night Lord (4th)','Shadower (4th)'],
+    Pirate:['Pirate (1st)','Brawler (2nd)','Gunslinger (2nd)','Marauder (3rd)','Outlaw (3rd)','Buccaneer (4th)','Corsair (4th)'],
+    'Cygnus Knights':['Dawn Warrior','Blaze Wizard','Wind Archer','Night Walker','Thunder Breaker'],
+    Aran:['Aran (1st)','Aran (2nd)','Aran (3rd)','Aran (4th)'],
+    Beginner:['Beginner']
   };
 
-  const usefulNPCs = [
-    {name:"Master Roshi",role:"Mob Leveling Warper",image:"images/master-roshi-transparent.png",text:"Warps you to training maps based on your level so you can find a good grind spot quickly.",meta:["Custom leveling utility","Talk to him when you are not sure where to train."]},
-    {name:"Frieza Final Form",role:"Ore Ring Forge",image:"images/frieza-final-form-npc.png",text:"Located on the left side of the PQ room entrance. Refine forge materials, forge one of the KaiokenMS rings and tag a ring to your name.",meta:["Each eligible ring has 10 permanent Forge levels.","Forge costs increase depending on the chosen path."]},
-    {name:"Piccolo",role:"PQ Center / Hall of Fame",image:"images/piccolo-pq-center.png",text:"The central Party Quest hub. Enter through the Free Market and reach the server's PQ content from one place.",meta:["Maximum level restrictions are removed.","Up to 5 entries per week for each PQ.","PQ completions award PQ Points and weekly Hall of Fame rewards."]},
-    {name:"PQ Point Shop",role:"PQ Points",image:"images/hercule-pq-shop-npc.png",text:"Spend PQ Points on progression items, custom scrolls and timed EXP or Drop coupons.",shop:["1 hour 2x EXP coupon: 40 PQ Points","1 hour 2x Drop coupon: 50 PQ Points","Kaioken Surge Scroll: 60","Kaioken Stability Scroll: 5","Senzu Bean: 12","AP Reset: 15","Maple Leaf Box: 15","Onyx Apple: 25","Equip Enhancement Scroll: 40","Advanced Equip Enhancement Scroll: 125","Protection Scroll: 75"]},
-    {name:"Videl",role:"Kaio Shop / Vote Points",image:"images/videl-kaio-shop-npc.png",text:"Spend Kaio Points earned from voting on useful account progression and quality of life items.",shop:["Dragon Ball Radar: 20","1 hour 2x Drop coupon: 3","1 hour 2x EXP coupon: 3","Kaioken ItemVac (1 Hour): 3","Maple Leaf Box: 1","AP Reset: 2","Senzu Bean: 1"]},
-    {name:"Bulma",role:"Supplies Shop / Mesos",image:"images/bulma-supplies-npc.png",text:"A central mesos supply shop with server utility items plus regular consumables and ammunition.",shop:["Damage Skin Selector: 777,000,000 mesos","Piece of Cracked Dimension: 500,000 mesos","Eye of Fire: 2,000,000 mesos","Fishing Chair: 50,000,000 mesos","Fishing Bait: 10,000,000 mesos","Item Megaphone: 250,000 mesos","Super Megaphone: 100,000 mesos","All Cure Potion: 3,000 mesos","Power Elixir: 5,000 mesos"]},
-    {name:"Scholar Gohan",role:"Skill Book Shop",image:"images/scholar-gohan-transparent.png",text:"Lets players buy skill books with mesos instead of farming every book from monsters and bosses.",meta:["Useful after 4th Job.","Check the in game shop for the current book list and prices."]},
-    {name:"Android 18",role:"Gachapon",image:"images/android-18-gachapon-npc.png",text:"The custom Gachapon NPC used for Gachapon related rewards and rolls.",meta:["Use the server's current Gachapon currency or tickets."]},
-    {name:"Vegeta",role:"Scouter System",image:"images/vegeta-base-scouter-transparent.png",text:"Part of the Scouter system. With the Scouter equipped, double click monsters to inspect useful combat and drop information.",meta:["Monster HP, MP and EXP","Possible drops and drop chances"]},
-    {name:"Dr. Gero",role:"Custom Utility NPC",image:"images/dr-gero-clean-transparent.png",text:"A custom KaiokenMS NPC used by server specific systems. More exact functions can be added as they are confirmed in game.",meta:["KaiokenMS custom NPC"]}
-  ];
+  const style=document.createElement('style'); style.textContent=`
+    .nav-back-link{appearance:none;border:1px solid #355784;background:linear-gradient(145deg,#172a4a,#0d182d);color:#fff;border-radius:999px;padding:8px 12px;font:inherit;font-weight:900;cursor:pointer}
+    .pre4-card{display:flex;gap:13px;align-items:center;min-height:104px;border:1px solid #35547c;border-radius:13px;padding:13px;background:#1a2b44;cursor:pointer;transition:.15s}.pre4-card:hover{border-color:#ff8a00;transform:translateY(-1px)}
+    .pre4-card img,.pre4-placeholder{width:64px;height:64px;object-fit:contain;border:1px solid #35547c;border-radius:10px;background:#101b2b}.pre4-placeholder{flex:0 0 auto;display:grid;place-items:center;font-size:2rem}.pre4-placeholder[hidden]{display:none!important}.pre4-card .map-thumb{width:116px;height:72px;object-fit:contain}
+    .pre4-name{font-weight:1000;font-size:1.05rem;color:#f8fbff}.pre4-meta{color:#86dcff;font-size:.82rem;margin-top:5px}.pre4-sub{color:#b9c7da;font-size:.8rem;margin-top:4px}
+    .pre4-detail h3{color:#ffd54a;margin:22px 0 10px}.pre4-tags{display:flex;gap:7px;flex-wrap:wrap}.pre4-tag{border:1px solid #35547c;border-radius:999px;padding:4px 9px;color:#86dcff;background:#101b2b}
+    .entity-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.entity-link{display:flex;align-items:center;gap:10px;border:1px solid #35547c;background:#1a2b44;border-radius:11px;padding:10px;cursor:pointer;color:#fff}.entity-link:hover{border-color:#ff8a00}.entity-link img{width:48px;height:48px;object-fit:contain}
+    .map-box{border:1px solid #35547c;border-radius:13px;padding:12px;margin:10px 0;background:#101b2b}.map-canvas{position:relative;overflow:auto;border:1px solid #35547c;border-radius:11px;background:#0b1320;min-height:100px;display:grid;place-items:center}.map-canvas>img{display:block;width:auto;max-width:100%;height:auto;max-height:640px;object-fit:contain;image-rendering:auto}.marker{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 12px currentColor}.marker.npc{color:#fff;background:#ff4d71}.map-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.78rem;color:#b9c7da;margin-top:7px}.portal-list{display:grid;gap:7px;margin-top:9px}.portal-row{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid #35547c;border-left:5px solid var(--portal-color,#ff9800);border-radius:9px;padding:8px 10px}.portal-target{display:flex;flex-direction:column}.portal-target small{color:#9fb1c7;font-size:.72rem}.portal-swatch{width:12px;height:12px;border-radius:50%;display:inline-block;background:var(--portal-color);box-shadow:0 0 7px var(--portal-color)}.portal-row button,.mini-open{border:1px solid #ff8a00;background:#6b3300;color:#ffd54a;border-radius:8px;padding:6px 10px;font-weight:900;cursor:pointer}.monster-kind-filter{display:none;gap:8px;padding:0 18px 12px}.monster-kind-filter.visible{display:flex}.monster-kind-filter button{border:1px solid #426481;border-radius:999px;background:#101b2b;color:#dce8f6;padding:8px 14px;font-weight:900;cursor:pointer}.monster-kind-filter button.active{border-color:#ff9800;background:#5b3000;color:#ffd54a}.drop-more{margin-top:10px;border:1px solid #35547c;border-radius:12px;padding:10px}.drop-more summary{cursor:pointer;color:#ffd54a;font-weight:900}
+    .stats-table{width:100%;border-collapse:collapse}.stats-table th,.stats-table td{padding:8px;border-bottom:1px solid #35547c;text-align:left}.stats-table th{color:#86dcff;width:32%}
+    .job-family{border:1px solid #35547c;border-radius:12px;padding:12px;margin:9px 0;background:#101b2b}.job-family h3{margin:0 0 8px;color:#ffd54a}.job-pills{display:flex;flex-wrap:wrap;gap:7px}.job-pill{padding:6px 9px;border:1px solid #35547c;border-radius:999px;background:#1a2b44}
+    .quest-text{white-space:pre-wrap;line-height:1.55;color:#dce8f6}.empty{color:#9fb1c7;padding:10px 0}.marker.portal{padding:0;cursor:pointer}.marker.portal:hover,.marker.portal:focus-visible{width:24px;height:24px;outline:3px solid rgba(255,255,255,.45)}.npc-map-marker{position:absolute;transform:translate(-50%,-85%);width:34px;height:34px;padding:2px;border:2px solid #fff;border-radius:50%;background:#17304e;box-shadow:0 2px 10px #000;cursor:pointer}.npc-map-marker img{width:100%;height:100%;object-fit:contain}.npc-map-marker:hover,.npc-map-marker:focus-visible{width:42px;height:42px;z-index:3;outline:2px solid #ff9800}.location-map-button{cursor:pointer}.location-map-button:hover,.location-map-button:focus-visible{border-color:#ff9800;color:#ffd54a}.result-grid[data-view="tiny"]{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.result-grid[data-view="tiny"] .pre4-card{min-height:48px;padding:6px 8px;border-radius:8px;gap:8px}.result-grid[data-view="tiny"] .pre4-card img,.result-grid[data-view="tiny"] .pre4-placeholder{width:34px;height:34px}.result-grid[data-view="tiny"] .pre4-name{font-size:.86rem}.result-grid[data-view="tiny"] .pre4-meta{font-size:.72rem;margin-top:2px}.result-grid[data-view="tiny"] .pre4-sub{display:none}
+    .db-view-tools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:0 18px 14px}.db-view-tools[hidden]{display:none}.db-view-tools select,.db-view-tools button{border:1px solid #426481;border-radius:10px;background:#101b2b;color:#eaf4ff;padding:9px 12px;font-weight:800}.db-view-tools button{cursor:pointer}.db-view-tools button.active{border-color:#ff9800;background:#5b3000;color:#ffd54a}.map-region-grid{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.map-region-card{position:relative;min-height:190px;overflow:hidden;border:1px solid #426481;border-radius:16px;background:#101b2b;color:#fff;cursor:pointer;text-align:left;padding:0;box-shadow:0 8px 24px rgba(0,0,0,.2)}.map-region-card:hover,.map-region-card:focus-visible{border-color:#ff9800;transform:translateY(-2px);outline:none}.map-region-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.72}.map-region-card::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(5,13,25,.98),rgba(5,13,25,.08) 75%)}.map-region-card span{position:absolute;z-index:1;left:16px;right:16px;bottom:14px}.map-region-card strong{display:block;color:#ffd54a;font-size:1.35rem}.map-region-card small{color:#dce8f6}.map-region-back{grid-column:1/-1;display:flex;align-items:center;gap:12px;border:1px solid #ff9800;border-radius:12px;background:linear-gradient(90deg,rgba(255,152,0,.18),transparent);color:#ffd54a;padding:12px 15px;font-weight:1000;cursor:pointer}.result-grid[data-view="compact"]{grid-template-columns:repeat(4,minmax(0,1fr))}.result-grid[data-view="compact"] .pre4-card{min-height:78px;padding:9px}.result-grid[data-view="compact"] .pre4-card img,.result-grid[data-view="compact"] .pre4-placeholder{width:48px;height:48px}.result-grid[data-view="list"]{grid-template-columns:1fr}.result-grid[data-view="list"] .pre4-card{min-height:74px}.result-grid[data-view="large"]{grid-template-columns:repeat(2,minmax(0,1fr))}.result-grid[data-view="large"] .pre4-card{min-height:132px}.result-grid[data-view="large"] .pre4-card img,.result-grid[data-view="large"] .pre4-placeholder{width:88px;height:88px}.job-family details>summary{list-style:none;cursor:pointer;color:#ffd54a;font-weight:1000;font-size:1.08rem;display:flex;justify-content:space-between}.job-family details>summary::after{content:'⌄';transition:.18s}.job-family details[open]>summary::after{transform:rotate(180deg)}.job-family details .job-pills{margin-top:10px}@media(max-width:1050px){.result-grid[data-view="compact"]{grid-template-columns:repeat(3,minmax(0,1fr));}.map-region-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.result-grid[data-view="compact"],.result-grid[data-view="large"],.map-region-grid{grid-template-columns:1fr}}
+    .item-source-intro{grid-column:1/-1;border:1px solid #426481;border-left:5px solid #ff9800;border-radius:13px;padding:14px 16px;background:linear-gradient(100deg,rgba(255,152,0,.12),rgba(12,24,42,.92));color:#dce8f6}.item-source-intro strong{color:#ffd54a}.gacha-letter{grid-column:1/-1;margin:12px 0 0;padding:6px 2px;border-bottom:1px solid #426481;color:#ffd54a;font-size:1.12rem;letter-spacing:.08em}.gacha-item{display:grid;grid-template-columns:54px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:68px;border:1px solid #35547c;border-radius:12px;padding:10px 12px;background:linear-gradient(145deg,#1b3150,#14243b);color:#fff}.gacha-item img{width:50px;height:50px;object-fit:contain;border:1px solid #35547c;border-radius:9px;background:#0d1828}.gacha-item button{border:1px solid #4ca9d8;border-radius:8px;background:#173a58;color:#9ee5ff;padding:7px 10px;font-weight:900;cursor:pointer}.gacha-item button:hover{border-color:#ff9800;color:#ffd54a}.gacha-source-link{color:#86dcff;font-weight:900}@media(max-width:620px){.gacha-item{grid-template-columns:46px minmax(0,1fr)}.gacha-item img{width:42px;height:42px}.gacha-item button{grid-column:1/-1}}
+    @media(max-width:680px){.entity-links{grid-template-columns:1fr}.pre4-card .map-thumb{width:86px}.map-canvas>img{max-height:320px}}
+  `; document.head.appendChild(style);
+  const gachaStyle=document.createElement('style');gachaStyle.textContent=`
+    .source-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .source-gachapon img{inset:10px auto auto 50%;width:160px;height:145px;transform:translateX(-50%);object-fit:contain;opacity:1;filter:drop-shadow(0 10px 14px rgba(0,0,0,.45))}
+    .gacha-city-card img{opacity:.9}.gacha-city-card::after{background:linear-gradient(0deg,rgba(5,13,25,.98),rgba(5,13,25,.05) 68%)}
+    @media(max-width:760px){.source-choice-grid{grid-template-columns:1fr}}
+  `;document.head.appendChild(gachaStyle);
+  const monsterFilter=document.createElement('div');monsterFilter.className='monster-kind-filter';monsterFilter.innerHTML='<button type="button" class="active" data-monster-kind="monster">👹 Monsters</button><button type="button" data-monster-kind="boss">👑 Bosses</button>';document.querySelector('.searchbar')?.before(monsterFilter);
+  monsterFilter.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{monsterKind=button.dataset.monsterKind;mobRegionFilter='all';page=1;monsterFilter.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===button));render()}));
+  const viewTools=document.createElement('div');viewTools.className='db-view-tools';viewTools.innerHTML='<label for="db-category-filter">Category</label><select id="db-category-filter"><option value="all">All categories</option></select><span aria-label="Display size">View:</span><button type="button" data-view="tiny">≡ Tiny list</button><button type="button" data-view="list">☰ List</button><button type="button" class="active" data-view="compact">▦ Small</button><button type="button" data-view="large">▦ Large</button>';document.querySelector('.searchbar')?.after(viewTools);
+  const categorySelect=viewTools.querySelector('select');categorySelect.onchange=()=>{categoryFilter=categorySelect.value;mapRegionFilter='all';page=1;render()};viewTools.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>{viewMode=button.dataset.view;grid.dataset.view=viewMode;viewTools.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===button))});
 
-  const features = [
-    ["🐉 Shenron & Dragon Balls","Collect all 7 Dragon Balls to summon Shenron and access special wishes, rewards and progression."],
-    ["⚡ Super Saiyan Skill","A custom transformation tied to the Dragon Ball progression system."],
-    ["🥋 Kaioken Skill","A custom 4th Job power skill with movement benefits and an HP drain tradeoff."],
-    ["💥 Kamehameha","Custom Dragon Ball inspired combat skill."],
-    ["⏳ Hyperbolic Time Chamber","Daily training area through Mr. Popo with level scaled monsters and bonus EXP."],
-    ["📡 Scouter System","Double click monsters while using the Scouter to inspect HP, MP, EXP and drop information."],
-    ["👥 PQ Center","Central PQ hub with removed maximum level restrictions, weekly entry limits, PQ Points and Hall of Fame rewards."],
-    ["💎 Ore Ring Forge","KaiokenMS ring crafting and permanent 10 level forge progression through Frieza Final Form."],
-    ["📜 Enhancement Scrolls","Equip Enhancement, Advanced Equip Enhancement and Protection Scrolls create a separate high risk gear upgrade layer."],
-    ["🧲 Kaioken ItemVac","Timed utility that automatically pulls nearby monster drops while farming."],
-    ["🗄 Ore & Scroll Banks","Dedicated storage systems for ores and scrolls to keep normal inventory cleaner."],
-    ["🗺 World Map Tooltips","Extra map information for monsters, NPCs, quests and players without leaving the game."],
-    ["🌀 Instant Transmission","Fast travel system available with the required active Z Card."],
-    ["🎁 Daily Gift","Daily reward command with a streak system."],
-    ["🏆 Chaos Bosses","Chaos Zakum and other stronger boss content extend progression."],
-    ["☠️ Boss Death Count","Boss expeditions use a shared death count system for failed entries."],
-    ["⏱ Boss Spawn Times","Boss spawn timing can be checked through the Bosses Card interface."],
-    ["🎨 Damage Skin Selector","Custom damage number styles available through the server's selector system."],
-    ["🪟 Expandable Inventory","Inventory windows can be expanded while unavailable slots stay clearly marked."],
-    ["🖥 Resolution Options","Switch between multiple screen resolutions through the custom in game resolution system."],
-    ["☁️ Flying Nimbus","Dragon Ball inspired flying movement that helps cross maps and reach platforms faster."],
-    ["📕 Hyper Skills","A custom Hyper Skills tab and Hyper Skill Point progression tied to long term systems."],
-    ["🍁 Maple Leaf Economy","Maple Leaves are used in several custom upgrades and progression systems."]
-  ];
-
-  const fallbackCustom = [
-    ...Array.from({length:7},(_,i)=>({entity_type:"item",name:`Dragon Ball (${i+1}-Star)`,game_id:null,category:"Dragon Balls",description:"One of the seven Dragon Balls used by the custom Shenron system.",image_url:`images/dragon-ball-${i+1}-item.png`,verified:true})),
-    {entity_type:"item",name:"Kaioken Force Scroll 10%",category:"Kaioken Scrolls",description:"Adds 0~2 Weapon Attack and 0~2 Magic Attack to equipment. Success rate: 10%.",image_url:"images/kaioken-scroll-icon.png",verified:true},
-    {entity_type:"item",name:"Kaioken Stability Scroll 100%",category:"Kaioken Scrolls",description:"Safely adds 1~2 to existing non-attack equipment stats. Success rate: 100%.",image_url:"images/kaioken-scroll-icon.png",verified:true},
-    {entity_type:"item",name:"Kaioken Surge Scroll",category:"Kaioken Scrolls",description:"Custom KaiokenMS progression scroll.",image_url:"images/kaioken-scroll-icon.png",verified:true},
-    {entity_type:"item",name:"Kaioken Limit Scroll",category:"Kaioken Scrolls",description:"Custom KaiokenMS progression scroll.",image_url:"images/kaioken-scroll-icon.png",verified:false},
-    {entity_type:"item",name:"Equip Enhancement Scroll",category:"Enhancement Scrolls",description:"Enhances upgraded equipment. Failure destroys the item.",image_url:"images/equip-enhancement-scroll.png",verified:true},
-    {entity_type:"item",name:"Advanced Equip Enhancement Scroll",category:"Enhancement Scrolls",description:"Enhances upgraded equipment with higher success rates. Failure destroys the item.",image_url:"images/advanced-equip-enhancement-scroll.png",verified:true},
-    {entity_type:"item",name:"Protection Scroll",category:"Enhancement Scrolls",description:"Protects equipment from being destroyed by one failed scroll.",image_url:"images/protection-scroll.png",verified:true},
-    {entity_type:"item",name:"Kaioken ItemVac",category:"Utility",description:"Timed item that automatically pulls monster drops toward the player while farming.",image_url:"images/item-vac-website.png",verified:true},
-    {entity_type:"item",name:"Scouter",game_id:1022042,category:"Equipment",description:"Equip the Scouter and double click monsters to inspect server supplied monster information.",image_url:"images/scouter-1022042-icon.png",verified:true},
-    {entity_type:"item",name:"Kaioken Diamonds",category:"Custom Materials",description:"KaiokenMS custom progression material.",verified:false},
-    {entity_type:"equipment",name:"Shenron Ring",category:"Special Ring",description:"Special KaiokenMS ring. Exact acquisition details are still being verified.",verified:false},
-    {entity_type:"item",name:"Senzu Bean",category:"Dragon Ball Items",description:"Dragon Ball themed consumable sold by server shops.",verified:true},
-    {entity_type:"item",name:"Maple Leaf Box",category:"Boxes",description:"Custom server reward box used in KaiokenMS progression.",verified:true}
-  ];
-
-  const text = v => String(v ?? "").trim();
-  const make = (tag, cls, content) => { const n=document.createElement(tag); if(cls)n.className=cls; if(content!==undefined)n.textContent=content; return n; };
-  const itemId = o => o?.id ?? o?.itemId ?? o?.mobId ?? o?.npcId ?? o?.mapId ?? o?.questId ?? o?.jobId ?? null;
-  const itemName = o => text(o?.name || o?.description?.name || o?.description?.Name || o?.title || o?.jobName || o?.streetName || `ID ${itemId(o) || "Unknown"}`);
-  const sortRows = rows => [...rows].sort((a,b)=>itemName(a).localeCompare(itemName(b),undefined,{numeric:true,sensitivity:"base"}));
-  const listFromResponse = data => Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : Array.isArray(data?.items) ? data.items : Array.isArray(data?.results) ? data.results : data && typeof data === "object" ? Object.values(data).filter(v=>v && typeof v === "object" && !Array.isArray(v)) : [];
-  const iconUrlFor = (ent,id) => id!=null && entityConfig[ent]?.image ? entityConfig[ent].image(id) : "";
-  const setStatus = (message,type="") => { status.textContent=message; status.className=`explorer-status${type?` ${type}`:""}`; };
-  const isNumericQuery = q => /^\d{2,}$/.test(q);
-  const listUrl = (ent,q,start,count) => { const u=new URL(`${API}/${ent}`); if(q)u.searchParams.set("searchFor",q); u.searchParams.set("startPosition",String(start)); u.searchParams.set("count",String(count)); return u.toString(); };
-  const apiFetch = async (url,signal) => { const r=await fetch(url,{headers:{Accept:"application/json"},signal}); if(!r.ok)throw new Error(`HTTP ${r.status}`); return r.json(); };
-  const lower = v => text(v).toLowerCase();
-  const sourceLike = /maplestory\.?wiki|maplestory\.?io|hidden\s*street|bbb\s*hidden|global\s*hidden/i;
-
-  const customHiddenNames = new Set([
-    "white scroll","chaos scroll","scroll for claw for att 10%","scroll for wand for magic attack 50%",
-    "piece of time","maple leaf","2x exp service","2x drop service","pet vac service","fame service"
-  ]);
-  function isPublicCustom(row){
-    const name=lower(row?.name), type=lower(row?.entity_type);
-    if(!name || customHiddenNames.has(name))return false;
-    if(["npc","feature","service","map","quest","job","monster","mob"].includes(type))return false;
-    return true;
+  function cleanQuestText(raw){
+    let s=String(raw||'').replace(/\\n/g,'\n').replace(/\\r/g,'');
+    s=s.replace(/#o(\d+)#s?#?/gi,(_,id)=>findMob(id)?.name||`Monster ${id}`);
+    s=s.replace(/#p(\d+)#/gi,(_,id)=>findNpc(id)?.name||`NPC ${id}`);
+    s=s.replace(/#t(\d+)#/gi,(_,id)=>rel.itemNames?.[nkey(id)]||`Item ${id}`);
+    s=s.replace(/#m(\d+)#/gi,(_,id)=>spatial[nkey(id)]?.name||`Map ${id}`);
+    s=s.replace(/#q(\d+)#/gi,(_,id)=>findQuest(id)?.name||`Quest ${id}`);
+    s=s.replace(/#[a-zA-Z](?:\d+)?#/g,'').replace(/#[a-zA-Z]/g,'').replace(/\s+\n/g,'\n').replace(/\n{3,}/g,'\n\n');
+    return s.trim();
   }
+  function findNpc(id){return idx.npcs?.find(x=>nkey(x.id)===nkey(id))}
+  function findMob(id){return idx.mobs?.find(x=>nkey(x.id)===nkey(id))}
+  function findQuest(id){return idx.quests?.find(x=>nkey(x.id)===nkey(id))}
+  function findMap(id){return idx.maps?.find(x=>nkey(x.id)===nkey(id))}
+  function rowsFor(type){
+    if(type==='mob')return idx.mobs||[]; if(type==='npc')return idx.npcs||[]; if(type==='map')return idx.maps||[]; if(type==='quest')return (idx.quests||[]).filter(q=>!/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(`${q.name||''} ${q.summary||''}`));
+    if(type==='custom')return customRows.length?customRows:customFallback; return [];
+  }
+  function mapTitle(row){const id=nkey(row?.id),name=norm(row?.name);return name&&nkey(name)!==id?name:'Unknown map name'}
+  function titleOf(type,row){if(type==='map')return mapTitle(row);return norm(row?.name||row?.description?.name||row?.title||`ID ${row?.id??''}`)}
+  function idOf(row){return row?.id??row?.itemId??row?.game_id??null}
 
-  function addBadge(box,label,cls=""){box.append(make("span",`badge${cls?` ${cls}`:""}`,label));}
-  function metaFor(o){
-    const parts=[]; const type=o?.typeInfo || o?.type || {};
-    if(type?.overallCategory)parts.push(type.overallCategory);
-    if(type?.category)parts.push(type.category);
-    if(type?.subCategory)parts.push(type.subCategory);
-    if(o?.streetName)parts.push(o.streetName);
-    if(o?.level)parts.push(`Lv. ${o.level}`);
-    if(o?.levelMinimum)parts.push(`Lv. ${o.levelMinimum}+`);
-    if(typeof o?.function === "string")parts.push(o.function);
-    return [...new Set(parts.filter(Boolean))].slice(0,4).join(" • ");
+  async function apiJson(url){const r=await fetch(url,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
+  async function loadItems(q=''){
+    const u=new URL(`${API}/item`); if(q)u.searchParams.set('searchFor',q);u.searchParams.set('startPosition','0');u.searchParams.set('count','1000');
+    const d=await apiJson(u); itemRows=Array.isArray(d)?d:(d?.data||d?.items||d?.results||[]); return itemRows;
   }
-
-  function dragonBallImage(name){
-    const m=text(name).match(/dragon\s*ball\s*\(\s*([1-7])\s*-?\s*star\s*\)/i);
-    return m ? `images/dragon-ball-${m[1]}-item.png?v=3` : "";
+  async function loadGachaponReference(){
+    if(window.__kaiokenGachaReference)return window.__kaiokenGachaReference;
+    const html=await fetch('data/gachapon-source-preview.html').then(r=>{if(!r.ok)throw new Error('Gachapon reference unavailable');return r.text()});
+    const cities=['Perion','Ellinia','Nautilus','Henesys','Kerning City','Sleepywood','NLC','CBD','Mushroom Shrine','Showa Town'],result={};
+    const starts=cities.map(name=>({name,index:html.search(new RegExp(`font-size:\\s*26px[^>]*>(?:<[^>]+>)*${name.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')}`,'i'))})).filter(x=>x.index>=0).sort((a,b)=>a.index-b.index);
+    starts.forEach((entry,i)=>{const segment=html.slice(entry.index,starts[i+1]?.index||html.length),doc=new DOMParser().parseFromString(segment,'text/html'),items=[];doc.querySelectorAll('a[href*="library/?page=items"],a[href*="hidden-street"]').forEach(a=>{const name=a.textContent.trim();if(name&&!items.includes(name))items.push(name)});result[entry.name]=items});
+    window.__kaiokenGachaReference=result;return result;
   }
-  function customImage(row){
-    const name=text(row?.name);
-    const ball=dragonBallImage(name); if(ball)return ball;
-    if(/kaioken\s+(force|stability|surge|limit)\s+scroll/i.test(name))return "images/kaioken-scroll-icon.png?v=3";
-    if(/^advanced\s+equip\s+enhancement\s+scroll$/i.test(name))return "images/advanced-equip-enhancement-scroll.png?v=3";
-    if(/^equip\s+enhancement\s+scroll$/i.test(name))return "images/equip-enhancement-scroll.png?v=3";
-    if(/^protection\s+scroll$/i.test(name))return "images/protection-scroll.png?v=3";
-    if(/^scouter$/i.test(name))return "images/scouter-1022042-icon.png?v=3";
-    if(/kaioken\s+itemvac/i.test(name))return "images/item-vac-website.png?v=3";
-    if(row?.game_id!=null && /^(item|equipment)$/i.test(text(row?.entity_type)))return `${API}/item/${row.game_id}/icon`;
-    const u=text(row?.image_url); return sourceLike.test(u)?"":u;
-  }
-  function customEmoji(row){
-    const n=lower(row?.name);
-    if(n.includes("diamond"))return "💎";
-    if(n.includes("ring"))return "💍";
-    if(n.includes("senzu"))return "🫘";
-    if(n.includes("box"))return "🎁";
-    if(n.includes("radar"))return "📡";
-    if(n.includes("scroll"))return "📜";
-    if(n.includes("scouter"))return "📟";
-    if(n.includes("vac"))return "🧲";
-    return "✨";
-  }
-
-  function renderApiRows(rows,append=false){
-    const ordered=sortRows(rows);
-    if(!append)grid.replaceChildren();
-    if(!ordered.length && !append){grid.append(make("div","empty",`No ${entityConfig[entity].label.toLowerCase()} found.`));return;}
-    for(const row of ordered){
-      const id=itemId(row), card=make("article","db-card"), icon=make("div","db-icon"), url=iconUrlFor(entity,id);
-      if(url){const img=document.createElement("img");img.src=url;img.alt="";img.loading="lazy";img.referrerPolicy="no-referrer";img.onerror=()=>icon.replaceChildren(make("span","",entityConfig[entity].icon));icon.append(img);} else icon.append(make("span","",entityConfig[entity].icon));
-      const main=make("div","");main.append(make("h3","",itemName(row)));if(id!=null)main.append(make("div","db-id",`ID ${id}`));const m=metaFor(row);if(m)main.append(make("div","db-meta",m));
-      card.append(icon,main);card.addEventListener("click",()=>openApiDetail(row));grid.append(card);
-    }
-  }
-
-  function publicCustomRows(rows){return rows.filter(isPublicCustom);}
-  function renderCustomRows(rows){
-    grid.replaceChildren();
-    const q=lastQuery.toLowerCase();
-    const filtered=publicCustomRows(rows).filter(x=>!q || [x.name,x.category,x.subcategory,x.description,...(Array.isArray(x.aliases)?x.aliases:[])].map(text).join(" ").toLowerCase().includes(q)).sort((a,b)=>text(a.name).localeCompare(text(b.name),undefined,{numeric:true,sensitivity:"base"}));
-    if(!filtered.length){grid.append(make("div","empty","No KaiokenMS unique entries match this search."));return;}
-    for(const row of filtered){
-      const card=make("article","db-card"), icon=make("div","db-icon"), url=customImage(row);
-      if(url){const img=document.createElement("img");img.src=url;img.alt="";img.loading="lazy";img.onerror=()=>icon.replaceChildren(make("span","",customEmoji(row)));icon.append(img);} else icon.append(make("span","",customEmoji(row)));
-      const main=make("div","");main.append(make("h3","",row.name));if(row.game_id!=null)main.append(make("div","db-id",`ID ${row.game_id}`));const meta=[row.category,row.subcategory].filter(Boolean).join(" • ");if(meta)main.append(make("div","db-meta",meta));const badges=make("div","badges");addBadge(badges,"KaiokenMS","custom");if(row.verified)addBadge(badges,"Verified","verified");main.append(badges);card.append(icon,main);card.addEventListener("click",()=>openCustomDetail(row));grid.append(card);
-    }
-  }
-
-  async function load(reset=true,opts={}){
-    if(loading)return; loading=true; if(!opts.keepSuggestions)hideSuggestions(); if(reset)startPosition=0; lastQuery=search.value.trim(); $("load-more").hidden=true;
-    if(entity==="custom"){
-      setStatus("Loading KaiokenMS unique database…"); await loadCustom(); const rows=publicCustomRows(customEntries); renderCustomRows(rows); setStatus(`Loaded ${rows.length} KaiokenMS unique entries.`,"success"); loading=false; return;
-    }
-    const count=Number(countSelect.value||24), exact=isNumericQuery(lastQuery);
-    setStatus(exact?`Loading ${entityConfig[entity].singular} ID ${lastQuery}…`:`Loading ${entityConfig[entity].label.toLowerCase()}…`);
+  const gachaItemCache=new Map();
+  const legacyGachaScrollIcons={
+    'bloody platina pants (f)':'1061098',
+    'dark battle lord':'1050083',
+    'dragon hellslayer':'1442020',
+    'gold hilden boots':'1072135',
+    'dark scroll for overall armor for str 30%':'2040509',
+    'dark scroll for overall armor for str 70%':'2040508',
+    'scroll for overall armor for str 10%':'2040502'
+  };
+  const comparableItemName=value=>norm(value).toLowerCase().replace(/\s+\([mf]\)$/,'').replace(/\batt\b/g,'attack').replace(/\bgloves\b/g,'glove').replace(/\s+/g,' ');
+  const gachaItemParts=value=>{const label=norm(value),match=label.match(/\s+(\d+)%\s*$/),query=label.replace(/\s+\d+%\s*$/,'');return{query,base:comparableItemName(query),rate:match?Number(match[1]):null}};
+  async function resolveGachaItem(name,idByName){
+    const exactKey=norm(name).toLowerCase(),relaxedKey=comparableItemName(name),parts=gachaItemParts(name);
+    if(legacyGachaScrollIcons[exactKey])return legacyGachaScrollIcons[exactKey];
+    if(idByName.has(exactKey))return idByName.get(exactKey);
+    if(gachaItemCache.has(exactKey))return gachaItemCache.get(exactKey);
+    const localRelaxed=[...idByName.entries()].find(([label])=>comparableItemName(label)===relaxedKey)?.[1];
+    if(localRelaxed){gachaItemCache.set(exactKey,localRelaxed);return localRelaxed}
     try{
-      let data;
-      if(exact){
-        data=await apiFetch(`${API}/${entity}/${encodeURIComponent(lastQuery)}`);
-        renderApiRows(data?[data]:[],false);
-        setStatus(data?`Loaded ID ${lastQuery}.`:`No record found for ID ${lastQuery}.`,data?"success":"");
-      } else {
-        data=await apiFetch(listUrl(entity,lastQuery,startPosition,count));
-        let rows=listFromResponse(data);
-        if(lastQuery){const q=lastQuery.toLowerCase();rows=rows.filter(r=>itemName(r).toLowerCase().includes(q));}
-        renderApiRows(rows,!reset);
-        startPosition+=rows.length;
-        $("load-more").hidden=rows.length<count;
-        setStatus(`Loaded ${startPosition} ${entityConfig[entity].label.toLowerCase()}${lastQuery?` matching “${lastQuery}”`:""}.`,"success");
-      }
-      $("api-note").hidden=true;
-    } catch(err){
-      console.error(err); $("api-note").hidden=false; if(reset)grid.replaceChildren(make("div","empty",`Could not load ${entityConfig[entity].label} right now.`)); setStatus("Database request failed. Please try again in a moment.","error");
-    } finally { loading=false; }
+      const u=new URL(`${API}/item`);u.searchParams.set('searchFor',parts.query);u.searchParams.set('startPosition','0');u.searchParams.set('count','100');
+      const data=await apiJson(u),rows=Array.isArray(data)?data:(data?.data||data?.items||data?.results||[]);
+      const exact=rows.find(row=>norm(titleOf('item',row)).toLowerCase()===exactKey);
+      const byRate=rows.find(row=>comparableItemName(titleOf('item',row))===parts.base&&(parts.rate==null||new RegExp(`success\\s*rate\\s*:\\s*${parts.rate}%`,'i').test(norm(row.desc||row.description?.description))));
+      const relaxed=exact||byRate||rows.find(row=>comparableItemName(titleOf('item',row))===relaxedKey);
+      const id=relaxed&&idOf(relaxed);gachaItemCache.set(exactKey,id?String(id):null);return id?String(id):null;
+    }catch{gachaItemCache.set(exactKey,null);return null}
   }
-
-  function safeDescription(data){
-    const d=data?.description;
-    if(typeof d==="string")return d;
-    if(d&&typeof d==="object")return text(d.description||d.desc||d.text||d.name);
-    return text(data?.desc||data?.function||data?.summary);
+  async function hydrateGachaItems(entries,idByName,city){
+    let cursor=0;
+    const worker=async()=>{while(cursor<entries.length){const entry=entries[cursor++],iid=await resolveGachaItem(entry.name,idByName);if(gachaCity!==city||!entry.row.isConnected)return;if(iid){entry.image.src=icon('item',iid);entry.image.dataset.gachaState='ready';entry.image.alt=`${entry.name} item icon`;entry.button.onclick=()=>openItemById(iid,{id:iid,name:entry.name})}else{entry.image.dataset.gachaState='missing';entry.image.alt='Item image unavailable';entry.button.onclick=()=>{search.value=entry.name;query=entry.name;itemSourceMode='browse';page=1;render()}}}};
+    await Promise.all(Array.from({length:Math.min(8,entries.length)},worker));
   }
-  function prettyLabel(key){
-    const map={
-      level:"Level",levelMinimum:"Minimum Level",reqLevel:"Required Level",requiredLevel:"Required Level",price:"Price",unitPrice:"Unit Price",slotMax:"Max Stack",tuc:"Upgrade Slots",
-      hp:"HP",mp:"MP",exp:"EXP",boss:"Boss",speed:"Speed",jump:"Jump",attackSpeed:"Attack Speed",reqSTR:"Required STR",reqDEX:"Required DEX",reqINT:"Required INT",reqLUK:"Required LUK",
-      incSTR:"STR",incDEX:"DEX",incINT:"INT",incLUK:"LUK",incPAD:"Weapon Attack",incMAD:"Magic Attack",incPDD:"Weapon Defense",incMDD:"Magic Defense",incACC:"Accuracy",incEVA:"Avoidability",incSpeed:"Speed",incJump:"Jump",
-      streetName:"Area",category:"Category",subcategory:"Subcategory",overallCategory:"Category",role:"Role",weekly_entries_per_pq:"Weekly Entries per PQ",success:"Success Rate",successRate:"Success Rate"
-    };
-    return map[key] || key.replace(/_/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").replace(/\b\w/g,c=>c.toUpperCase());
-  }
-  function deepScalar(obj,keys,maxDepth=5){
-    const wanted=new Set(keys.map(k=>k.toLowerCase())); const seen=new Set();
-    function walk(v,depth){
-      if(v==null||depth>maxDepth||typeof v!=="object"||seen.has(v))return undefined;seen.add(v);
-      for(const [k,val] of Object.entries(v)){if(wanted.has(k.toLowerCase()) && (typeof val==="string"||typeof val==="number"||typeof val==="boolean"))return val;}
-      for(const [k,val] of Object.entries(v)){
-        if(/frame|image|icon|sound|effect|animation|base64/i.test(k))continue;
-        const found=walk(val,depth+1);if(found!==undefined)return found;
-      }
-      return undefined;
-    }
-    return walk(obj,0);
-  }
-  function statsFor(data,ent,isCustom){
-    const out=[],seen=new Set();
-    const add=(label,value)=>{if(value===undefined||value===null||value===""||typeof value==="object")return;const v=typeof value==="boolean"?(value?"Yes":"No"):String(value);const key=`${label}:${v}`;if(seen.has(key))return;seen.add(key);out.push([label,v]);};
-    if(isCustom){
-      if(data?.category)add("Category",data.category);if(data?.subcategory)add("Subcategory",data.subcategory);
-      const md=data?.metadata&&typeof data.metadata==="object"?data.metadata:{};
-      for(const [k,v] of Object.entries(md)){if(/source|url|slug|sort|created|updated|internal/i.test(k))continue;add(prettyLabel(k),v);}
-      return out.slice(0,18);
-    }
-    const type=data?.typeInfo||data?.type||{}; add("Category",type.overallCategory||type.category);add("Subcategory",type.subCategory);
-    const specs=[
-      ["Level",["level"]],["Required Level",["reqLevel","requiredLevel","levelMinimum"]],["Upgrade Slots",["tuc","upgradeSlots","slots"]],
-      ["HP",["hp","maxHP"]],["MP",["mp","maxMP"]],["EXP",["exp"]],["Boss",["boss"]],
-      ["STR",["incSTR"]],["DEX",["incDEX"]],["INT",["incINT"]],["LUK",["incLUK"]],
-      ["Weapon Attack",["incPAD","pad"]],["Magic Attack",["incMAD","mad"]],["Weapon Defense",["incPDD","pdd"]],["Magic Defense",["incMDD","mdd"]],
-      ["Accuracy",["incACC","acc"]],["Avoidability",["incEVA","eva"]],["Speed",["incSpeed","speed"]],["Jump",["incJump","jump"]],
-      ["Success Rate",["successRate","success"]],["Price",["price","unitPrice"]],["Max Stack",["slotMax"]]
-    ];
-    for(const [label,keys] of specs)add(label,deepScalar(data,keys));
-    return out.slice(0,20);
-  }
-
-  function relationArray(data,paths){
-    for(const path of paths){
-      const parts=path.split(".");let cur=data;
-      for(const part of parts){if(cur==null)break;const key=Object.keys(cur).find(k=>k.toLowerCase()===part.toLowerCase());cur=key?cur[key]:undefined;}
-      if(Array.isArray(cur))return cur;
-    }
-    return [];
-  }
-  function normalizeRelation(v){
-    if(v==null)return null;
-    if(typeof v==="number")return{id:v,name:`ID ${v}`};
-    if(typeof v==="string")return /^\d+$/.test(v)?{id:Number(v),name:`ID ${v}`}:{id:null,name:v};
-    if(typeof v!=="object")return null;
-    const id=v.id??v.itemId??v.mobId??v.npcId??v.mapId??v.questId??v.targetMapId??v.targetMap??null;
-    const name=text(v.name||v.mapName||v.streetName||v.description?.name||v.title||v.targetMapName||(id!=null?`ID ${id}`:""));
-    return name||id!=null?{id:id!=null?Number(id):null,name:name||`ID ${id}`,raw:v}:null;
-  }
-  function relationRows(data,paths){
-    const out=[],seen=new Set();
-    for(const v of relationArray(data,paths)){const r=normalizeRelation(v);if(!r)continue;const key=`${r.id??""}:${r.name}`;if(seen.has(key))continue;seen.add(key);out.push(r);}return out;
-  }
-  function relationIcon(type,id){return id!=null?iconUrlFor(type,id):"";}
-  function switchEntity(target){
-    entity=target;document.querySelectorAll(".entity-tab").forEach(b=>b.classList.toggle("active",b.dataset.entity===target));search.placeholder=entityConfig[target]?.placeholder||"Search database…";
-  }
-  async function openLinked(target,rel){
-    if(!target||target==="custom")return;
-    switchEntity(target);hideSuggestions();
-    if(rel?.id!=null){search.value=String(rel.id);await load(true);try{const full=await apiFetch(`${API}/${target}/${rel.id}`);detailTitle.textContent=itemName(full);renderDetail(full,target,false);dialog.showModal();}catch{dialog.close();}}
-    else {search.value=rel?.name||"";await load(true);dialog.close();}
-    document.getElementById("explorer")?.scrollIntoView({behavior:"smooth",block:"start"});
-  }
-  function appendRelationSection(title,rows,targetType,emptyText=""){
-    if(!rows.length){if(emptyText){const sec=make("section","relation-section");sec.append(make("h3","",title),make("p","relation-empty",emptyText));detailBody.append(sec);}return;}
-    const sec=make("section","relation-section"),list=make("div","relation-list");sec.append(make("h3","",title));
-    for(const rel of rows){const btn=make("button","relation-chip");btn.type="button";const icon=make("span","relation-icon"),url=relationIcon(targetType,rel.id);if(url){const img=document.createElement("img");img.src=url;img.alt="";img.loading="lazy";img.onerror=()=>icon.replaceChildren(make("span","",entityConfig[targetType]?.icon||"•"));icon.append(img);}else icon.append(make("span","",entityConfig[targetType]?.icon||"•"));const copy=make("span","relation-copy");copy.append(make("strong","",rel.name));if(rel.id!=null)copy.append(make("small","",`ID ${rel.id}`));btn.append(icon,copy);btn.addEventListener("click",()=>openLinked(targetType,rel));list.append(btn);}sec.append(list);detailBody.append(sec);
-  }
-
-  function itemDroppedBy(data){return relationRows(data,["metaInfo.droppedBy","metainfo.droppedby","droppedBy","droppedby"]);}
-  function mobDrops(data){return relationRows(data,["drops","metaInfo.drops","metainfo.drops"]);}
-  function foundMaps(data){return relationRows(data,["foundAt","foundat","metaInfo.foundAt","metainfo.foundat","maps","mapNames"]);}
-  function relatedQuests(data){return relationRows(data,["relatedQuestsInfo","relatedquestsinfo","relatedQuests","relatedquests"]);}
-  function mapLife(data,type){
-    const life=relationArray(data,["life"]),want=type==="mob"?["mob","monster","m"]:["npc","n"];
-    return life.filter(x=>want.includes(lower(x?.type))).map(normalizeRelation).filter(Boolean);
-  }
-  function mapPortals(data){return relationArray(data,["portals"]).map(p=>normalizeRelation({id:p?.targetMapId??p?.targetMap,name:p?.targetMapName||p?.targetName||(p?.targetMapId!=null?`Map ${p.targetMapId}`:"")})).filter(Boolean);}
-
-  async function openApiDetail(row){
-    const id=itemId(row); detailTitle.textContent=itemName(row); detailBody.replaceChildren(make("div","empty","Loading details…")); dialog.showModal(); let full=row;
-    try{if(id!=null)full=await apiFetch(`${API}/${entity}/${id}`);}catch(e){console.warn(e);} renderDetail(full,entity,false);
-  }
-  function openCustomDetail(row){detailTitle.textContent=row.name;dialog.showModal();renderDetail(row,row.entity_type||"custom",true);}
-  function renderDetail(data,ent,isCustom){
-    detailBody.replaceChildren(); const id=itemId(data) ?? data?.game_id ?? null; const top=make("div","detail-top"), image=make("div","detail-image"); const imageUrl=isCustom?customImage(data):iconUrlFor(ent,id);
-    if(imageUrl){const img=document.createElement("img");img.src=imageUrl;img.alt=itemName(data);img.onerror=()=>image.replaceChildren(make("span","",isCustom?customEmoji(data):(entityConfig[ent]?.icon||"✨")));image.append(img);} else image.append(make("span","",isCustom?customEmoji(data):(entityConfig[ent]?.icon||"✨")));
-    const intro=make("div",""); intro.append(make("h2","",itemName(data))); if(id!=null)intro.append(make("div","db-id",`ID ${id}`)); const desc=safeDescription(data); if(desc && !sourceLike.test(desc))intro.append(make("p","detail-description",desc)); top.append(image,intro); detailBody.append(top);
-    const pairs=statsFor(data,ent,isCustom); if(pairs.length){const quick=make("section","detail-facts");quick.append(make("h3","","Stats & Details"));for(const [label,value] of pairs){const row=make("div","kv");row.append(make("b","",label),make("span","",value));quick.append(row);}detailBody.append(quick);}
-    if(isCustom)return;
-    if(ent==="item"){
-      appendRelationSection("Dropped By",itemDroppedBy(data),"mob","No monster drop information is listed for this item.");
-      appendRelationSection("Related Quests",relatedQuests(data),"quest");
-    } else if(ent==="mob"){
-      appendRelationSection("Found In Maps",foundMaps(data),"map","No map locations are listed for this monster yet.");
-      appendRelationSection("Drops",mobDrops(data),"item");
-    } else if(ent==="npc"){
-      appendRelationSection("Found In Maps",foundMaps(data),"map","No map locations are listed for this NPC yet.");
-      appendRelationSection("Related Quests",relatedQuests(data),"quest");
-    } else if(ent==="map"){
-      appendRelationSection("Monsters",mapLife(data,"mob"),"mob");
-      appendRelationSection("NPCs",mapLife(data,"npc"),"npc");
-      appendRelationSection("Portals",mapPortals(data),"map");
-    }
-  }
-
   async function loadCustom(){
-    const config=window.KAIOKEN_MARKET_CONFIG||{}; customEntries=fallbackCustom.slice();
-    if(!window.supabase||!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.supabaseUrl||""))return;
     try{
-      const db=window.supabase.createClient(config.supabaseUrl,config.supabasePublishableKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-      const {data,error}=await db.from("guide_database_entries").select("*").eq("enabled",true).order("sort_order").order("name");
-      if(!error&&Array.isArray(data)&&data.length)customEntries=data;
-    } catch(e){console.warn("Custom database unavailable",e);}
+      const c=window.KAIOKEN_DATABASE_CONFIG;if(!window.supabase||!c?.supabaseUrl)return;
+      const sb=window.supabase.createClient(c.supabaseUrl,c.supabasePublishableKey);
+      const {data}=await sb.from('guide_database_entries').select('*').order('name');
+      if(Array.isArray(data)) customRows=data.filter(r=>!['npc','feature','service','map','quest','job','monster','mob'].includes(String(r.entity_type||'').toLowerCase()));
+    }catch(e){console.warn('custom database fallback',e)}
   }
 
-  function renderNPCs(){
-    const n=$("npc-grid");n.replaceChildren();
-    for(const x of usefulNPCs){const card=make("article","npc-card"),imgbox=make("div","npc-img"),img=document.createElement("img");img.src=x.image;img.alt=x.name;img.loading="lazy";imgbox.append(img);const main=make("div","");main.append(make("h3","",x.name),make("div","npc-role",x.role),make("p","",x.text));card.append(imgbox,main);if(x.shop||x.meta){const details=document.createElement("details"),summary=document.createElement("summary");summary.textContent=x.shop?"Shop / important details":"Important details";details.append(summary);const ul=make("ul","shop-list");for(const line of x.shop||x.meta)ul.append(make("li","",line));details.append(ul);card.append(details);}n.append(card);}
+  function filterRows(rows){
+    let result=[...rows].filter(r=>!/^[?\s]+$/.test(titleOf(entity,r)));if(entity==='mob'){result=result.filter(r=>monsterKind==='boss'?isBoss(r):!isBoss(r));result=[...new Map(result.sort((a,b)=>(Number(b.mapCount)||0)-(Number(a.mapCount)||0)).map(r=>[titleOf('mob',r).toLowerCase(),r])).values()]}if(entity==='npc')result=[...new Map(result.sort((a,b)=>(Number(a.mapCount)||0)-(Number(b.mapCount)||0)).map(r=>[titleOf('npc',r).toLowerCase(),r])).values()];
+    if(entity==='map')result=[...new Map(result.sort((a,b)=>(Number(b.npcCount)||0)+(Number(b.mobCount)||0)+(Number(b.portalCount)||0)-(Number(a.npcCount)||0)-(Number(a.mobCount)||0)-(Number(a.portalCount)||0)).map(r=>[`${norm(r.street||'Unknown area')}|${titleOf('map',r).toLowerCase()}`,r])).values()];
+    if(categoryFilter!=='all')result=result.filter(r=>(entity==='map'?norm(r.street||'Unknown area'):norm(r.typeInfo?.subCategory||r.typeInfo?.category||r.category||'Other'))===categoryFilter);
+    if(entity==='map'&&mapRegionFilter!=='all')result=result.filter(r=>mapRegion(r)===mapRegionFilter);
+    if(entity==='npc'&&npcRegionFilter!=='all')result=result.filter(r=>npcRegion(r)===npcRegionFilter);
+    if(entity==='mob'&&mobRegionFilter!=='all')result=result.filter(r=>mobRegion(r)===mobRegionFilter);
+    if(entity==='quest'&&questRegionFilter!=='all')result=result.filter(r=>questRegion(r)===questRegionFilter);
+    const q=query.toLowerCase();if(q)result=result.filter(r=>titleOf(entity,r).toLowerCase().includes(q)||String(idOf(r)||'')===q);
+    if(!query&&((entity==='npc'&&npcRegionFilter!=='all')||(entity==='mob'&&mobRegionFilter!=='all')))return result.sort((a,b)=>locationGroup(entity,a).localeCompare(locationGroup(entity,b),undefined,{numeric:true})||(entity==='mob'?(Number(a.level)||0)-(Number(b.level)||0):0)||titleOf(entity,a).localeCompare(titleOf(entity,b),undefined,{numeric:true}));
+    return result.sort(entity==='mob'?(a,b)=>(Number(a.level)||0)-(Number(b.level)||0)||titleOf(entity,a).localeCompare(titleOf(entity,b)):entity==='map'?(a,b)=>norm(a.street||'Unknown area').localeCompare(norm(b.street||'Unknown area'),undefined,{numeric:true})||titleOf(entity,a).localeCompare(titleOf(entity,b),undefined,{numeric:true}):((a,b)=>titleOf(entity,a).localeCompare(titleOf(entity,b),undefined,{numeric:true})));
   }
-  function renderFeatures(){const n=$("feature-grid");n.replaceChildren();for(const [title,body] of features){const c=make("article","feature");c.append(make("h3","",title),make("p","",body),make("span","status","Available"));n.append(c);}}
+  function totalPages(rows){return Math.max(1,Math.ceil(rows.length/Number(count.value||24)))}
+  function paginate(rows){const size=Number(count.value||24),pages=totalPages(rows);page=Math.min(Math.max(1,page),pages);return rows.slice((page-1)*size,page*size)}
+  function renderPager(rows){
+    const pages=totalPages(rows);pager.innerHTML='';pager.hidden=pages<=1;if(pages<=1)return;
+    const add=(label,p,active=false)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.className=active?'active':'';b.disabled=active;b.onclick=()=>{page=p;render();document.getElementById('explorer')?.scrollIntoView({behavior:'smooth'})};pager.appendChild(b)};
+    if(page>1)add('‹',page-1);const nums=new Set([1,pages,page-2,page-1,page,page+1,page+2].filter(n=>n>=1&&n<=pages));let prev=0;[...nums].sort((a,b)=>a-b).forEach(n=>{if(prev&&n-prev>1){const s=document.createElement('span');s.textContent='…';pager.appendChild(s)}add(String(n),n,n===page);prev=n});if(page<pages)add('›',page+1);
+  }
+  function card(type,row){
+    const el=document.createElement('article');el.className='pre4-card';const id=idOf(row),name=titleOf(type,row);let img='',meta='',sub='';
+    if(type==='mob'){const mapped=Number(row.mapCount)||0;img=icon('mob',id);meta=row.level?`Lv. ${row.level}${row.exp?` • ${row.exp} EXP`:''}`:'';sub=`Found in ${mapped} map${mapped===1?'':'s'}`}
+    if(type==='npc'){img=npcImage(row);meta=row.firstMap||'Location data available in details';sub=row.mapCount?`${row.mapCount} map${row.mapCount===1?'':'s'}`:''}
+    if(type==='map'){img=mapImage(spatial[nkey(id)]||row);meta=row.street||`Map ID ${id}`;sub=[row.npcCount?`${row.npcCount} NPCs`:'',row.mobCount?`${row.mobCount} monsters`:'',row.portalCount?`${row.portalCount} exits`:''].filter(Boolean).join(' • ')}
+    if(type==='quest'){const npc=findNpc(row.startNpc)||findNpc(row.endNpc),loc=(row.startLocations||row.endLocations||[])[0],map=loc&&(findMap(loc.mapId)||spatial[nkey(loc.mapId)]);img=npc?npcImage(npc):'images/quest-scroll-placeholder.svg';meta=[row.lvmin?`Lv. ${row.lvmin}+`:'',row.startNpcName?`Starts: ${row.startNpcName}`:npc?`NPC: ${npc.name}`:'NPC not listed',row.exp?`${row.exp} EXP`:''].filter(Boolean).join(' • ');sub=[map?`Map: ${mapTitle(map)}`:'Map not listed',row.parent||cleanQuestText(row.summary).slice(0,70)].filter(Boolean).join(' • ')}
+    if(type==='item'){img=icon('item',id);meta=row.typeInfo?.subCategory||row.typeInfo?.category||row.description?.description||'';sub=id?`Item ${id}`:''}
+    if(type==='custom'){img=/Maple Leaf Box/i.test(name)?'images/maple-leaf-box-v2.png':/Senzu Bean/i.test(name)?'images/senzu-bean-original.png':(row.image_url||'');meta=row.category||'KaiokenMS Unique';sub=row.description||''}
+    const placeholder=type==='custom'?(/diamond/i.test(name)?'💎':/bean/i.test(name)?'🌱':/ring/i.test(name)?'💍':'📦'):type==='npc'?'👤':type==='mob'?'👹':type==='map'?'🗺️':'📜';
+    el.innerHTML=`${img?`<img class="${type==='map'?'map-thumb':''}" src="${esc(img)}" alt="" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="pre4-placeholder" hidden>${placeholder}</span>`:`<span class="pre4-placeholder">${placeholder}</span>`}<div><div class="pre4-name">${esc(name)}</div>${meta?`<div class="pre4-meta">${esc(meta)}</div>`:''}${sub?`<div class="pre4-sub">${esc(sub)}</div>`:''}</div>`;el.onclick=()=>openEntity(type,row);return el;
+  }
 
-  function hideSuggestions(){suggestions.hidden=true;suggestions.replaceChildren();search.setAttribute("aria-expanded","false");activeSuggestion=-1;}
-  function prefixSorted(rows,q){
-    const needle=q.toLowerCase(), unique=[],seen=new Set();
-    for(const row of rows){const name=itemName(row),id=itemId(row)??row?.game_id??"",key=`${id}:${name}`;if(!name||seen.has(key))continue;seen.add(key);unique.push(row);}
-    return unique.filter(r=>itemName(r).toLowerCase().includes(needle)).sort((a,b)=>{const an=itemName(a).toLowerCase(),bn=itemName(b).toLowerCase();const ap=an.startsWith(needle)?0:1,bp=bn.startsWith(needle)?0:1;return ap-bp||an.localeCompare(bn,undefined,{numeric:true,sensitivity:"base"});});
+  function mapRecordsForNpc(id){const out=[];for(const m of Object.values(spatial)){const pts=(m.npcs||[]).filter(n=>nkey(n.id)===nkey(id));if(pts.length)out.push({m,pts})}return out}
+  function mobMaps(id){const out=[];for(const m of Object.values(spatial)){const pts=(m.mobs||[]).filter(n=>nkey(n.id)===nkey(id));if(pts.length)out.push({m,pts})}return out}
+  function realPortals(m){return uniqueBy((m?.portals||[]).filter(p=>p.targetMapId&&nkey(p.targetMapId)!==nkey(m.id)&&nkey(p.targetMapId)!=='999999999'&&p.targetMapName),'targetMapId')}
+  function positionedPoints(m){const points=[...(m?.portals||[]),...(m?.npcs||[]),...(m?.mobs||[])],xs=points.map(p=>Number(p.x)).filter(Number.isFinite),ys=points.map(p=>Number(p.y)).filter(Number.isFinite),minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);return p=>{let left=Number(p.left),top=Number(p.top);if(!Number.isFinite(left)||!Number.isFinite(top)||(m?.mini?.canvasWidth==null&&(left<=0||left>=100||top<=0||top>=100))){left=xs.length>1?8+84*(Number(p.x)-minX)/Math.max(1,maxX-minX):50;top=ys.length>1?8+84*(Number(p.y)-minY)/Math.max(1,maxY-minY):50}return {...p,left:Math.max(4,Math.min(96,left)),top:Math.max(4,Math.min(96,top))}}}
+  function markerHTML(cls,p,title,color=''){if(cls==='portal')return `<button type="button" class="marker portal" data-map="${esc(p.targetMapId)}" data-map-name="${esc(p.targetMapName)}" aria-label="Open ${esc(p.targetMapName)}" style="left:${Number(p.left)}%;top:${Number(p.top)}%;color:${color};background:${color}" title="${esc(title)}"></button>`;const npc=findNpc(p.id)||p;return `<button type="button" class="npc-map-marker" data-open-type="npc" data-open-id="${esc(p.id)}" style="left:${Number(p.left)}%;top:${Number(p.top)}%" title="${esc(npc.name||title)}"><img src="${esc(npcImage(npc))}" alt="${esc(npc.name||'NPC')}"></button>`}
+  function mapBox(rec,{npcPoints=[],showPortals=true}={}){
+    const m=rec?.m||rec;if(!m)return '';
+    const place=positionedPoints(m),portals=(showPortals?realPortals(m):[]).map(place),placedNpcs=(npcPoints.length?npcPoints:(m.npcs||[])).map(place);
+    return `<div class="map-box"><div><b>${esc(mapTitle(m))}</b>${m.street?` <span style="color:#9fb1c7">• ${esc(m.street)}</span>`:''}</div><div class="map-canvas"><img src="${esc(mapImage(m))}" data-fallback="${esc(m.fallbackImage||'')}" alt="${esc(mapTitle(m))} map">${portals.map(p=>markerHTML('portal',p,`Open ${p.targetMapName}`,portalColor(p.targetMapId))).join('')}${placedNpcs.map(p=>markerHTML('npc',p,'NPC location')).join('')}</div><div class="map-legend">${portals.map(p=>`<span style="--portal-color:${portalColor(p.targetMapId)}"><i class="portal-swatch"></i> ${esc(p.targetMapName)}</span>`).join('')}${placedNpcs.length?'<span>NPC portraits show their locations</span>':''}</div>${portals.length?`<div class="portal-list">${portals.map(p=>`<div class="portal-row" style="--portal-color:${portalColor(p.targetMapId)}"><span class="portal-target"><small><i class="portal-swatch"></i> Destination map</small><b>${esc(p.targetMapName)}</b></span><button type="button" data-map="${esc(p.targetMapId)}" data-map-name="${esc(p.targetMapName)}">Open map →</button></div>`).join('')}</div>`:''}</div>`;
   }
-  function renderSuggestions(rows,isCustom=false){
-    suggestions.replaceChildren(); activeSuggestion=-1;
-    if(!rows.length){suggestions.append(make("div","suggestion-empty","No matching names found."));suggestions.hidden=false;search.setAttribute("aria-expanded","true");return;}
-    rows.slice(0,40).forEach((row,index)=>{
-      const btn=make("button","suggestion-item");btn.type="button";btn.setAttribute("role","option");btn.dataset.index=String(index);
-      const icon=make("span","suggestion-icon"), id=itemId(row) ?? row?.game_id ?? null, url=isCustom?customImage(row):iconUrlFor(entity,id);
-      if(url){const img=document.createElement("img");img.src=url;img.alt="";img.loading="lazy";img.onerror=()=>icon.replaceChildren(make("span","",isCustom?customEmoji(row):entityConfig[entity].icon));icon.append(img);}else icon.append(make("span","",isCustom?customEmoji(row):entityConfig[entity].icon));
-      const copy=make("span","suggestion-copy");copy.append(make("strong","",itemName(row)));const meta=[id!=null?`ID ${id}`:"",isCustom?[row.category,row.subcategory].filter(Boolean).join(" • "):metaFor(row)].filter(Boolean).join(" • ");if(meta)copy.append(make("small","",meta));btn.append(icon,copy);
-      btn.addEventListener("mousedown",e=>e.preventDefault());
-      btn.addEventListener("click",()=>{search.value=itemName(row);hideSuggestions();load(true);});
-      suggestions.append(btn);
-    });
-    suggestions.hidden=false;search.setAttribute("aria-expanded","true");
+  function bindMapButtons(root=detailBody){root.querySelectorAll('.map-canvas img[data-fallback]').forEach(img=>img.onerror=()=>{const f=img.dataset.fallback;if(f&&img.src!==f){img.onerror=null;img.src=f}});root.querySelectorAll('[data-map]').forEach(b=>b.onclick=()=>{const id=nkey(b.dataset.map),m=findMap(id)||spatial[id]||{id,name:b.dataset.mapName||`Map ${id}`};openEntity('map',m)})}
+  function linkCard(type,row,extra=''){
+    const id=idOf(row),name=titleOf(type,row);let img=type==='npc'?npcImage(row):type==='mob'?icon('mob',id):type==='item'?icon('item',id):type==='map'?mapImage(spatial[nkey(id)]||row):'';
+    return `<button type="button" class="entity-link" data-open-type="${type}" data-open-id="${esc(id)}">${img?`<img src="${esc(img)}" alt="">`:''}<span><b>${esc(name)}</b>${extra?`<small style="display:block;color:#9fb1c7">${esc(extra)}</small>`:''}</span></button>`;
   }
-  async function updateSuggestions(){
-    const q=search.value.trim(), request=++suggestionRequest;
-    if(!q || isNumericQuery(q)){hideSuggestions();return;}
-    try{
-      if(entity==="custom"){
-        if(!customEntries.length)await loadCustom(); const rows=prefixSorted(publicCustomRows(customEntries),q);if(request!==suggestionRequest)return;renderSuggestions(rows,true);return;
+  const detailHistory=[];
+  function rememberDetail(){if(dialog.open)detailHistory.push({title:detailTitle.textContent,html:detailBody.innerHTML,scroll:dialog.scrollTop})}
+  function restoreDetail(){const previous=detailHistory.pop();if(!previous)return false;detailTitle.textContent=previous.title;detailBody.innerHTML=previous.html;bindMapButtons();bindEntityLinks();requestAnimationFrame(()=>{dialog.scrollTop=previous.scroll});return true}
+  function bindEntityLinks(root=detailBody){root.querySelectorAll('[data-open-type]').forEach(b=>b.onclick=()=>{const t=b.dataset.openType,id=b.dataset.openId;let r=t==='npc'?findNpc(id):t==='mob'?findMob(id):t==='map'?findMap(id):t==='quest'?findQuest(id):null;if(b.classList.contains('npc-map-marker'))rememberDetail();if(t==='item')return openItemById(id);if(r)openEntity(t,r)})}
+  function showDetail(title,html){detailTitle.textContent=title;detailBody.innerHTML=`<div class="pre4-detail">${html}</div>`;bindMapButtons();bindEntityLinks();const known=[...detailBody.querySelectorAll('h3')].find(h=>h.textContent.trim()==='Known Locations')?.nextElementSibling;known?.querySelectorAll('.pre4-tag').forEach(tag=>{const name=tag.textContent.split('•')[0].trim(),m=(idx.maps||[]).find(x=>x.name===name)||Object.values(spatial).find(x=>x.name===name);if(m){tag.classList.add('location-map-button');tag.setAttribute('role','button');tag.tabIndex=0;tag.onclick=()=>openMap(m);tag.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openMap(m)}}}});dialog.showModal()}
+
+  function openMap(row){const m=spatial[nkey(row.id)]||row;const mobs=uniqueBy(m.mobs||[]),npcs=uniqueBy(m.npcs||[]),ports=realPortals(m);showDetail(mapTitle(m),`${mapBox(m)}<h3>Map Overview</h3><table class="stats-table"><tr><th>Map ID</th><td>${esc(m.id||'')}</td></tr><tr><th>Area</th><td>${esc(m.street||'Unknown')}</td></tr><tr><th>NPCs</th><td>${npcs.length}</td></tr><tr><th>Monsters</th><td>${mobs.length}</td></tr><tr><th>Connected maps</th><td>${ports.length}</td></tr></table>${npcs.length?`<h3>NPCs</h3><div class="entity-links">${npcs.map(n=>linkCard('npc',findNpc(n.id)||n)).join('')}</div>`:''}${mobs.length?`<h3>Monsters</h3><div class="entity-links">${mobs.map(n=>linkCard('mob',findMob(n.id)||n)).join('')}</div>`:''}`)}
+  function openNpc(row){const maps=mapRecordsForNpc(row.id),quests=(idx.quests||[]).filter(q=>nkey(q.startNpc)===nkey(row.id)||nkey(q.endNpc)===nkey(row.id)),starts=quests.filter(q=>nkey(q.startNpc)===nkey(row.id)),ends=quests.filter(q=>nkey(q.endNpc)===nkey(row.id)),extra=scalarRows(row).filter(([k])=>!/^(id|name|mapCount|firstMap|preview|image|icon|url)$/i.test(k)&&!/url|image|preview/i.test(k)).slice(0,12);showDetail(row.name,`<div style="display:flex;gap:18px;align-items:center"><img src="${esc(npcImage(row))}" onerror="this.src='${icon('npc',row.id)}'" style="width:110px;height:110px;object-fit:contain" alt="${esc(row.name)}"><div><h2 style="margin:0">${esc(row.name)}</h2><div class="pre4-tags"><span class="pre4-tag">${maps.length} mapped location${maps.length===1?'':'s'}</span><span class="pre4-tag">${starts.length} quest start${starts.length===1?'':'s'}</span><span class="pre4-tag">${ends.length} quest turn-in${ends.length===1?'':'s'}</span></div></div></div>${extra.length?`<h3>NPC Details</h3><table class="stats-table">${extra.map(([k,v])=>`<tr><th>${esc(k.replace(/([A-Z])/g,' $1'))}</th><td>${esc(v)}</td></tr>`).join('')}</table>`:''}${maps.length?`<h3>Known Locations</h3><div class="pre4-tags">${maps.map(x=>`<span class="pre4-tag">${esc(x.m.name)}${x.m.street?` • ${esc(x.m.street)}`:''}</span>`).join('')}</div>`:''}${quests.length?`<h3>Related Quests</h3><div class="entity-links">${quests.map(q=>linkCard('quest',q,[nkey(q.startNpc)===nkey(row.id)?'Starts here':'',nkey(q.endNpc)===nkey(row.id)?'Ends here':''].filter(Boolean).join(' • '))).join('')}</div>`:''}${maps.length?`<h3>NPC Locations</h3>${maps.map(x=>mapBox(x.m,{npcPoints:x.pts,showPortals:true})).join('')}`:'<p class="empty">No verified v83 map location is listed for this NPC.</p>'}`)}
+  function openMob(row){const maps=mobMaps(row.id),drops=uniqueBy(rel.mobDrops?.[nkey(row.id)]||[]),shown=drops.slice(0,12),more=drops.slice(12);showDetail(row.name,`<div style="display:flex;gap:18px;align-items:center"><img src="${icon('mob',row.id)}" style="width:110px;height:110px;object-fit:contain" alt=""><div><h2 style="margin:0">${esc(row.name)}</h2><div class="pre4-tags"><span class="pre4-tag">${isBoss(row)?'Boss':'Monster'}</span>${row.level?`<span class="pre4-tag">Lv. ${row.level}</span>`:''}${row.exp?`<span class="pre4-tag">${row.exp} EXP</span>`:''}</div></div></div>${maps.length?`<h3>Found In</h3>${maps.map(x=>mapBox(x.m,{showPortals:true})).join('')}`:'<p class="empty">No mapped v83 spawn location is listed.</p>'}${drops.length?`<h3>Drops <small style="color:#9fb1c7">(${drops.length} unique)</small></h3><div class="entity-links">${shown.map(d=>linkCard('item',{id:d.id,name:d.name},d.chance!=null?`${d.chance}%`:'' )).join('')}</div>${more.length?`<details class="drop-more"><summary>Show ${more.length} more drops</summary><div class="entity-links" style="margin-top:10px">${more.map(d=>linkCard('item',{id:d.id,name:d.name},d.chance!=null?`${d.chance}%`:'' )).join('')}</div></details>`:''}`:''}`)}
+  function openQuest(row){
+    const start=findNpc(row.startNpc),end=findNpc(row.endNpc),reqItems=uniqueBy(row.items||[]),reqMobs=uniqueBy(row.mobs||[]),rewardItems=uniqueBy(row.rewardItems||[]),prev=(row.prev||[]).map(x=>findQuest(x.id)).filter(Boolean),next=row.nextQuest?findQuest(row.nextQuest):null;
+    const startLoc=(row.startLocations||[])[0],endLoc=(row.endLocations||[])[0];
+    const route=`<h3>Quest Route</h3><div class="entity-links">${start?linkCard('npc',start,'Starts with'):''}${end?linkCard('npc',end,'Ends with'):''}</div>${startLoc?mapBox(spatial[nkey(startLoc.mapId)],{npcPoints:[startLoc],showPortals:true}):''}${endLoc&&(!startLoc||nkey(endLoc.mapId)!==nkey(startLoc.mapId))?mapBox(spatial[nkey(endLoc.mapId)],{npcPoints:[endLoc],showPortals:true}):''}`;
+    showDetail(row.name,`<div class="pre4-tags">${row.lvmin?`<span class="pre4-tag">Lv. ${row.lvmin}+</span>`:''}${row.exp?`<span class="pre4-tag">${row.exp} EXP</span>`:''}${row.fame?`<span class="pre4-tag">${row.fame} Fame</span>`:''}${row.meso?`<span class="pre4-tag">${row.meso} Mesos</span>`:''}</div>${row.summary?`<p class="quest-text">${esc(cleanQuestText(row.summary))}</p>`:''}${route}${row.progressText?`<h3>Objective / Progress</h3><p class="quest-text">${esc(cleanQuestText(row.progressText))}</p>`:''}${reqMobs.length?`<h3>Monsters Required</h3><div class="entity-links">${reqMobs.map(m=>linkCard('mob',findMob(m.id)||m,m.count?`Defeat ${m.count}`:'')).join('')}</div>`:''}${reqItems.length?`<h3>Items Required</h3><div class="entity-links">${reqItems.map(i=>linkCard('item',i,i.count?`Need ${i.count}`:'')).join('')}</div>`:''}${row.completeText?`<h3>Completion</h3><p class="quest-text">${esc(cleanQuestText(row.completeText))}</p>`:''}${rewardItems.length?`<h3>Item Rewards</h3><div class="entity-links">${rewardItems.map(i=>linkCard('item',i,i.count?`x${i.count}`:'')).join('')}</div>`:''}${prev.length||next?`<h3>Quest Chain</h3><div class="entity-links">${prev.map(q=>linkCard('quest',q,'Previous quest')).join('')}${next?linkCard('quest',next,'Next quest'):''}</div>`:''}`)
+  }
+
+  function scalarRows(obj,prefix='',depth=0,out=[]){if(depth>2||!obj||typeof obj!=='object')return out;for(const [k,v] of Object.entries(obj)){if(v==null||v===''||['id','name','description','typeInfo'].includes(k))continue;if(['string','number','boolean'].includes(typeof v))out.push([prefix+k,v]);else if(!Array.isArray(v))scalarRows(v,`${prefix}${k}.`,depth+1,out)}return out}
+  function usefulItemStats(row){
+    const raw=Object.fromEntries(scalarRows(row).map(([k,v])=>[k.replace(/^metaInfo\.|^info\./,''),v]));
+    const fields=[['equipGroup','Equipment type'],['reqLevel','Required level'],['reqLevelEquip','Required equip level'],['reqSTR','Required STR'],['reqDEX','Required DEX'],['reqINT','Required INT'],['reqLUK','Required LUK'],['incSTR','STR'],['incDEX','DEX'],['incINT','INT'],['incLUK','LUK'],['incMHP','Max HP'],['incMMP','Max MP'],['incPAD','Weapon attack'],['incMAD','Magic attack'],['incPDD','Weapon defense'],['incMDD','Magic defense'],['incACC','Accuracy'],['incEVA','Avoidability'],['incSpeed','Speed'],['incJump','Jump'],['tuc','Upgrade slots'],['price','NPC price']];
+    return fields.flatMap(([key,label])=>{const value=raw[key];if(value==null||value===''||Number(value)===0)return [];return [[label,key==='price'?`${Number(value).toLocaleString()} mesos`:value]]});
+  }
+  async function openItemById(id,fallback=null){
+    let row=fallback;try{row=await apiJson(`${API}/item/${id}`)}catch{};row=row||fallback||{id,name:rel.itemNames?.[nkey(id)]||`Item ${id}`};const iid=nkey(id),name=titleOf('item',row)||rel.itemNames?.[iid]||`Item ${iid}`;const drops=uniqueBy(rel.itemDrops?.[iid]||[]),shops=uniqueBy(rel.itemShops?.[iid]||[]),stats=usefulItemStats(row);showDetail(name,`<div style="display:flex;gap:18px;align-items:center"><img src="${icon('item',iid)}" style="width:110px;height:110px;object-fit:contain" alt=""><div><h2 style="margin:0">${esc(name)}</h2>${row.description?.description?`<p>${esc(row.description.description)}</p>`:''}</div></div>${stats.length?`<h3>Useful Stats</h3><table class="stats-table">${stats.map(([k,v])=>`<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</table>`:'<p class="empty">No gameplay stats are listed for this item.</p>'}${drops.length?`<h3>Dropped By</h3><div class="entity-links">${drops.map(d=>linkCard('mob',findMob(d.id)||d,[d.chance!=null?`${d.chance}%`:'',d.min!=null&&d.max!=null?`${d.min}–${d.max}`:''].filter(Boolean).join(' • '))).join('')}</div>`:'<h3>Dropped By</h3><p class="empty">No monster drop information is listed for this item.</p>'}${shops.length?`<h3>Sold By</h3><div class="entity-links">${shops.map(s=>linkCard('npc',findNpc(s.id)||s,s.price!=null?`${Number(s.price).toLocaleString()} mesos`:'' )).join('')}</div>`:''}`)
+  }
+  async function openItem(row){return openItemById(idOf(row),row)}
+  function openCustom(row){const name=row.name||'',local=/Maple Leaf Box/i.test(name)?'images/maple-leaf-box-v2.png':/Senzu Bean/i.test(name)?'images/senzu-bean-original.png':'',missing=!local&&/Kaioken Diamonds|Shenron Ring/i.test(name),image=local||row.image_url||'';showDetail(name,`${!missing&&image?`<img src="${esc(image)}" style="width:110px;height:110px;object-fit:contain" alt="">`:`<div class="pre4-placeholder" style="width:110px;height:110px">${/diamond/i.test(name)?'💎':/bean/i.test(name)?'🌱':/ring/i.test(name)?'💍':'📦'}</div>`}<h3>${esc(row.category||'KaiokenMS Unique')}</h3><p>${esc(row.description||'KaiokenMS custom entry.')}</p>${row.game_id?`<button class="mini-open" data-item="${esc(row.game_id)}">Open base item record</button>`:''}`);detailBody.querySelectorAll('[data-item]').forEach(b=>b.onclick=()=>openItemById(b.dataset.item))}
+  function openJobs(){showDetail('Jobs by Category',Object.entries(jobs).map(([family,names],i)=>`<div class="job-family"><details ${i===0?'open':''}><summary>${esc(family)}</summary><div class="job-pills">${names.map(n=>`<span class="job-pill">${esc(n)}</span>`).join('')}</div></details></div>`).join(''))}
+  function openEntity(type,row){if(type==='map')openMap(row);else if(type==='npc')openNpc(row);else if(type==='mob')openMob(row);else if(type==='quest')openQuest(row);else if(type==='item')openItem(row);else if(type==='custom')openCustom(row);else if(type==='job')openJobs()}
+
+  async function render(){
+    sugg.hidden=true;grid.innerHTML='';grid.dataset.view=viewMode;pager.hidden=true;const size=Number(count.value||24);
+    if(entity==='job'){viewTools.hidden=true;status.textContent='Jobs are organized by class family. Open a category to see its jobs.';const holder=document.createElement('div');holder.style.gridColumn='1/-1';holder.innerHTML=`<aside class="official-job-reference"><div><span>OFFICIAL KAIOKENMS REFERENCE</span><h3>Skill Balance</h3><p>Class balance values may change. Check the official KaiokenMS Skill Balance page for the latest information.</p></div><div class="official-job-links"><a href="https://kaioken-ms.com/skill-balance.html" target="_blank" rel="noopener">⚔ Skill Balance ↗</a></div></aside>`+Object.entries(jobs).map(([family,names],i)=>`<div class="job-family"><details ${i===0?'open':''}><summary>${esc(family)}</summary><div class="job-pills">${names.map(n=>`<span class="job-pill">${esc(n)}</span>`).join('')}</div></details></div>`).join('');grid.appendChild(holder);return}
+    if(entity==='item'){
+      if(!query&&itemSourceMode==='landing'){
+        viewTools.hidden=true;pager.hidden=true;status.textContent='Choose how you want to browse items.';
+        const intro=document.createElement('div');intro.className='item-source-intro';intro.innerHTML='<strong>Items by source and location</strong><br>Browse verified Gachapon rewards by city, or open the complete v83 item catalogue.';grid.appendChild(intro);
+        const holder=document.createElement('div');holder.className='map-region-grid source-choice-grid';
+        const choices=[['','Gachapon by City','10 classic locations • rewards grouped by machine','gachapon','images/gachapon-machine-clean-v2.png'],['📦','All Item Categories','Equipment, consumables, scrolls and more','browse','']];
+        choices.forEach(([iconText,title,sub,mode,image])=>{const button=document.createElement('button');button.type='button';button.className=`map-region-card source-${mode}`;button.innerHTML=`${image?`<img src="${image}" alt="">`:''}<span><strong>${iconText} ${title}</strong><small>${sub}</small></span>`;button.onclick=()=>{itemSourceMode=mode;page=1;render()};holder.appendChild(button)});grid.appendChild(holder);return;
       }
-      const data=await apiFetch(listUrl(entity,q,0,240));if(request!==suggestionRequest)return;const rows=prefixSorted(listFromResponse(data),q);renderSuggestions(rows,false);
-    } catch(e){if(request===suggestionRequest){suggestions.replaceChildren(make("div","suggestion-empty","Suggestions are temporarily unavailable."));suggestions.hidden=false;}}
+      if(!query&&itemSourceMode==='gachapon'){
+        viewTools.hidden=true;pager.hidden=true;status.textContent='Gachapon rewards grouped by city.';
+        const data=await loadGachaponReference();
+        if(!gachaCity){const intro=document.createElement('div');intro.className='item-source-intro';intro.innerHTML='<strong>Gachapon Rewards by City</strong><br>Choose a verified Gachapon location to browse its available rewards.';grid.appendChild(intro);const holder=document.createElement('div');holder.className='map-region-grid';Object.entries(data).forEach(([city,items])=>{const button=document.createElement('button');button.type='button';button.className='map-region-card gacha-city-card';const citySlug=city.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');button.innerHTML=`<img src="images/gachapon-cities/${citySlug}.png" alt="${esc(city)} Gachapon location"><span><strong>${esc(city)}</strong><small>${items.length.toLocaleString()} listed rewards • open location</small></span>`;button.onclick=()=>{gachaCity=city;render()};holder.appendChild(button)});grid.appendChild(holder);return}
+        const back=document.createElement('button');back.type='button';back.className='map-region-back';back.textContent=`← All Gachapon locations • ${gachaCity}`;back.onclick=()=>{gachaCity='';render()};grid.appendChild(back);const intro=document.createElement('div');intro.className='item-source-intro';intro.innerHTML=`<strong>${esc(gachaCity)} Gachapon</strong><br>${(data[gachaCity]||[]).length.toLocaleString()} verified rewards. Rewards are grouped alphabetically; select one to open its database entry.`;grid.appendChild(intro);
+        const city=gachaCity,idByName=new Map(Object.entries(rel.itemNames||{}).map(([id,name])=>[norm(name).toLowerCase(),id])),pending=[];let lastLetter='';
+        (data[gachaCity]||[]).slice().sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})).forEach(name=>{const letter=(name.match(/[A-Z0-9]/i)?.[0]||'#').toUpperCase();if(letter!==lastLetter){const heading=document.createElement('h3');heading.className='gacha-letter';heading.textContent=letter;grid.appendChild(heading);lastLetter=letter}const iid=idByName.get(norm(name).toLowerCase()),row=document.createElement('div');row.className='gacha-item';row.innerHTML=`<img src="${iid?esc(icon('item',iid)):'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2250%22 height=%2250%22 viewBox=%220 0 50 50%22%3E%3Crect width=%2250%22 height=%2250%22 rx=%229%22 fill=%22%230d1828%22/%3E%3Cpath d=%22M12 18l13-7 13 7v15l-13 7-13-7z%22 fill=%22%2335547c%22 stroke=%22%2386dcff%22/%3E%3C/svg%3E'}" data-gacha-state="${iid?'ready':'loading'}" alt="${iid?esc(`${name} item icon`):'Loading item image'}"><strong>${esc(name)}</strong><button type="button">Open item</button>`;const image=row.querySelector('img'),button=row.querySelector('button');if(iid)button.onclick=()=>openItemById(iid,{id:iid,name});else pending.push({name,row,image,button});grid.appendChild(row)});if(pending.length)void hydrateGachaItems(pending,idByName,city);return;
+      }
+      status.textContent='Loading GMS v83 items…';try{await loadItems(query);refreshCategories(itemRows);const rows=filterRows(itemRows);const shown=paginate(rows);status.textContent=`Page ${page} • ${rows.length} item${rows.length===1?'':'s'}.`;shown.forEach(r=>grid.appendChild(card('item',r)));renderPager(rows)}catch(e){status.textContent='The v83 item service could not be reached right now.'}return;
+    }
+    refreshCategories(rowsFor(entity));
+    if(entity==='npc'&&npcRegionFilter==='all'&&!query){pager.hidden=true;viewTools.hidden=true;const npcs=filterRows(rowsFor('npc')).filter(n=>!/^[?\s]+$/.test(titleOf('npc',n)));status.textContent='Choose a v83 world region to browse its NPCs.';const holder=document.createElement('div');holder.className='map-region-grid';mapRegions.forEach(region=>{const regionNpcs=npcs.filter(n=>npcRegion(n)===region);if(!regionNpcs.length)return;const representativeMap=(idx.maps||[]).find(m=>mapRegion(m)===region&&(m.npcCount||m.portalCount))||(idx.maps||[]).find(m=>mapRegion(m)===region);const card=document.createElement('button');card.type='button';card.className='map-region-card';card.innerHTML=`${representativeMap?`<img src="${esc(mapImage(spatial[nkey(representativeMap.id)]||representativeMap))}" alt="">`:''}<span><strong>${esc(region)}</strong><small>${regionNpcs.length.toLocaleString()} NPCs • Open characters and locations</small></span>`;card.onclick=()=>{npcRegionFilter=region;page=1;render()};holder.appendChild(card)});grid.appendChild(holder);return}
+    if(entity==='mob'&&mobRegionFilter==='all'&&!query){pager.hidden=true;viewTools.hidden=true;prepareMobRegions();const mobs=filterRows(rowsFor('mob'));status.textContent=`Choose a v83 world region to browse ${monsterKind==='boss'?'bosses':'monsters'} by location.`;const holder=document.createElement('div');holder.className='map-region-grid';mapRegions.forEach(region=>{const regionMobs=mobs.filter(m=>mobRegion(m)===region);if(!regionMobs.length)return;const representativeMap=(idx.maps||[]).find(m=>mapRegion(m)===region&&m.mobCount)||(idx.maps||[]).find(m=>mapRegion(m)===region);const card=document.createElement('button');card.type='button';card.className='map-region-card';card.innerHTML=`${representativeMap?`<img src="${esc(mapImage(spatial[nkey(representativeMap.id)]||representativeMap))}" alt="">`:''}<span><strong>${esc(region)}</strong><small>${regionMobs.length.toLocaleString()} ${monsterKind==='boss'?'bosses':'monsters'} • Cities and spawn areas</small></span>`;card.onclick=()=>{mobRegionFilter=region;page=1;render()};holder.appendChild(card)});grid.appendChild(holder);return}
+    if(entity==='quest'&&questRegionFilter==='all'&&!query){pager.hidden=true;viewTools.hidden=true;const quests=filterRows(rowsFor('quest'));status.textContent='Choose a world region to browse quests by starting location.';const holder=document.createElement('div');holder.className='map-region-grid';mapRegions.forEach(region=>{const regionQuests=quests.filter(q=>questRegion(q)===region);if(!regionQuests.length)return;const representativeMap=(idx.maps||[]).find(m=>mapRegion(m)===region&&(m.npcCount||m.portalCount))||(idx.maps||[]).find(m=>mapRegion(m)===region);const card=document.createElement('button');card.type='button';card.className='map-region-card';card.innerHTML=`${representativeMap?`<img src="${esc(mapImage(spatial[nkey(representativeMap.id)]||representativeMap))}" alt="">`:''}<span><strong>${esc(region)}</strong><small>${regionQuests.length.toLocaleString()} quests • NPCs, maps and rewards</small></span>`;card.onclick=()=>{questRegionFilter=region;page=1;render()};holder.appendChild(card)});grid.appendChild(holder);return}
+    if(entity==='map'&&mapRegionFilter==='all'&&categoryFilter==='all'&&!query){pager.hidden=true;status.textContent='Choose a v83 world region to browse its cities and maps.';const holder=document.createElement('div');holder.className='map-region-grid';const maps=filterRows(rowsFor('map'));mapRegions.forEach(region=>{const regionMaps=maps.filter(m=>mapRegion(m)===region),representative=regionMaps.find(m=>m.npcCount||m.mobCount||m.portalCount)||regionMaps[0];if(!representative)return;const card=document.createElement('button');card.type='button';card.className='map-region-card';card.innerHTML=`<img src="${esc(mapImage(spatial[nkey(representative.id)]||representative))}" alt=""><span><strong>${esc(region)}</strong><small>${regionMaps.length.toLocaleString()} maps • Open cities and locations</small></span>`;card.onclick=()=>{mapRegionFilter=region;page=1;render()};holder.appendChild(card)});grid.appendChild(holder);return}
+    const all=filterRows(rowsFor(entity)),shown=paginate(all);status.textContent=`Page ${page} • ${all.length} ${cfg[entity][0].toLowerCase()}.`;let lastMapGroup='';shown.forEach(r=>{if((entity==='map'&&categoryFilter==='all')||((entity==='npc'||entity==='mob')&&!query)){const group=entity==='map'?norm(r.street||'Unknown area'):locationGroup(entity,r);if(group!==lastMapGroup){const heading=document.createElement('h3');heading.className='map-group-heading';heading.textContent=group;grid.appendChild(heading);lastMapGroup=group}}grid.appendChild(card(entity,r))});renderPager(all)
+    if(entity==='map'&&mapRegionFilter!=='all'){const back=document.createElement('button');back.type='button';back.className='map-region-back';back.innerHTML=`← All regions <span>•</span> ${esc(mapRegionFilter)}`;back.onclick=()=>{mapRegionFilter='all';page=1;render()};grid.prepend(back);status.textContent=`${mapRegionFilter} • ${all.length} maps grouped by city / area.`}
+    if(entity==='npc'&&npcRegionFilter!=='all'){const back=document.createElement('button');back.type='button';back.className='map-region-back';back.innerHTML=`← All worlds <span>•</span> ${esc(npcRegionFilter)}`;back.onclick=()=>{npcRegionFilter='all';page=1;render()};grid.prepend(back);status.textContent=`${npcRegionFilter} • ${all.length} NPCs.`}
+    if(entity==='mob'&&mobRegionFilter!=='all'){const back=document.createElement('button');back.type='button';back.className='map-region-back';back.innerHTML=`← All worlds <span>•</span> ${esc(mobRegionFilter)}`;back.onclick=()=>{mobRegionFilter='all';page=1;render()};grid.prepend(back);status.textContent=`${mobRegionFilter} • ${all.length} ${monsterKind==='boss'?'bosses':'monsters'} grouped by city / area.`}
+    if(entity==='quest'&&questRegionFilter!=='all'){const back=document.createElement('button');back.type='button';back.className='map-region-back';back.innerHTML=`← All worlds <span>•</span> ${esc(questRegionFilter)}`;back.onclick=()=>{questRegionFilter='all';page=1;render()};grid.prepend(back);status.textContent=`${questRegionFilter} • ${all.length} quests.`}
   }
-  async function liveSearch(){
-    const q=search.value.trim();if(!q||isNumericQuery(q))return;
-    lastQuery=q;
-    try{
-      if(entity==="custom"){if(!customEntries.length)await loadCustom();const rows=prefixSorted(publicCustomRows(customEntries),q);renderCustomRows(rows);setStatus(`Showing ${rows.length} matching KaiokenMS entries.`,"success");return;}
-      const count=Number(countSelect.value||24),data=await apiFetch(listUrl(entity,q,0,Math.max(120,count)));const rows=prefixSorted(listFromResponse(data),q);renderApiRows(rows.slice(0,count),false);setStatus(`Showing ${Math.min(rows.length,count)} alphabetical matches for “${q}”.`,"success");
-    }catch(e){console.warn(e);}
+  function refreshCategories(rows){viewTools.hidden=!['item','map','custom'].includes(entity);if(viewTools.hidden)return;const values=[...new Set((rows||[]).map(r=>entity==='map'?norm(r.street||'Unknown area'):norm(r.typeInfo?.subCategory||r.typeInfo?.category||r.category||'Other')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));const current=categoryFilter;categorySelect.innerHTML=`<option value="all">All ${entity==='map'?'areas / cities':'categories'}</option>${values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}`;categorySelect.value=values.includes(current)?current:'all';categoryFilter=categorySelect.value}
+
+  function suggestions(){
+    const q=search.value.trim().toLowerCase();if(!q){sugg.hidden=true;return}let rows=entity==='item'?itemRows:rowsFor(entity);if(entity==='job'){rows=Object.values(jobs).flat().map(name=>({name}))}const matches=rows.filter(r=>titleOf(entity,r).toLowerCase().startsWith(q)||titleOf(entity,r).toLowerCase().includes(q)).slice(0,12);if(!matches.length){sugg.hidden=true;return}sugg.innerHTML='';matches.forEach(r=>{const d=document.createElement('button');d.type='button';d.className='suggestion';d.textContent=titleOf(entity,r);d.onclick=()=>{search.value=titleOf(entity,r);query=search.value.trim();page=1;render()};sugg.appendChild(d)});sugg.hidden=false;
   }
-  function scheduleSuggestions(){clearTimeout(suggestionTimer);suggestionTimer=setTimeout(()=>{updateSuggestions();liveSearch();},180);}
-  function moveSuggestion(delta){const items=[...suggestions.querySelectorAll(".suggestion-item")];if(!items.length)return;activeSuggestion=(activeSuggestion+delta+items.length)%items.length;items.forEach((n,i)=>n.classList.toggle("active",i===activeSuggestion));items[activeSuggestion].scrollIntoView({block:"nearest"});}
+  let st;search.addEventListener('input',()=>{clearTimeout(st);st=setTimeout(async()=>{if(entity==='item'&&search.value.trim().length){try{await loadItems(search.value.trim())}catch{}}suggestions()},100)});
+  $('db-search-form').addEventListener('submit',e=>{e.preventDefault();query=search.value.trim();if(entity==='item')itemSourceMode='browse';page=1;render()});count.addEventListener('change',()=>{page=1;render()});
+  document.querySelectorAll('.entity-tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.entity-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');entity=b.dataset.entity;monsterFilter.classList.toggle('visible',entity==='mob');categoryFilter='all';mapRegionFilter='all';npcRegionFilter='all';mobRegionFilter='all';questRegionFilter='all';itemSourceMode='landing';gachaCity='';query='';search.value='';page=1;if(entity==='item')viewMode='compact';else viewMode='large';viewTools.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===viewMode));search.placeholder=`Start typing a ${cfg[entity][1].toLowerCase()} name or enter an ID…`;render()}));
+  $('detail-close').onclick=()=>{if(!restoreDetail())dialog.close()};dialog.addEventListener('click',e=>{if(e.target===dialog){detailHistory.length=0;dialog.close()}});dialog.addEventListener('close',()=>{if(!dialog.open)detailHistory.length=0});$('nav-refresh-btn')?.addEventListener('click',()=>location.reload());
 
-  document.querySelectorAll(".entity-tab").forEach(btn=>btn.addEventListener("click",()=>{
-    document.querySelectorAll(".entity-tab").forEach(b=>b.classList.toggle("active",b===btn)); entity=btn.dataset.entity; search.value=""; search.placeholder=entityConfig[entity].placeholder; hideSuggestions(); load(true);
-  }));
-  $("db-search-form").addEventListener("submit",e=>{e.preventDefault();hideSuggestions();load(true);});
-  search.addEventListener("input",scheduleSuggestions);
-  search.addEventListener("focus",()=>{if(search.value.trim())scheduleSuggestions();});
-  search.addEventListener("keydown",e=>{
-    if(suggestions.hidden)return;
-    if(e.key==="ArrowDown"){e.preventDefault();moveSuggestion(1);}else if(e.key==="ArrowUp"){e.preventDefault();moveSuggestion(-1);}else if(e.key==="Escape"){hideSuggestions();}else if(e.key==="Enter"&&activeSuggestion>=0){e.preventDefault();suggestions.querySelectorAll(".suggestion-item")[activeSuggestion]?.click();}
-  });
-  document.addEventListener("click",e=>{if(!suggestions.contains(e.target)&&e.target!==search)hideSuggestions();});
-  $("load-more").addEventListener("click",()=>load(false));countSelect.addEventListener("change",()=>load(true));$("detail-close").addEventListener("click",()=>dialog.close());dialog.addEventListener("click",e=>{if(e.target===dialog)dialog.close();});$("nav-refresh-btn").addEventListener("click",()=>location.reload());
-
-  renderNPCs(); renderFeatures(); loadCustom(); load(true);
+  loadCustom().finally(()=>render());
 })();
+

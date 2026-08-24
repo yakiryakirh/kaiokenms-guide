@@ -83,10 +83,15 @@ jobs:
       - name: Remove temporarily disabled Market
         shell: bash
         run: |
-          rm -f market.html market-admin.html market.js market-admin.js market.css market-admin.css market-config.js || true
+          rm -f market.html market-admin.html market.js market-admin.js market.css market-admin.css market-config.js \
+            database-admin.html database-admin.js database-admin.css \
+            staff-database.html staff-database.js staff-database.css || true
           grep -RIl --include='*.html' 'market.html' . | while read -r f; do
             sed -i -E 's#<a[^>]*href="market\.html"[^>]*>[^<]*</a>##g' "$f"
-          done
+          done || true
+          grep -RIl --include='*.html' 'market-config.js' . | while read -r f; do
+            sed -i -E '/<script[^>]*src="market-config\.js"[^>]*><\/script>/d' "$f"
+          done || true
 
       - name: Validate release files
         shell: bash

@@ -193,36 +193,21 @@ footer{text-align:center;color:var(--muted);padding:24px;border-top:3px solid va
   }
 }
 
-.server-stats{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:14px;
-  margin:0 0 34px;
-}
-.server-stat{
-  min-height:118px;
-  border:1px solid rgba(255,138,0,.32);
-  border-radius:14px;
-  padding:20px 18px;
-  background:linear-gradient(145deg,rgba(25,32,49,.98),rgba(18,24,38,.98));
-  box-shadow:0 12px 28px rgba(0,0,0,.22);
-}
-.server-stat span{
-  display:block;
-  color:#d5deec;
-  font-weight:900;
-  font-size:.95rem;
-  text-transform:uppercase;
-}
-.server-stat b{
-  display:block;
-  margin-top:8px;
-  color:var(--gold);
-  font-size:1.9rem;
-  line-height:1;
-}
+.server-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.server-stat{border:1px solid rgba(255,138,0,.32);border-radius:12px;padding:14px 14px;background:linear-gradient(145deg,rgba(25,32,49,.98),rgba(18,24,38,.98));box-shadow:0 10px 22px rgba(0,0,0,.18);text-align:center}
+.server-stat span{display:block;color:#d5deec;font-weight:900;font-size:.78rem;text-transform:uppercase}
+.server-stat b{display:block;margin-top:6px;color:var(--gold);font-size:1.45rem;line-height:1}
 @media(max-width:850px){.server-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.server-stats{grid-template-columns:1fr 1fr}.server-stat{min-height:96px;padding:15px}}
+@media(max-width:520px){.server-stats{grid-template-columns:1fr 1fr}.server-stat{padding:12px}}
+@media(min-width:1050px) and (min-height:700px){
+  .hero{padding:30px 20px 24px}.hero h1{font-size:3.2rem}.subtitle{font-size:.92rem;line-height:1.42}.author-stamp{margin-top:9px}
+  .refresh-notice{margin:9px auto 0;padding:8px 12px;font-size:.78rem}
+  .wrap{max-width:1240px;padding:18px 20px 28px}.server-stats{gap:9px;margin-bottom:14px}.server-stat{padding:9px 10px}.server-stat span{font-size:.68rem}.server-stat b{font-size:1.22rem}
+  .section-title{font-size:1.28rem;margin-bottom:12px}.guide-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .card{min-height:322px;border-radius:13px}.card-visual{height:122px}.card-visual img{max-height:116px}.quest-symbol{font-size:3.6rem}
+  .card-content{padding:13px}.card h2{font-size:1rem;margin-bottom:5px}.card p{font-size:.78rem;line-height:1.35;margin-bottom:9px}.meta{gap:4px;margin-bottom:10px}.tag{font-size:.62rem;padding:3px 6px}.open{padding:8px 10px;font-size:.76rem}
+  .future{margin-top:12px;padding:10px;font-size:.76rem}footer{padding:12px;font-size:.75rem}
+}
 
 </style>
 <meta content="-Yakir-H" name="author"/><meta content="© 2026 -Yakir-H. All rights reserved." name="copyright"/></head>
@@ -245,7 +230,6 @@ footer{text-align:center;color:var(--muted);padding:24px;border-top:3px solid va
   to make sure you are viewing the latest version. If an older version still appears, try <span class="refresh-key">Ctrl + F5</span>.
 </div>
 <main class="wrap">
-
 <section class="server-stats" aria-label="KaiokenMS Server Rates">
   <div class="server-stat"><span>Channels</span><b>3</b></div>
   <div class="server-stat"><span>EXP Rate</span><b>x10</b></div>
@@ -278,7 +262,7 @@ footer{text-align:center;color:var(--muted);padding:24px;border-top:3px solid va
 </div>
 <div class="card-content">
 <h2>📜 Quests Worth Doing</h2>
-<p>A large quest manager with 100+ quests, prerequisites, Top EXP recommendations, Pre-Collect lists, important quest chains, Search and separate progress for up to 3 characters.</p>
+<p>A large quest manager with 100+ cross-checked quests, prerequisites, Top EXP recommendations, Pre-Collect lists, important quest chains, Search and separate progress for up to 3 characters.</p>
 <div class="meta">
 <span class="tag">100+ Quests</span>
 <span class="tag">3 Characters</span>
@@ -289,21 +273,15 @@ footer{text-align:center;color:var(--muted);padding:24px;border-top:3px solid va
 </div>
 </article>
 <article class="card database-card">
-<div class="card-visual">
-<div class="quest-symbol">🗃️</div>
-</div>
+<div class="card-visual"><div class="quest-symbol">🗃️</div></div>
 <div class="card-content">
 <h2>🗃️ KaiokenMS Database</h2>
-<p>Search original GMS v83 items, monsters, NPCs, maps, quests and jobs, then compare them with KaiokenMS custom items, useful NPCs and server systems.</p>
-<div class="meta">
-<span class="tag">GMS v83</span>
-<span class="tag">Items &amp; Monsters</span>
-<span class="tag">NPCs &amp; Maps</span>
-<span class="tag">KaiokenMS Custom</span>
-</div>
+<p>Search GMS v83 items, monsters, NPCs, maps, quests and jobs, together with KaiokenMS unique entries and cross linked game data.</p>
+<div class="meta"><span class="tag">Items</span><span class="tag">Monsters</span><span class="tag">NPCs</span><span class="tag">Maps</span></div>
 <a class="open" href="database.html">Open Database →</a>
 </div>
 </article>
+
 </div>
 <div class="future">
 <b style="color:#ffd54a">More guides can be added here later.</b><br/>

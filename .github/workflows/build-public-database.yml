@@ -1,0 +1,72 @@
+name: Build public database bundle
+
+on:
+  push:
+    branches: [pre-v4-release]
+    paths:
+      - tools/build_public_database_bundle.py
+      - .github/workflows/build-public-database.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout KaiokenMS branch
+        uses: actions/checkout@v4
+        with:
+          ref: pre-v4-release
+          fetch-depth: 1
+
+      - name: Checkout v83 WEB source
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/andrenogrib/gms_v83_wztoweb.git source
+          cd source
+          git sparse-checkout set WEB
+
+      - name: Download PRE V4 Quest and Map source pack
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p pack
+          gh run download 32660968109 -n pre-v4-data-pack -D pack
+          test -f pack/map-links.json
+          test -f pack/Quest.wz/QuestInfo.img.xml
+          test -d pack/Map.wz
+
+      - name: Build public database data
+        run: |
+          python tools/build_public_database_bundle.py --web source/WEB --pack pack --out data
+          node --check database.js
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          idx=json.loads(Path('data/db-index.json').read_text())
+          spatial=json.loads(Path('data/map-spatial.json').read_text())
+          rel=json.loads(Path('data/item-relations.json').read_text())
+          assert len(idx['maps']) >= 5260
+          assert len(idx['mobs']) >= 1500
+          assert len(idx['npcs']) >= 6900
+          assert len(idx['quests']) >= 2800
+          assert len(rel['itemDrops']) >= 3000
+          assert '100000000' in spatial['maps']
+          assert spatial['maps']['100000000']['portals']
+          print(idx['meta'])
+          print('drop items',len(rel['itemDrops']))
+          PY
+
+      - name: Commit generated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/db-index.js data/db-index.json data/map-spatial.js data/map-spatial.json data/item-relations.js data/item-relations.json
+          if git diff --cached --quiet; then
+            echo "No generated data changes"
+          else
+            git commit -m "Build public v83 database bundle"
+            git push origin pre-v4-release
+          fi

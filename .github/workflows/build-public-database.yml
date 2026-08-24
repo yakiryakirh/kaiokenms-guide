@@ -1,4 +1,4 @@
-name: Build public database bundle
+name: Build PRE V4 release bundle
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
     paths:
       - tools/build_public_database_bundle.py
       - .github/workflows/build-public-database.yml
+      - release-payload2/**
   workflow_dispatch:
 
 permissions:
@@ -20,7 +21,59 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: pre-v4-release
-          fetch-depth: 1
+          fetch-depth: 0
+
+      - name: Apply release site payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat release-payload2/c-*.txt > /tmp/release.b64
+          python - <<'PY'
+          from pathlib import Path
+          import base64,gzip,io,tarfile,zipfile,json,shutil
+          b64=''.join(Path('/tmp/release.b64').read_text().split())
+          raw=gzip.decompress(base64.b64decode(b64))
+          print('decoded release bytes',len(raw),raw[:16])
+          out=Path('/tmp/release-site'); out.mkdir(parents=True,exist_ok=True)
+          ok=False
+          bio=io.BytesIO(raw)
+          if zipfile.is_zipfile(bio):
+              bio.seek(0)
+              with zipfile.ZipFile(bio) as z: z.extractall(out)
+              ok=True
+          if not ok:
+              bio.seek(0)
+              try:
+                  with tarfile.open(fileobj=bio,mode='r:*') as t: t.extractall(out)
+                  ok=True
+              except tarfile.TarError: pass
+          if not ok:
+              try:
+                  obj=json.loads(raw.decode('utf-8'))
+                  if isinstance(obj,dict):
+                      for rel,val in obj.items():
+                          p=out/rel; p.parent.mkdir(parents=True,exist_ok=True)
+                          if isinstance(val,str): p.write_text(val,encoding='utf-8')
+                          else: p.write_bytes(base64.b64decode(val))
+                      ok=True
+              except Exception as e: print('json payload decode failed',e)
+          if not ok: raise SystemExit('Unknown release payload format')
+          root=out
+          children=list(root.iterdir())
+          if len(children)==1 and children[0].is_dir(): root=children[0]
+          print('payload root',root)
+          # Data is rebuilt below from authoritative v83 sources. Map images are served
+          # from their verified source URLs, so do not overwrite generated relation data here.
+          skip=('data/db-index','data/map-spatial','data/item-relations','images/maps/')
+          copied=0
+          for p in root.rglob('*'):
+              if not p.is_file(): continue
+              rel=p.relative_to(root).as_posix()
+              if rel.startswith(skip): continue
+              dst=Path(rel); dst.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(p,dst); copied+=1
+          print('copied release files',copied)
+          PY
+          rm -f market.html market-admin.html market.js market-admin.js market.css market-admin.css market-config.js || true
 
       - name: Checkout v83 WEB source
         run: |
@@ -41,9 +94,23 @@ jobs:
       - name: Build public database data
         run: |
           python tools/build_public_database_bundle.py --web source/WEB --pack pack --out data
+
+      - name: Validate release candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html
+          test -s guide.html
+          test -s database.html
+          test -s database.js
+          test -s database.css
+          test -s quests.html
+          test -s data/db-index.js
+          test -s data/map-spatial.js
+          test -s data/item-relations.js
           node --check database.js
           python - <<'PY'
-          import json
+          import json,re
           from pathlib import Path
           idx=json.loads(Path('data/db-index.json').read_text())
           spatial=json.loads(Path('data/map-spatial.json').read_text())
@@ -54,19 +121,39 @@ jobs:
           assert len(idx['quests']) >= 2800
           assert len(rel['itemDrops']) >= 3000
           assert '100000000' in spatial['maps']
-          assert spatial['maps']['100000000']['portals']
+          # Portals must be real destination-map portals only.
+          for mid,m in spatial['maps'].items():
+              for p in m.get('portals',[]):
+                  assert str(p.get('targetMapId','')) not in ('','999999999',str(mid))
+                  assert p.get('targetMapName')
+          # Site-local links/assets must exist. External image URLs are intentionally allowed.
+          missing=[]
+          for f in Path('.').glob('*.html'):
+              txt=f.read_text(encoding='utf-8',errors='ignore')
+              for ref in re.findall(r'(?:href|src)=["\']([^"\']+)["\']',txt):
+                  if ref.startswith(('http:','https:','#','mailto:','javascript:','data:')): continue
+                  clean=ref.split('#')[0].split('?')[0]
+                  if clean and not (f.parent/clean).exists(): missing.append((f.name,clean))
+          assert not missing, missing[:30]
+          # Market stays disabled for this release.
+          for f in Path('.').glob('*.html'):
+              t=f.read_text(encoding='utf-8',errors='ignore')
+              assert 'href="market.html"' not in t
+              assert 'Community Player Market' not in t
           print(idx['meta'])
           print('drop items',len(rel['itemDrops']))
+          print('validated maps',len(spatial['maps']))
           PY
 
-      - name: Commit generated data
+      - name: Commit release candidate
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/db-index.js data/db-index.json data/map-spatial.js data/map-spatial.json data/item-relations.js data/item-relations.json
+          git add -A
           if git diff --cached --quiet; then
-            echo "No generated data changes"
+            echo "No release changes"
           else
-            git commit -m "Build public v83 database bundle"
-            git push origin pre-v4-release
+            git commit -m "Apply PRE V4 release candidate"
+            git push origin HEAD:pre-v4-release
           fi

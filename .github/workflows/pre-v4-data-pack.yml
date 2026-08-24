@@ -1,0 +1,47 @@
+name: PRE V4 Data Pack
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'pre-v4-data-trigger.txt'
+      - '.github/workflows/pre-v4-data-pack.yml'
+  workflow_dispatch:
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone v83 source data
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse https://github.com/andrenogrib/gms_v83_wztoweb.git source
+          cd source
+          git sparse-checkout set wz_files/wz/Quest.wz WEB/Map wz_files/wz/Map.wz/Map
+
+      - name: Package Quest WZ and map relationship sources
+        run: |
+          mkdir -p pre-v4-source-pack/Quest.wz pre-v4-source-pack/Map.wz
+          cp -a source/wz_files/wz/Quest.wz/. pre-v4-source-pack/Quest.wz/
+          cp source/WEB/Map/map-links.json pre-v4-source-pack/map-links.json
+          cp -a source/wz_files/wz/Map.wz/Map/. pre-v4-source-pack/Map.wz/
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('pre-v4-source-pack')
+          meta={
+            'quest_xml_files': len(list((root/'Quest.wz').glob('*.xml'))),
+            'map_xml_files': len(list((root/'Map.wz').rglob('*.xml'))),
+            'map_links_bytes': (root/'map-links.json').stat().st_size,
+          }
+          (root/'pack-meta.json').write_text(json.dumps(meta,indent=2),encoding='utf-8')
+          print(meta)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pre-v4-data-pack
+          path: pre-v4-source-pack
+          retention-days: 7
+          compression-level: 6

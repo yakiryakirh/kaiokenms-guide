@@ -2,11 +2,15 @@ name: Build PRE V4 release bundle
 
 on:
   push:
-    branches: [pre-v4-release]
+    branches: [main, pre-v4-release]
     paths:
       - tools/build_public_database_bundle.py
       - .github/workflows/build-public-database.yml
       - release-payload2/**
+      - '*.html'
+      - 'database.js'
+      - 'database.css'
+      - 'images/**'
   workflow_dispatch:
 
 permissions:
@@ -20,7 +24,7 @@ jobs:
       - name: Checkout KaiokenMS branch
         uses: actions/checkout@v4
         with:
-          ref: pre-v4-release
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Apply release site payload
@@ -62,8 +66,6 @@ jobs:
           children=list(root.iterdir())
           if len(children)==1 and children[0].is_dir(): root=children[0]
           print('payload root',root)
-          # Data is rebuilt below from authoritative v83 sources. Map images are served
-          # from their verified source URLs, so do not overwrite generated relation data here.
           skip=('data/db-index','data/map-spatial','data/item-relations','images/maps/')
           copied=0
           for p in root.rglob('*'):
@@ -121,12 +123,10 @@ jobs:
           assert len(idx['quests']) >= 2800
           assert len(rel['itemDrops']) >= 3000
           assert '100000000' in spatial['maps']
-          # Portals must be real destination-map portals only.
           for mid,m in spatial['maps'].items():
               for p in m.get('portals',[]):
                   assert str(p.get('targetMapId','')) not in ('','999999999',str(mid))
                   assert p.get('targetMapName')
-          # Site-local links/assets must exist. External image URLs are intentionally allowed.
           missing=[]
           for f in Path('.').glob('*.html'):
               txt=f.read_text(encoding='utf-8',errors='ignore')
@@ -135,7 +135,6 @@ jobs:
                   clean=ref.split('#')[0].split('?')[0]
                   if clean and not (f.parent/clean).exists(): missing.append((f.name,clean))
           assert not missing, missing[:30]
-          # Market stays disabled for this release.
           for f in Path('.').glob('*.html'):
               t=f.read_text(encoding='utf-8',errors='ignore')
               assert 'href="market.html"' not in t
@@ -155,5 +154,5 @@ jobs:
             echo "No release changes"
           else
             git commit -m "Apply PRE V4 release candidate"
-            git push origin HEAD:pre-v4-release
+            git push origin HEAD:${{ github.ref_name }}
           fi

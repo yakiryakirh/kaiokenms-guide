@@ -31,7 +31,10 @@
   async function refreshAuth(){
     if(!db)return;const {data}=await db.auth.getUser();user=data?.user||null;role=null;accountUI();app.hidden=true;
     if(!user){setAccess("","Discord sign in required","Sign in with a Discord account that has an Editor or Game Developer role.");return;}
-    setAccess("","Checking staff role…","Discord login is valid. Verifying permissions in Supabase.");
+    setAccess("","Checking owner access…","Discord login is valid. Verifying private console ownership in Supabase.");
+    const {data:isOwner,error:ownerError}=await db.rpc("guide_is_owner");
+    if(ownerError||isOwner!==true){if(ownerError)console.error(ownerError);setAccess("bad","Access denied","This private console is restricted to its registered owner.");return;}
+    setAccess("","Checking staff role…","Owner access is valid. Verifying database permissions in Supabase.");
     const {data:r,error}=await db.rpc("market_staff_role");if(error){console.error(error);setAccess("bad","Staff role check failed","The existing staff role migration is required before using this editor.");return;}
     role=r||null;accountUI();if(!canStaff()){setAccess("bad","Access denied","This Discord account does not have an Editor or Game Developer role.");return;}
     const {error:probe}=await db.from("guide_database_entries").select("id",{head:true,count:"exact"}).limit(1);

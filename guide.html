@@ -418,6 +418,7 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 .guide-card:hover::after{right:-8px;bottom:-7px;opacity:.32;transform:scale(1.05)}
 .guide-card[data-guide-group="foundation"]{--card-accent:255,152,0}.guide-card[data-guide-group="progression"]{--card-accent:132,92,255}.guide-card[data-guide-group="activities"]{--card-accent:0,201,183}.guide-card[data-guide-group="endgame"]{--card-accent:232,77,255}.guide-card[data-guide-group="routine"]{--card-accent:89,216,132}
 .guide-card[href="quick-start.html"]{--card-art:url("images/vegeta-base-scouter-transparent.png")}.guide-card[href="monster-book.html"]{--card-art:url("images/monster-book-guide.png")}.guide-card[href="leveling.html"]{--card-art:url("images/master-roshi-transparent.png")}.guide-card[href="achievements.html"]{--card-art:url("images/achievement-medal-1142090-icon.png")}.guide-card[href="alts-mules.html"]{--card-art:url("images/scholar-gohan-transparent.png")}.guide-card[href="mesos-farming.html"]{--card-art:url("images/gachapon-machine-clean-v2.png")}.guide-card[href="pq-bossing.html"]{--card-art:url("images/boss-points-shop-npc.png")}.guide-card[href="dragon-balls.html"]{--card-art:url("images/shenron-feature.png")}.guide-card[href="fishing.html"]{--card-art:url("images/fishing-chair-3011000-full-effect.png")}.guide-card[href="rebirth.html"]{--card-art:url("images/super-saiyan-skill-icon.png")}.guide-card[href="economy.html"]{--card-art:url("images/maple-leaf-box-v2.png")}.guide-card[href="commands.html"]{--card-art:url("images/scouter-1022042-icon.png")}.guide-card[href="routine.html"]{--card-art:url("images/dragon-ball-7-item.png")}
+.guide-card[href="community-guides.html"]{--card-art:url("images/scholar-gohan-transparent.png");--card-accent:134,220,255}
 .card-grid.view-list .guide-card::after{width:72px;height:72px;right:118px;bottom:-18px}.card-grid.view-tiny .guide-card::after{width:76px;height:76px}
 @media(max-width:760px){.guide-overview{grid-template-columns:1fr}.guide-overview-step:not(:last-child)::after{content:"↓";right:auto;left:20px;bottom:-19px}}
 
@@ -586,8 +587,14 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 <a class="guide-card" href="commands.html">
 <div class="emoji">⌨️</div>
 <h2>Useful Commands</h2>
-<p>Drop lookup, fishing list, DPS and QoL</p>
+<p>Drop lookup, DPS and quality-of-life commands</p>
 <div class="open">Open Section →</div>
+</a>
+<a class="guide-card" href="community-guides.html">
+<div class="emoji">💬</div>
+<h2>Recommended Community Guides</h2>
+<p>Helpful guides shared by experienced KaiokenMS players in Discord</p>
+<div class="open">Browse Community Guides →</div>
 </a>
 <a class="guide-card" href="routine.html">
 <div class="emoji">✅</div>
@@ -605,9 +612,10 @@ const sectionGroups=[
   ['🏅 Character Progression',['achievements.html','alts-mules.html','rebirth.html']],
   ['💰 Economy & Activities',['mesos-farming.html','fishing.html','economy.html','commands.html']],
   ['👹 Late Game & Special Systems',['pq-bossing.html','dragon-balls.html']],
+  ['💬 Community Recommendations',['community-guides.html']],
   ['✅ Session Plan',['routine.html']]
 ];
-const groupNames=['foundation','progression','activities','endgame','routine'];
+const groupNames=['foundation','progression','activities','endgame','community','routine'];
 for(const [groupIndex,[label,hrefs]] of sectionGroups.entries()){
   const heading=document.createElement('div');heading.className='section-group-title';heading.textContent=label;grid.appendChild(heading);
   hrefs.forEach(href=>{const card=grid.querySelector(`.guide-card[href="${href}"]`);if(card){card.dataset.guideGroup=groupNames[groupIndex];grid.appendChild(card)}});
@@ -629,7 +637,7 @@ document.getElementById('nav-refresh-btn')?.addEventListener('click',()=>{
   window.location.reload();
 });
 /* GLOBAL_NAV_REFRESH_END */
-</script><script src="site-navigation.js?v=14"></script></body></html>
+</script><script src="site-navigation.js?v=15"></script></body></html>
 
 
 

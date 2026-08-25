@@ -7,7 +7,7 @@
 
 <meta content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https://discord.com https://*.supabase.co" http-equiv="Content-Security-Policy"/>
 <title>KaiokenMS Admin Console</title>
-<link href="owner-console-7f4c9d2a.css" rel="stylesheet"/>
+<link href="owner-console-7f4c9d2a.css?v=2" rel="stylesheet"/>
 </head>
 <body>
 <header class="topbar">
@@ -65,6 +65,6 @@
 </form>
 </dialog>
 <dialog id="import-dialog"><form id="import-form" method="dialog"><div class="dialog-head"><div><div class="eyebrow">BULK DATABASE</div><h2>Import CSV</h2></div><button class="close" formmethod="dialog" value="cancel">×</button></div><p class="hint">CSV columns: slug, name, entity_type, game_id, category, subcategory, aliases, description, image_url, verified, enabled, sort_order, metadata. Aliases use | between values.</p><label><span>CSV file</span><input accept=".csv,text/csv" id="csv-file" required="" type="file"/></label><p class="hint" id="import-summary">Choose a CSV file.</p><div class="status" id="import-status"></div><div class="dialog-actions"><button id="cancel-import" type="button">Cancel</button><button class="primary" type="submit">Import / Upsert</button></div></form></dialog>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="owner-console-7f4c9d2a.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="owner-console-7f4c9d2a.js?v=2"></script>
 </body></html>
 

@@ -1,0 +1,1 @@
+Resolve missing v83 item, mob and NPC images.

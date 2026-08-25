@@ -3,7 +3,7 @@
   const CONFIG=window.KAIOKEN_DATABASE_CONFIG||window.KAIOKEN_MARKET_CONFIG||{};
   const configured=/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(CONFIG.supabaseUrl||"")&&/^sb_publishable_/i.test(CONFIG.supabasePublishableKey||"");
   const $=id=>document.getElementById(id),access=$("access-panel"),accessTitle=$("access-title"),accessText=$("access-text"),app=$("admin-app"),status=$("status"),entryDialog=$("entry-dialog"),entryForm=$("entry-form"),importDialog=$("import-dialog"),importForm=$("import-form");
-  let db=null,user=null,role=null,entries=[],staff=[],originalImageUrl=null,removeImageRequested=false,previewObjectUrl=null;
+  let db=null,user=null,role=null,entries=[],staff=[],originalImageUrl=null,removeImageRequested=false,previewObjectUrl=null,analyticsTimer=null;
   const validTypes=new Set(["item","equipment","monster","npc","map","quest","job","skill","feature","system","other"]);
   const clean=(v,max=2000)=>String(v??"").trim().slice(0,max),boolish=v=>["true","1","yes","y","on"].includes(String(v??"").trim().toLowerCase());
   const slugify=s=>clean(s,180).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,180);
@@ -44,7 +44,7 @@
     $("team-tab-button").hidden=role!=="editor";app.hidden=false;await loadEntries();
   }
 
-  function switchTab(name){document.querySelectorAll(".staff-tabs .tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===`tab-${name}`));if(name==="team"&&role==="editor")loadStaff();if(name==="analytics")loadAnalytics();}
+  function switchTab(name){document.querySelectorAll(".staff-tabs .tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===`tab-${name}`));if(analyticsTimer){clearInterval(analyticsTimer);analyticsTimer=null;}if(name==="team"&&role==="editor")loadStaff();if(name==="analytics"){loadAnalytics();analyticsTimer=setInterval(loadAnalytics,10000);}}
   document.querySelectorAll(".staff-tabs .tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
 
   const formatNumber=value=>new Intl.NumberFormat().format(Number(value||0));

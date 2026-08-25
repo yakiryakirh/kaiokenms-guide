@@ -408,6 +408,19 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
   font-size:.78rem;
 }
 
+/* Visual progression overview */
+.guide-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 18px;padding:16px;border:1px solid #426481;border-radius:16px;background:linear-gradient(145deg,rgba(28,49,79,.97),rgba(10,20,35,.98));box-shadow:0 14px 34px rgba(0,0,0,.26)}
+.guide-overview-step{position:relative;display:grid;grid-template-columns:42px 1fr;gap:3px 11px;align-items:center;padding:12px;border:1px solid #355784;border-radius:12px;background:linear-gradient(145deg,#20385b,#142641)}
+.guide-overview-step:not(:last-child)::after{content:"→";position:absolute;right:-19px;z-index:2;display:grid;place-items:center;width:24px;height:24px;border:1px solid #70540b;border-radius:50%;background:#31270a;color:#ffd54a;font-weight:1000}
+.guide-overview-step>span{grid-row:1/3;display:grid;place-items:center;width:40px;height:40px;border:2px solid #ff9800;border-radius:12px;background:#4a2a08;color:#ffd54a;font-size:1.05rem;font-weight:1000}
+.guide-overview-step b{color:#ffd54a;line-height:1.2}.guide-overview-step small{color:#b9c7da;line-height:1.35}
+.guide-card{isolation:isolate;--card-accent:50,168,255;background:radial-gradient(circle at 94% 115%,rgba(var(--card-accent),.28),transparent 48%),radial-gradient(circle at 10% -20%,rgba(var(--card-accent),.11),transparent 42%),linear-gradient(145deg,rgba(24,43,72,.99),rgba(8,17,34,.99))}.guide-card>*{position:relative;z-index:1}.guide-card::after{content:"";position:absolute;z-index:0;right:-18px;bottom:-14px;width:126px;height:126px;background-image:var(--card-art);background-repeat:no-repeat;background-position:center;background-size:contain;opacity:.2;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55));transition:.2s ease;pointer-events:none}
+.guide-card:hover::after{right:-8px;bottom:-7px;opacity:.32;transform:scale(1.05)}
+.guide-card[data-guide-group="foundation"]{--card-accent:255,152,0}.guide-card[data-guide-group="progression"]{--card-accent:132,92,255}.guide-card[data-guide-group="activities"]{--card-accent:0,201,183}.guide-card[data-guide-group="endgame"]{--card-accent:232,77,255}.guide-card[data-guide-group="routine"]{--card-accent:89,216,132}
+.guide-card[href="quick-start.html"]{--card-art:url("images/vegeta-base-scouter-transparent.png")}.guide-card[href="monster-book.html"]{--card-art:url("images/monster-book-guide.png")}.guide-card[href="leveling.html"]{--card-art:url("images/master-roshi-transparent.png")}.guide-card[href="achievements.html"]{--card-art:url("images/achievement-medal-1142090-icon.png")}.guide-card[href="alts-mules.html"]{--card-art:url("images/scholar-gohan-transparent.png")}.guide-card[href="mesos-farming.html"]{--card-art:url("images/gachapon-machine-clean-v2.png")}.guide-card[href="pq-bossing.html"]{--card-art:url("images/boss-points-shop-npc.png")}.guide-card[href="dragon-balls.html"]{--card-art:url("images/shenron-feature.png")}.guide-card[href="fishing.html"]{--card-art:url("images/fishing-chair-3011000-full-effect.png")}.guide-card[href="rebirth.html"]{--card-art:url("images/super-saiyan-skill-icon.png")}.guide-card[href="economy.html"]{--card-art:url("images/maple-leaf-box-v2.png")}.guide-card[href="commands.html"]{--card-art:url("images/scouter-1022042-icon.png")}.guide-card[href="routine.html"]{--card-art:url("images/dragon-ball-7-item.png")}
+.card-grid.view-list .guide-card::after{width:72px;height:72px;right:118px;bottom:-18px}.card-grid.view-tiny .guide-card::after{width:76px;height:76px}
+@media(max-width:760px){.guide-overview{grid-template-columns:1fr}.guide-overview-step:not(:last-child)::after{content:"↓";right:auto;left:20px;bottom:-19px}}
+
 
 
 /* ===== Global Centered Navigation + Refresh ===== */
@@ -490,6 +503,11 @@ footer{text-align:center;color:var(--muted);padding:22px;border-top:3px solid va
 <header class="hero"><div class="kicker">Complete Progression Guide</div><h1>KaiokenMS Guide Sections</h1>
 <p class="subtitle">Each section now has its own page. Quick Start is on the left, Monster Book is highlighted on the right, and the rest follow in the same progression order.</p><div class="author-stamp">⚡ Original Guide • Created &amp; Maintained by -Yakir-H</div></header>
 <main class="wrap">
+<section class="guide-overview" aria-label="Recommended guide progression">
+<div class="guide-overview-step"><span>1</span><b>Build the foundation</b><small>Start, level and unlock permanent account power.</small></div>
+<div class="guide-overview-step"><span>2</span><b>Grow the account</b><small>Achievements, alts, farming and useful activities.</small></div>
+<div class="guide-overview-step"><span>3</span><b>Push the end game</b><small>Bossing, special systems, rebirth and your repeatable routine.</small></div>
+</section>
 <div class="view-controls">
 <div class="label">View:</div>
 <div class="view-buttons">
@@ -589,7 +607,11 @@ const sectionGroups=[
   ['👹 Late Game & Special Systems',['pq-bossing.html','dragon-balls.html']],
   ['✅ Session Plan',['routine.html']]
 ];
-for(const [label,hrefs] of sectionGroups){const first=[...grid.querySelectorAll('.guide-card')].find(card=>hrefs.includes(card.getAttribute('href')));if(!first)continue;const heading=document.createElement('div');heading.className='section-group-title';heading.textContent=label;grid.insertBefore(heading,first)}
+const groupNames=['foundation','progression','activities','endgame','routine'];
+for(const [groupIndex,[label,hrefs]] of sectionGroups.entries()){
+  const heading=document.createElement('div');heading.className='section-group-title';heading.textContent=label;grid.appendChild(heading);
+  hrefs.forEach(href=>{const card=grid.querySelector(`.guide-card[href="${href}"]`);if(card){card.dataset.guideGroup=groupNames[groupIndex];grid.appendChild(card)}});
+}
 
 function setView(view){
   grid.classList.remove('view-tiny','view-medium','view-list');
@@ -607,7 +629,8 @@ document.getElementById('nav-refresh-btn')?.addEventListener('click',()=>{
   window.location.reload();
 });
 /* GLOBAL_NAV_REFRESH_END */
-</script><script src="site-navigation.js?v=12"></script></body></html>
+</script><script src="site-navigation.js?v=14"></script></body></html>
+
 
 
 

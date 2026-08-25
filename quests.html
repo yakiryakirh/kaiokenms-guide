@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>KaiokenMS — Quests Worth Doing</title><style>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><script src="data/db-index.js?v=1"></script><title>KaiokenMS — Quests Worth Doing</title><style>
 :root{--space:#050914;--deep:#0b1630;--panel:#111d35;--panel2:#172746;--orange:#ff8a00;--gold:#ffd54a;--red:#e83b28;--blue:#32a8ff;--cyan:#86dcff;--text:#f8fbff;--muted:#b9c7da;--line:#314d76;--green:#59d884}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;line-height:1.55;background:radial-gradient(circle at 15% 12%,rgba(50,168,255,.13),transparent 18%),radial-gradient(circle at 86% 8%,rgba(255,138,0,.12),transparent 20%),linear-gradient(180deg,#030711,#081226 42%,#050914);background-attachment:fixed}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.4px),radial-gradient(circle,#86dcff 0 1px,transparent 1.3px);background-size:92px 92px,137px 137px;background-position:7px 11px,51px 29px;z-index:-1}
@@ -1802,7 +1802,7 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 </div>
 <button aria-label="Refresh this guide" class="nav-refresh-btn" id="nav-refresh-btn" title="Refresh this guide" type="button">🔄 Refresh</button></nav>
 <header class="hero"><div class="kicker">KaiokenMS Community Guide • Community Edition</div><h1>Quests Worth Doing</h1><p class="subtitle">A level-by-level quest checklist focused on fast EXP, efficient pre-collection, useful unlocks, valuable rewards and quest chains worth combining.</p><div class="author-stamp">⚡ Original Guide • Created &amp; Maintained by -Yakir-H</div></header>
-<main class="wrap"><div class="guide-tabs"><button class="guide-tab active" data-tab="all-quests" type="button">📚 All Quests</button><button class="guide-tab" data-tab="top-quests" type="button">🔥 Top EXP &amp; Key Quests</button><button class="guide-tab fame-tab" data-tab="fame-quests" type="button">⭐ Fame Quests</button><button class="guide-tab" data-tab="precollect" type="button">📦 Pre-Collect Checklist</button><button class="guide-tab" data-tab="chains" type="button">🔗 Quest Chains</button><button class="guide-tab coming-soon-tab" type="button" disabled aria-disabled="true">👑 Boss Questlines (Coming Soon)</button><div class="top-sort-control" id="top-sort-control">
+<main class="wrap"><div class="guide-tabs"><button class="guide-tab active" data-tab="all-quests" type="button">📚 All Quests</button><button class="guide-tab" data-tab="top-quests" type="button">🔥 Top EXP &amp; Key Quests</button><button class="guide-tab fame-tab" data-tab="fame-quests" type="button">⭐ Fame Quests</button><button class="guide-tab" data-tab="chains" type="button">🔗 Quest Chains</button><button class="guide-tab" data-tab="precollect" type="button">📦 Pre-Collect Checklist</button><button class="guide-tab coming-soon-tab" type="button" disabled aria-disabled="true">👑 Boss Questlines (Coming Soon)</button><div class="top-sort-control" id="top-sort-control">
 <label for="top-quest-sort">↕️ Sort By</label>
 <select aria-label="Sort current quest tab" id="top-quest-sort"></select>
 </div><div class="quest-size-control" id="quest-size-control">
@@ -2766,13 +2766,13 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <em>Open step-by-step guide →</em>
 </button>
 <div class="route-arrow">→</div>
-<button class="route-stage feature-stage" data-route-action="features" type="button">
+<div class="route-stage feature-stage">
 <span class="route-step">LEVEL GAP</span>
 <span class="route-level">Around Lv. 50 → 55</span>
 <strong>Use KaiokenMS Features</strong>
 <span>Fill any gap efficiently instead of forcing low-value quests.</span>
-<em>See recommended options ↓</em>
-</button>
+<em>Bridge efficiently to level 55</em>
+</div>
 <div class="route-arrow">→</div>
 <button class="route-stage muirhat-stage" data-route-action="muirhat" type="button">
 <span class="route-step">STAGE 3</span>
@@ -2781,12 +2781,6 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <span>Stone Golems → Dark → Mixed → Skeletons → Drakes → Tauromacis.</span>
 <em>Jump to starting quest →</em>
 </button>
-</div>
-<div class="route-feature-options" id="route-feature-options">
-<div><b>🐢 Master Roshi</b><span>Use the server's leveling helper when it gives you a better next target.</span></div>
-<div><b>⏳ Hyperbolic Time Chamber</b><span>Excellent for bridging short level gaps with scaled monsters and bonus EXP.</span></div>
-<div><b>👥 PQs</b><span>Mix in useful Party Quests when they are efficient for your current level and group.</span></div>
-<div><b>📕 Monster Book</b><span>Farm useful card sets while leveling so EXP progression also builds permanent account value.</span></div>
 </div>
 <div class="route-finish">
 <b>Target:</b> this route is designed to carry the character through the important early questlines and naturally into <b>Third Job / level 70+</b>, with KaiokenMS systems used to cover the gaps. </div>
@@ -2873,7 +2867,7 @@ footer{color:var(--muted);text-align:center;padding:24px;border-top:3px solid va
 <div class="kerning-precollect-tip">
 <b>⚡ Recommended:</b> farm everything from the first Tapioca Bubble items through the CDs before doing the NPC turn-ins. Once the stacks are ready, run through the quest dialogue in sequence and clear a large part of Kerning Square with almost no farming interruptions. </div>
 </div><div class="kerning-table-wrap"><table class="kerning-guide-table"><thead><tr><th>#</th><th>Phase</th><th>Quest Step</th><th>What To Do</th><th>Quest EXP</th></tr></thead><tbody><tr><td class="step-num">1</td><td class="step-phase">Arrival</td><td class="step-name">Jake → Kerning Square</td><td class="step-action">Take Jake's quest. Use the Kerning subway turnstile, choose the Kerning Square option, wait for the ride, then speak with Hyeokyi.</td><td class="step-exp">2,400 EXP</td></tr><tr><td class="step-num">2</td><td class="step-phase">Arrival</td><td class="step-name">Hyeokyi → Lana</td><td class="step-action">Speak with Lana in the next area.</td><td class="step-exp">1,320 EXP</td></tr><tr><td class="step-num">3</td><td class="step-phase">Arrival</td><td class="step-name">Lana → Dongdong</td><td class="step-action">Find Dongdong on the far right side and speak with him.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">4</td><td class="step-phase">Bubble Tea</td><td class="step-name">Tapioca Bubble Collection</td><td class="step-action">Collect 30 Pink Tapioca Bubbles, 30 Green Tapioca Bubbles and 40 Yellow Tapioca Bubbles from the Bubble Tea monsters.</td><td class="step-exp">14,800 EXP</td></tr><tr><td class="step-num">5</td><td class="step-phase">Bubble Tea</td><td class="step-name">Find the Map</td><td class="step-action">Complete Dongdong's map search objective and return the map to him.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">6</td><td class="step-phase">Dolls</td><td class="step-name">Find Tina</td><td class="step-action">Return to Lana, then speak with Tina above the area.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">7</td><td class="step-phase">Dolls</td><td class="step-name">Plushie Collection</td><td class="step-action">Collect 50 Yeti Plushies, 50 Jr. Pepe Plushies and 20 Orange Mushroom Plushies. The plushie monsters appear from the grab-machine mobs.</td><td class="step-exp">15,300 EXP</td></tr><tr><td class="step-num">8</td><td class="step-phase">Keys</td><td class="step-name">Find Marshall</td><td class="step-action">Take Lana's next request and speak with Marshall at the top of the map.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">9</td><td class="step-phase">Keys</td><td class="step-name">Locker Key</td><td class="step-action">Complete Lana's key objective, return to the subway lobby and interact with the lockers to receive the key.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">10</td><td class="step-phase">Keys</td><td class="step-name">Deliver the Key</td><td class="step-action">Bring the key from the lockers to Marshall.</td><td class="step-exp">1,560 EXP</td></tr><tr><td class="step-num">11</td><td class="step-phase">Fashion</td><td class="step-name">Find Lala</td><td class="step-action">Speak with Lala for the next part of the chain.</td><td class="step-exp">1,280 EXP</td></tr><tr><td class="step-num">12</td><td class="step-phase">Fashion</td><td class="step-name">Hat Collection</td><td class="step-action">Collect 50 Bunny Hats, 50 Wigs and 50 Top Hats.</td><td class="step-exp">16,700 EXP</td></tr><tr><td class="step-num">13</td><td class="step-phase">Fashion</td><td class="step-name">Perfume Collection</td><td class="step-action">Collect 30 Pink, 30 Purple and 30 Yellow Perfume Bottles.</td><td class="step-exp">13,900 EXP</td></tr><tr><td class="step-num">14</td><td class="step-phase">Fashion</td><td class="step-name">Perfume Tests</td><td class="step-action">Complete the three timed perfume tests. After being sprayed, reach Lana within the short timer and test the perfume choice.</td><td class="step-exp">6,900 EXP total</td></tr><tr><td class="step-num">15</td><td class="step-phase">Music</td><td class="step-name">CD Collection</td><td class="step-action">Collect 50 Rainbow CDs and 50 Normal CDs.</td><td class="step-exp">15,100 EXP</td></tr><tr><td class="step-num">16</td><td class="step-phase">Music</td><td class="step-name">Norma's MP3</td><td class="step-action">Help Norma recover the MP3 objective and defeat 50 speaker monsters.</td><td class="step-exp">14,100 EXP</td></tr><tr><td class="step-num">17</td><td class="step-phase">Music</td><td class="step-name">Collect Cords</td><td class="step-action">Collect 50 Cords from the red speaker monsters inside the timed area.</td><td class="step-exp">13,200 EXP</td></tr><tr><td class="step-num">18</td><td class="step-phase">Boss</td><td class="step-name">Rock Spirit</td><td class="step-action">Collect 1 Music Sheet and defeat Rock Spirit. Pay attention to the sound played after the boss dies because the next step tests you on it.</td><td class="step-exp">48,500 EXP</td></tr><tr><td class="step-num">19</td><td class="step-phase">Boss</td><td class="step-name">Sound Check</td><td class="step-action">Listen to the three sample sounds and enter the number matching the sound you heard after Rock Spirit died. A wrong answer means repeating the boss check.</td><td class="step-exp">32,500 EXP</td></tr><tr><td class="step-num">20</td><td class="step-phase">Finish</td><td class="step-name">Return the Book</td><td class="step-action">Take Norma's book back to Lana.</td><td class="step-exp">1,320 EXP</td></tr><tr><td class="step-num">21</td><td class="step-phase">Finish</td><td class="step-name">Complete Kerning Square</td><td class="step-action">Return to Hyeokyi to close the questline and receive the completion reward.</td><td class="step-exp">37,200 EXP</td></tr></tbody></table></div><div class="kerning-finish-box">
-<b>✅ When Kerning Square is finished:</b> If you are not yet ready for the Muirhat chain, use Master Roshi, the Hyperbolic Time Chamber, useful PQs or Monster Book farming to bridge the remaining levels. At <b>Lv. 55+</b>, move into the <b>Muirhat / Golem Chain</b>. <button id="kerning-to-muirhat" type="button">Continue to Muirhat / Golem Chain →</button>
+<b>✅ When Kerning Square is finished:</b> Continue leveling until <b>Lv. 55+</b>, then move into the <b>Muirhat / Golem Chain</b>. <button id="kerning-to-muirhat" type="button">Continue to Muirhat / Golem Chain →</button>
 </div></section><section class="extra-tab-section"><h2>Important Quest Chains</h2><div class="summary-intro"><b>Why this exists:</b> Some quests are valuable mainly because they unlock later quests. This tab keeps those chains separate from the raw EXP ranking so players do not confuse prerequisite value with immediate EXP.</div><div class="chain-grid"><div aria-label="Open Mr. Wetbottom's Secret Book and view what to do" class="chain-card" data-chain-jump="q31" data-original-order="0" data-sort-name="mr. wetbottom → rowen's cursed dolls" role="button" tabindex="0"><b>Mr. Wetbottom → Rowen's Cursed Dolls</b><div>Mr. Wetbottom's Secret Book unlocks the later Rowen chain. Save Curse Eye Tails/Lupin Bananas and avoid selling prerequisite materials.</div><div class="chain-open-cta">Open starting quest: Mr. Wetbottom's Secret Book →</div></div><div aria-label="Open A Request from a Member of the Sand Bandits! and view what to do" class="chain-card" data-chain-jump="q25" data-original-order="1" data-sort-name="sand bandits → deo" role="button" tabindex="0"><b>Sand Bandits → Deo</b><div>Complete Ariant's Sand Bandit progression, including The True Identity of Sand Bandits, to reach The Bounty Hunt / Deo payoff.</div><div class="chain-open-cta">Open starting quest: A Request from a Member of the Sand Bandits! →</div></div><div aria-label="Open Request of Mrs. Reade 2 &amp; 3 and view what to do" class="chain-card" data-chain-jump="q20" data-original-order="2" data-sort-name="mrs. reade → ludibrium utility quests" role="button" tabindex="0"><b>Mrs. Reade → Ludibrium utility quests</b><div>Request of Mrs. Reade 2 &amp; 3 combines well with other Ludibrium/Eos Tower objectives.</div><div class="chain-open-cta">Open starting quest: Request of Mrs. Reade 2 &amp; 3 →</div></div><div aria-label="Open The Alarm Clock and view what to do" class="chain-card" data-chain-jump="q43" data-original-order="3" data-sort-name="alarm clock chain" role="button" tabindex="0"><b>Alarm Clock Chain</b><div>The Alarm Clock → Assembling the Alarm Clock → Delivering the Alarm Clock. Keep Table Clocks and Cogs.</div><div class="chain-open-cta">Open starting quest: The Alarm Clock →</div></div><div aria-label="Open Eliminating Grays and view what to do" class="chain-card" data-chain-jump="q42" data-original-order="4" data-sort-name="omega sector elimination chain" role="button" tabindex="0"><b>Omega Sector Elimination Chain</b><div>Eliminating Grays → Mateon → Plateon → Mecateon → Chief Gray and related Omega quests. Batch these into one visit.</div><div class="chain-open-cta">Open starting quest: Eliminating Grays →</div></div><div aria-label="Open Eliminate the Stone Golems and view what to do" class="chain-card" data-chain-jump="q76" data-original-order="5" data-sort-name="muirhat / golem chain" role="button" tabindex="0"><b>Muirhat / Golem Chain</b><div>START HERE: click the trash can next to Muirhat to begin the hidden letter prequest (called The Lost Letter / Half-written Letter in different guide notes). Then progress through Stone Golems → Dark Stone Golems → Mixed Stone Golems → Skeletons → Drakes → Tauromacis.</div><div class="chain-open-cta">Open starting quest: Eliminate the Stone Golems →</div></div><div aria-label="Open In Search of the Book of Ancient and view what to do" class="chain-card" data-chain-jump="q71" data-original-order="6" data-sort-name="alcaster / book of ancient" role="button" tabindex="0"><b>Alcaster / Book of Ancient</b><div>A long multi-area chain, but strategically important because of its classic unlock value.</div><div class="chain-open-cta">Open starting quest: In Search of the Book of Ancient →</div></div><div aria-label="Open Wars of the Dragons and view what to do" class="chain-card" data-chain-jump="q100" data-original-order="7" data-sort-name="horntail access path" role="button" tabindex="0"><b>Horntail Access Path</b><div>Wars of the Dragons is part of the classic Horntail-related progression path. Treat it as an unlock quest, not just EXP.</div><div class="chain-open-cta">Open starting quest: Wars of the Dragons →</div></div></div></section></div></main><a class="back-top" href="#page-top" title="Back to top">↑</a>
 <footer><div><a href="./" style="color:#ffd54a;font-weight:900;text-decoration:none;">🏠 Back to Home</a></div>KaiokenMS • Quests Worth Doing • Dragon Ball Z Style Community Guide<div class="footer-credit">Created &amp; Maintained by -Yakir-H</div><div class="footer-rights">© 2026 -Yakir-H. All rights reserved. Please credit the original author when sharing or adapting this guide.</div></footer><script>
 const tabs=document.querySelectorAll('.guide-tab');
@@ -2887,9 +2881,84 @@ tabs.forEach(btn=>{
     window.scrollTo({top:0,behavior:'smooth'});
   });
 });
+const requestedTab=new URLSearchParams(location.search).get('tab');
+if(['all-quests','top-quests','fame-quests','chains','precollect'].includes(requestedTab)){
+  requestAnimationFrame(()=>{
+    document.querySelector(`.guide-tab[data-tab="${requestedTab}"]`)?.click();
+    if(location.hash)setTimeout(()=>document.querySelector(location.hash)?.scrollIntoView({block:'start'}),120);
+  });
+}
 
 const cards=[...document.querySelectorAll('#all-quests .quest')];
 const checks=[...document.querySelectorAll('.quest-check')];
+
+/* QUEST_NPC_POPUPS_START */
+if(false){
+const npcPopupStyle=document.createElement('style');
+npcPopupStyle.textContent='.quest-npc-row{align-items:center}.quest-npc-button{appearance:none;border:1px solid #62c8ff;border-radius:999px;background:linear-gradient(145deg,#173b5d,#10243d);color:#dff5ff;padding:7px 12px;font:inherit;font-weight:900;cursor:pointer}.quest-npc-button:hover{border-color:#ffd54a;color:#ffd54a;transform:translateY(-1px)}.npc-popup{width:min(520px,calc(100% - 24px));border:1px solid #62c8ff;border-radius:16px;padding:0;background:#111d35;color:#f8fbff;box-shadow:0 24px 70px #000b}.npc-popup::backdrop{background:rgba(2,8,18,.78)}.npc-popup-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #35547c;background:#172a46}.npc-popup-head h2{margin:0;color:#ffd54a}.npc-popup-close{border:1px solid #c65a5a;border-radius:8px;background:#3a1c25;color:#ffd4d4;font-size:22px;font-weight:900;cursor:pointer}.npc-popup-body{padding:18px}.npc-popup-body p{margin:.45em 0;color:#d9e7f5}.npc-popup-note{color:#9fb0c4!important;font-size:.9rem}';
+document.head.appendChild(npcPopupStyle);
+const npcPopupMapStyle=document.createElement('style');
+npcPopupMapStyle.textContent='.npc-popup-card{display:grid;grid-template-columns:110px 1fr;gap:18px;align-items:center}.npc-popup-image{width:110px;height:110px;object-fit:contain;filter:drop-shadow(0 8px 12px #0008)}.npc-map-link{border:1px solid #62c8ff;border-radius:9px;background:#132a43;color:#dff5ff;padding:9px 12px;font:inherit;font-weight:900;cursor:pointer}.npc-map-link:hover{border-color:#ffd54a;color:#ffd54a}@media(max-width:520px){.npc-popup-card{grid-template-columns:1fr}.npc-popup-image{margin:auto}}';
+document.head.appendChild(npcPopupMapStyle);
+const npcPopup=document.createElement('dialog');
+npcPopup.className='npc-popup';
+npcPopup.innerHTML='<div class="npc-popup-head"><h2 id="npc-popup-title">Quest NPC</h2><button class="npc-popup-close" type="button" aria-label="Close">×</button></div><div class="npc-popup-body" id="npc-popup-body"></div>';
+document.body.appendChild(npcPopup);
+const npcPopupTitle=npcPopup.querySelector('#npc-popup-title');
+const npcPopupBody=npcPopup.querySelector('#npc-popup-body');
+npcPopup.querySelector('.npc-popup-close').addEventListener('click',()=>npcPopup.close());
+npcPopup.addEventListener('click',event=>{if(event.target===npcPopup)npcPopup.close()});
+const questDbRows=window.KAIOKEN_DB_INDEX?.quests||[];
+const questDbByName=new Map(questDbRows.map(row=>[(row.name||'').trim().toLowerCase(),row]));
+const npcDbById=new Map((window.KAIOKEN_DB_INDEX?.npcs||[]).map(row=>[String(row.id),row]));
+function questDatabaseRecord(card){
+  const title=(card.querySelector('.qtitle')?.textContent||'').trim().toLowerCase();
+  return questDbByName.get(title)||questDbRows.find(row=>title&&(row.name||'').trim().toLowerCase().includes(title))||null;
+}
+function npcImageUrl(npc){
+  if(!npc?.preview)return '';
+  return `https://raw.githubusercontent.com/andrenogrib/gms_v83_wztoweb/refs/heads/main/WEB/${npc.preview}`;
+}
+function openQuestNpcRecord(title,record){
+  const npc=record&&(npcDbById.get(String(record.startNpc))||npcDbById.get(String(record.endNpc)));
+  const npcName=record?.startNpcName||record?.endNpcName||npc?.name||'NPC not listed';
+  const location=record?.startLocations?.[0]||record?.endLocations?.[0];
+  const npcImage=npcImageUrl(npc);
+  npcPopupTitle.textContent=`${title} — NPC`;
+  npcPopupBody.innerHTML=`<div class="npc-popup-card">${npcImage?`<img class="npc-popup-image" src="${npcImage}" alt="${npcName}">`:''}<div><p><strong>Quest NPC:</strong> ${npcName}</p>${location?`<p><strong>Map:</strong> ${location.mapName||'Map not listed'}</p><p><button class="npc-map-link" type="button" data-map-id="${location.mapId||''}">Open map in Database →</button></p>`:''}</div></div><p class="npc-popup-note">NPC and location data are loaded from the local database index. Confirm custom KaiokenMS quest availability in-game.</p>`;
+  npcPopupBody.querySelector('.npc-map-link')?.addEventListener('click',event=>{const mapId=event.currentTarget.dataset.mapId;if(mapId)location.href=`database.html?openMap=${encodeURIComponent(mapId)}`});
+  npcPopup.showModal();
+}
+function openQuestNpc(card){
+  const title=card.querySelector('.qtitle')?.textContent?.trim()||'Quest';
+  openQuestNpcRecord(title,questDatabaseRecord(card));
+}
+cards.forEach(card=>{
+  const body=card.querySelector('.qbody');
+  if(!body)return;
+  const row=document.createElement('div');
+  row.className='row quest-npc-row';
+  row.innerHTML='<div class="label">NPC</div><div></div>';
+  const button=document.createElement('button');
+  button.type='button';
+  button.className='quest-npc-button';
+  button.textContent='Open NPC details →';
+  button.addEventListener('click',()=>openQuestNpc(card));
+  row.lastElementChild.appendChild(button);
+  body.insertBefore(row,body.firstChild);
+});
+document.querySelectorAll('#top-quests .summary-table tbody tr,#fame-quests .summary-table tbody tr').forEach(row=>{
+  const title=row.cells[1]?.textContent?.trim();
+  if(!title)return;
+  const record=questDbByName.get(title.toLowerCase())||questDbRows.find(q=>(q.name||'').trim().toLowerCase().includes(title.toLowerCase()));
+  const cell=row.cells[1];
+  const button=document.createElement('button');
+  button.type='button';button.className='quest-npc-button';button.textContent='NPC →';
+  button.addEventListener('click',()=>openQuestNpcRecord(title,record));
+  cell.append(' ');cell.appendChild(button);
+});
+}
+/* QUEST_NPC_POPUPS_END */
 
 const originalQuestParents=new Map(cards.map(card=>[card,card.parentElement]));
 const questSort=document.getElementById('quest-sort');
@@ -2897,6 +2966,24 @@ const sortedQuestList=document.getElementById('sorted-quest-list');
 const levelSections=[...document.querySelectorAll('#all-quests .level')];
 const levelToc=document.getElementById('quest-level-toc');
 const levelTocTitle=document.getElementById('quest-level-toc-title');
+levelToc?.querySelectorAll('a[href^="#s"]').forEach(link=>link.addEventListener('click',event=>{
+  event.preventDefault();
+  const allTab=document.querySelector('.guide-tab[data-tab="all-quests"]');
+  if(allTab && !allTab.classList.contains('active')) allTab.click();
+  const search=document.getElementById('quest-search');
+  if(search?.value){search.value='';updateSearchAndSections();}
+  if(currentQuestSort!=='level'){
+    currentQuestSort='level';
+    if(questSort) questSort.value='level';
+    applyQuestSort('level');
+  }
+  const target=document.getElementById(link.getAttribute('href').slice(1));
+  if(target){
+    const synced=window.kaiokenQuestPaging?.goToSection?.(target.id);
+    if(!synced) setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),60);
+    history.replaceState(null,'',link.getAttribute('href'));
+  }
+}));
 const questSortStorageKey='kaioken_quest_sort_v1';
 let currentQuestSort='level';
 
@@ -3441,7 +3528,7 @@ efficiencyLink?.addEventListener('keydown',e=>{
   }
 });
 
-function jumpToQuestCard(qKey){
+function jumpToQuestCard(qKey,searchTerm=''){
   const tab=document.querySelector('.guide-tab[data-tab="all-quests"]');
   if(tab && !tab.classList.contains('active')) tab.click();
 
@@ -3453,16 +3540,22 @@ function jumpToQuestCard(qKey){
   }
 
   const search=document.getElementById('quest-search');
-  if(search && search.value){
-    search.value='';
+  if(search && (search.value||searchTerm)){
+    search.value=searchTerm;
     if(typeof updateSearchAndSections==='function') updateSearchAndSections();
+  }
+
+  if(currentQuestSort!=='level'){
+    currentQuestSort='level';
+    if(questSort) questSort.value='level';
+    applyQuestSort('level');
   }
 
   setTimeout(()=>{
     const cb=document.querySelector(`.quest-check[data-key="${qKey}"]`);
     const card=cb?.closest('.quest');
     if(!card) return;
-    card.scrollIntoView({behavior:'smooth',block:'center'});
+    if(!window.kaiokenQuestPaging?.goToCard?.(card)) card.scrollIntoView({behavior:'smooth',block:'center'});
     card.classList.remove('continue-highlight');
     setTimeout(()=>{
       card.classList.add('continue-highlight');
@@ -3480,6 +3573,10 @@ loadEtcReady();
 /* CLICKABLE_CHAIN_CARDS_START */
 document.querySelectorAll('#chains .chain-card[data-chain-jump]').forEach(card=>{
   const openChainQuest=()=>{
+    if(/muirhat/i.test(card.dataset.sortName||card.textContent)){
+      window.openMuirhatQuestPopup?.();
+      return;
+    }
     if(typeof jumpToQuestCard==='function'){
       jumpToQuestCard(card.dataset.chainJump);
     }
@@ -3507,25 +3604,19 @@ function scrollRouteTarget(id){
 }
 
 document.querySelector('[data-route-action="mushroom"]')?.addEventListener('click',()=>{
-  if(typeof setBackupFeedback==='function'){
-    setBackupFeedback('Stage 1: complete the Mushroom Kingdom Empire questline, then continue directly to Kerning Square.',true);
-  }
+  location.href='mushroom-kingdom.html';
 });
 
 document.querySelector('[data-route-action="kerning"]')?.addEventListener('click',()=>{
   scrollRouteTarget('kerning-square-guide');
 });
 
-document.querySelector('[data-route-action="features"]')?.addEventListener('click',()=>{
-  scrollRouteTarget('route-feature-options');
-});
-
 document.querySelector('[data-route-action="muirhat"]')?.addEventListener('click',()=>{
-  if(typeof jumpToQuestCard==='function') jumpToQuestCard('q76');
+  window.openMuirhatQuestPopup?.();
 });
 
 document.getElementById('kerning-to-muirhat')?.addEventListener('click',()=>{
-  if(typeof jumpToQuestCard==='function') jumpToQuestCard('q76');
+  window.openMuirhatQuestPopup?.();
 });
 /* ESSENTIAL_LEVELING_ROUTE_END */
 
@@ -3929,7 +4020,8 @@ document.getElementById('nav-refresh-btn')?.addEventListener('click',()=>{
   window.location.reload();
 });
 /* GLOBAL_NAV_REFRESH_END */
-</script><script src="data/db-index.js?v=1"></script><script src="site-navigation.js?v=12"></script><script src="quests-enhancements.js?v=10"></script></body></html>
+</script><script src="data/db-index.js?v=1"></script><script src="data/map-spatial.js?v=3"></script><script src="site-navigation.js?v=14"></script><script src="quests-enhancements.js?v=17"></script></body></html>
+
 
 
 

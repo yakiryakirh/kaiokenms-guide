@@ -26,7 +26,7 @@
       for(const [level,list] of groups){const section=document.createElement('section');section.className='level';section.innerHTML=`<h2>Levels ${esc(level)}${list[0].lvmax?`-${esc(list[0].lvmax)}`:''}</h2>`;list.forEach(q=>{const loc=q.startLocations?.[0]||{},npc=q.startNpcName||q.startNpc||'Muirhat',map=loc.mapName||'Not listed';const npcRow=(window.KAIOKEN_DB_INDEX?.npcs||[]).find(n=>String(n.name).toLowerCase()===String(npc).toLowerCase());const card=document.createElement('article');card.className='quest';card.innerHTML=`<div class="qhead"><span class="qtitle">${esc(q.name)}</span><span class="lvl">Lv. ${esc(q.lvmin||'Any')}${q.lvmax&&q.lvmax!==q.lvmin?`–${esc(q.lvmax)}`:''}</span></div><div class="qbody"><div class="row"><div class="label">NPC</div><div>${esc(npc)}</div></div><div class="row"><div class="label">Objective</div><div>${esc(q.summary||q.progressText||'Complete the elimination objective.')}</div></div><div class="row"><div class="label">Reward</div><div class="reward">${q.exp?`${esc(q.exp)} EXP`:''}${q.fame?` + ${esc(q.fame)} Fame`:''}</div></div><div class="where"><b>📍 Where to start</b><span>${npcRow?.preview?`<img src="${image(npcRow.preview)}" alt="${esc(npc)}" style="width:42px;height:42px;object-fit:contain;vertical-align:middle">`:''} NPC: ${esc(npc)}</span><a href="database.html?openMap=${encodeURIComponent(loc.mapId||'')}">Map: ${esc(map)} →</a></div></div>`;section.appendChild(card)});root.appendChild(section)}
     })();
   </script>
-  <script src="site-navigation.js?v=12"></script>
+  <script src="site-navigation.js?v=15"></script>
 </body>
 </html>
 
